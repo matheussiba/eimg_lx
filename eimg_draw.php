@@ -164,6 +164,8 @@ if (isset($_SESSION['user_id'])) {
     var clickedLayerId=null;
     var editMode = false;
     var createMode = false;
+    var createplaceTab = false;
+
     // # Logging variables
     var cnt_SidebarOpens = 0;
     var cnt_SidebarChangeTab = 0;
@@ -288,25 +290,7 @@ if (isset($_SESSION['user_id'])) {
         //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
         sidebarClick();
 
-        var array_tabs = existentTabs();
-        // for (var i = 0; i < array_tabs.length; i++) {
-        //   var tab_id = array_tabs[i];
-        //   var tabprefix = tab_id.split("-")[0];
-        //   //checking if exist a liked or disliked place
-        //   if ((tabprefix == "liked") || (tabprefix == "disliked")){
-        //     var tab_without_draw = true;
-        //     if(mymap.hasLayer(fgpDrawnItems)){
-        //       fgpDrawnItems.eachLayer(
-        //         function(layer){
-        //           var layer_id = layer.feature.properties.id;
-        //           //Checking if a liked or disliked place in the tab has a draw related to it.
-        //           if(layer_id == tab_id){ tab_without_draw = false;}
-        //         });
-        //     }//END if(mymap.hasLayer(fgpDrawnItems))
-        //     console.log("Aqui",tab_without_draw);
-        //     if(tab_without_draw){console.log("removed"); removeArea(tab_id, true); }
-        //   }
-        // }
+
 
         //to not overide the edit mode style
         if(editMode==false){removeclickedEffect()}
@@ -368,8 +352,10 @@ if (isset($_SESSION['user_id'])) {
             if(editMode == false){
               clickedEffect(activeTab);
             }
-
-            var statusDisplay_DivAtt = document.getElementById(previousTab+"_divChosenAttr").style.display;
+            //if tab doesn't exist it means that it was deleted in the sidebarClick()
+            if(searchTagIfExistsByHref("#"+previousTab)){
+              var statusDisplay_DivAtt = document.getElementById(previousTab+"_divChosenAttr").style.display;
+            }else{var statusDisplay_DivAtt = "none";}
             if ( statusDisplay_DivAtt=='block'){
               var cntChecked = 0;
               if (document.getElementById(previousTab+"_cbxAtt-nat").checked){cntChecked++}else
@@ -396,7 +382,14 @@ if (isset($_SESSION['user_id'])) {
       mymap.on('contextmenu', function(e){
         /* ### FUNCTION DESCRIPTION: listener when a click is given on the map  */
         // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
-        if(editMode){finishEditArea();}
+        if(editMode){
+          finishEditArea();
+        }
+      });
+
+      mymap.on('mousemove', function(e){
+        /* ### FUNCTION DESCRIPTION: listener when a click is given on the map  */
+        // console.log(1);
       });
 
       mymap.on('click', function(e){
@@ -409,7 +402,7 @@ if (isset($_SESSION['user_id'])) {
           if (num_mapClick==1){
             var customOptions =
             {
-            'autoClose':	false,
+            // 'autoClose':	false,
             'closeOnClick':	false,
             'className' : 'popupInfo'
             }
@@ -425,7 +418,7 @@ if (isset($_SESSION['user_id'])) {
             setTimeout(function(){ mymap.closePopup(popup_draw_start); }, 5000);
           }
 
-          if ((num_mapClick==3 || num_mapClick==4) && mobileDevice==false){
+          if ((num_mapClick==5) && mobileDevice==false){
             var customOptions =
             {
             'className' : 'popupInfo'
@@ -440,12 +433,13 @@ if (isset($_SESSION['user_id'])) {
 
         // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
         if(clickedLayerId != null){
-          if(editMode){finishEditArea();}//Finish Edit mode  if the user clicks on the layer
           //if getActiveTab(false) != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
           // alert(clickedLayerId);
           // alert(getActiveTab());
+
           var getTab = getActiveTab();
-          if (getTab!=clickedLayerId){ctlSidebar.open(clickedLayerId); clickedLayerId = null; }
+          if (getTab!=clickedLayerId && createMode==false){ctlSidebar.open(clickedLayerId); clickedLayerId = null; }
+
 
         }else{
           //if(getActiveTab() != null) means that the sidebar is opened
@@ -464,6 +458,7 @@ if (isset($_SESSION['user_id'])) {
 
       mymap.on('pm:drawstart', function(e) {
         createMode = true;
+        // editMode = false;
         num_mapClick = 0;
         this.workingLayer = e.workingLayer;
         // console.log(this.workingLayer);
@@ -546,6 +541,7 @@ if (isset($_SESSION['user_id'])) {
             if(layer_id == place_id){
               //The layer was found so start the editing process...
               layer.setStyle({"weight": 5, "fillOpacity": 0.10 });
+              //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user hits save
               editMode = true;
               layer.pm.enable();
               return;
@@ -712,7 +708,7 @@ if (isset($_SESSION['user_id'])) {
   //  # Drawing Functions
   function saveArea(button_clicked_properties){
     /* ### FUNCTION DESCRIPTION: Function fired up when the user clicks on the 'Save Place' button of the sidebar tab */
-    // place_id = ((button_clicked_properties.id).split("_"))[0];
+    place_id = ((button_clicked_properties.id).split("_"))[0];
     // place_id = ((button_clicked_properties).split("_"))[0];
 
     // save: "fillOpacity": 0.20
@@ -731,61 +727,71 @@ if (isset($_SESSION['user_id'])) {
       document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "none";
       document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
       document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
-      console.log(document.getElementById(place_id+"_cbxAtt-nat").style.textDecoration);
       cntChecks++;
     } else {
       att_nat = 0;
       document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "line-through";
       document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
       document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
-      console.log(document.getElementById(place_id+"_cbxAtt-nat").style.textDecoration);
     }
     if( att_open ){
       att_open = 1;
       document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "none";
-      console.log(document.getElementById(place_id+"_cbxAtt-open").style.textDecoration);
+      document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-open").disabled = true;
       cntChecks++;
     } else {
       att_open = 0;
       document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "line-through";
-      console.log(document.getElementById(place_id+"_cbxAtt-open").style.textDecoration);
+      document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-open").disabled = true;
     }
     if( att_ord ){
       att_ord = 1;
       document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-order").disabled = true;
       cntChecks++;
     } else {
       att_ord = 0;
       document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "line-through";
+      document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-order").disabled = true;
     }
     if( att_up ){
       att_up = 1;
       document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
       cntChecks++;
     } else {
       att_up = 0;
       document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "line-through";
+      document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
     }
     if( att_hist ){
       att_hist = 1;
       document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
       cntChecks++;
     } else {
       att_hist = 0;
       document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "line-through";
+      document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
+      document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
     }
 
-    console.log("nat: ", att_nat,"\nopen: ", att_open,"\nord: ", att_ord,"\nu: ", att_up,"\nhist: ", att_hist,"\nCnt: ",cntChecks);
+    // console.log("nat: ", att_nat,"\nopen: ", att_open,"\nord: ", att_ord,"\nu: ", att_up,"\nhist: ", att_hist,"\nCnt: ",cntChecks);
 
     if(cntChecks == 0){
       // No attribute was selected
       warnCheckAtt();
       return null;
     }else{
-      return null;
       //Close all Popups of the map
       if(editMode){finishEditArea();}
-      document.getElementById(place_id+"_divChosenAttr").style.display = "block";
     }
 
     return null;
@@ -801,6 +807,7 @@ if (isset($_SESSION['user_id'])) {
       alert("zoomOut to draw");
     }else{
       place_id = ((button_clicked_properties.id).split("_"))[0];
+      document.getElementById(place_id+"_removeArea").style.display="block";
       ctlSidebar.close();
       if (place_id.split("-")[0] == "liked") {
         color_line_place = "forestgreen";
@@ -824,7 +831,50 @@ if (isset($_SESSION['user_id'])) {
   function editArea(button_clicked_properties){
     //To use place_id inside an anonymous function (mymap.on('contextmenu', function(){}), it must be global
     place_id = ((button_clicked_properties.id).split("_"))[0];
-    // bringToFront()
+
+    fgpDrawnItems.eachLayer(
+      function(layer){
+        var layer_id = layer.feature.properties.id;
+        // console.log(layer_id);
+        if(layer_id == place_id){
+          console.log(place_id);
+          layer.bringToFront();
+          return;
+        }
+      });
+
+    var att_nat = document.getElementById(place_id+"_cbxAtt-nat");
+    var att_open = document.getElementById(place_id+"_cbxAtt-open");
+    var att_ord = document.getElementById(place_id+"_cbxAtt-order");
+    var att_up = document.getElementById(place_id+"_cbxAtt-upkeep");
+    var att_hist = document.getElementById(place_id+"_cbxAtt-hist");
+
+    if( att_nat ){
+      document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-nat").style.color = "black";
+      document.getElementById(place_id+"_cbxAtt-nat").disabled = false;
+    }
+    if( att_open ){
+      document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-open").style.color = "black";
+      document.getElementById(place_id+"_cbxAtt-open").disabled = false;
+    }
+    if( att_ord ){
+      document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-order").style.color = "black";
+      document.getElementById(place_id+"_cbxAtt-order").disabled = false;
+    }
+    if( att_up ){
+      document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-upkeep").style.color = "black";
+      document.getElementById(place_id+"_cbxAtt-upkeep").disabled = false;
+    }
+    if( att_hist ){
+      document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "none";
+      document.getElementById(place_id+"_lblAtt-hist").style.color = "black";
+      document.getElementById(place_id+"_cbxAtt-hist").disabled = false;
+    }
+
     if(mymap.hasLayer(fgpDrawnItems)){
       fgpDrawnItems.eachLayer(
         function(layer){
@@ -834,13 +884,13 @@ if (isset($_SESSION['user_id'])) {
             //The layer was found so start the editing process...
             // ctlSidebar.close();
             removeclickedEffect();
-            layer.setStyle({"weight": 5, "fillOpacity": 0.10 });
+            layer.setStyle({"weight": 5, "fillOpacity": 1 });
             editMode = true;
             layer.pm.enable();
             mymap.on('contextmenu', function(){
               layer.pm.disable();
               mymap.pm.disableDraw('Poly');
-              layer.setStyle({"weight": 2, "fillOpacity": 0.20 });
+              layer.setStyle({"weight": 2, "fillOpacity": 1});
             });
             return;
           }
@@ -867,7 +917,7 @@ if (isset($_SESSION['user_id'])) {
               var getTab = getActiveTab();
               if (getTab!=place_id){ctlSidebar.open(place_id);}
             }
-            editMode=false;
+            editMode = false;
             document.getElementById(place_id+"_saveArea").style.display="none";
             document.getElementById(place_id+"_editArea").style.display="block";
             return;
@@ -931,6 +981,8 @@ if (isset($_SESSION['user_id'])) {
   //  # Sidebar Functions
   function create_placeTab(typeOfPlace){
     /* ### FUNCTION DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
+    createplaceTab =  true;
+    console.log("createplaceTab",createplaceTab);
     if(typeOfPlace=="liked"){
       var icon = "thumbs-up";
       cnt_LikedPlaces++;
@@ -1173,8 +1225,9 @@ if (isset($_SESSION['user_id'])) {
   };//END createTitleLiByHref()
 
   function sidebarClick(){
-    var clickedTab = getActiveTab();
+    mymap.closePopup();
 
+    var clickedTab = getActiveTab();
     if( (clickedTab!='#temp_tab') && ((cnt_LikedPlaces + cnt_DislikedPlaces) < 6) ){
       // ctlSidebar.removePanel('temp_tab');
       deleteTabByHref('#temp_tab');
@@ -1195,6 +1248,30 @@ if (isset($_SESSION['user_id'])) {
           }
         });
       }
+
+      if (createMode==false){
+        var array_tabs = existentTabs();
+        if (createplaceTab == true){
+          createplaceTab = false;
+        }else{
+          for (var i = 0; i < array_tabs.length; i++) {
+            var tab_id = array_tabs[i];
+            var tabprefix = tab_id.split("-")[0];
+            //checking if exist a liked or disliked place
+            if ((tabprefix == "liked") || (tabprefix == "disliked")){
+              if(document.getElementById(tab_id+"_removeArea").style.display=="none"){
+                removeArea(tab_id, true);
+                if(clickedTab=='#temp_tab'){
+                  ctlSidebar.open("temp_tab");
+                }
+
+              }
+            }
+          }
+
+        }
+      }
+
     }
 
     //When the user clicks on the sidebar to close, the clickedTab gets null
@@ -1232,7 +1309,6 @@ if (isset($_SESSION['user_id'])) {
     }//Do something;
 
   }
-
 
   //  ********* Warnings Functions *********
   function warnCheckAtt(){
