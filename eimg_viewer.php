@@ -1,12 +1,21 @@
 <?php include "includes/init.php"?>
 <?php
-//Creating token for the client who accessed the page
-if (!isset($_SESSION['token_code'])) {
-  // NEEDTO: Change message if a person tries to access this page without passing index.php
-  set_msg("Please choose what you want to do");
-  redirect('index.php');
-}
-// echo implode("\t|\t",$_SESSION);
+  //checking if the index page was accessed
+  if (isset($_SESSION['user_id'])) {
+    // NEEDTO: Change message if a person tries to access this page without passing index.php
+    // print_r($_SESSION);
+    // echo implode("\t|\t",$_SESSION);
+    $header = "eIMG Lisbon ";
+
+    // session_unset();
+    session_destroy();
+
+  }else{
+    // print_r($_SESSION);
+    $header = "eIMG Lisbon - (change: ONLY ACCESS WITH USER_ID SET)";
+    // redirect('index.php');
+    // set_msg("Please choose what you want to do");
+  }
 ?>
 
 <!DOCTYPE html>
@@ -101,6 +110,27 @@ if (!isset($_SESSION['token_code'])) {
         <!-- <div id="google_translate_element"></div> -->
         <!-- SOURCE for design the translate box  https://jsfiddle.net/solodev/0stLrpqg/ -->
         <div >
+          <div id="divSymbology" class="col-xs-12">
+            <h5 class="text-center">Simbology</h5>
+              <p> Choose the way you want your data to be displayed:</p>
+              <input type="radio" id="radio_eqInterval" class='radio_typeSymbology' name='chooseTypeSymbology' value="eq_interval" checked>
+              <label for="radio_eqInterval">Equal Interval</label><br />
+              <input type="radio" id="radio_quantile" class='radio_typeSymbology' name='chooseTypeSymbology' value="quantile">
+              <label for="radio_quantile">Quantile</label>
+              <p> Choose the number of classes you want to divide your data:</p>
+              <input type="range" id="range_nrClasses" class='range_numberOfClasses' min="2" max="5" value="3">
+              <hr />
+              <!-- <input type="radio" id="radio_2classes" class='range_numberOfClasses' name='chooseNumberOfClasses' value=2>
+              <label for="radio_2classes">2</label><br />
+              <input type="radio" id="radio_3classes" class='range_numberOfClasses' name='chooseNumberOfClasses' value=3>
+              <label for="radio_3classes">3</label>
+              <input type="radio" id="radio_4classes" class='range_numberOfClasses' name='chooseNumberOfClasses' value=4>
+              <label for="radio_4classes">4</label>
+              <input type="radio" id="radio_5classes" class='range_numberOfClasses' name='chooseNumberOfClasses' value=5>
+              <label for="radio_5classes">5</label> -->
+          </div>
+
+
           <div class="ct-topbar" style="padding: 1vh;">
             <ul class="list-unstyled list-inline ct-topbar__list">
               <li class="ct-language">Choose a Language <i class="fa fa-arrow-down"></i>
@@ -129,18 +159,24 @@ if (!isset($_SESSION['token_code'])) {
     var mymap;
     var backgroundLayer;
     var ctlEasybutton;
-    var mobileDevice = false;
+    var mobileDevice;
     var ctlSidebar;
     var lyrEIMG;
     var lyrHistCenter;
-    var stats_cat_1;
-    var stats_cat_2;
-    var stats_cat_3;
+    var eimg_stats;
+    var number_classes;
+    var feat_loaded;
+    var quantile_class;
+    var array_cnt_feat_class;
+
+    var symbology_type = "quantile";
     //  ********* Mobile Device parameters and Function *********
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
       mobileDevice = true;
-    };
+    }else{
+      mobileDevice = false;
+    }
     if(mobileDevice){
       /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
       if("orientation" in screen) {
@@ -169,8 +205,6 @@ if (!isset($_SESSION['token_code'])) {
         }
       }
     });//END $( window ).on( "orientationchange", ())
-
-
 
     //  ********* Create Map *********
     $(document).ready(function(){
@@ -210,7 +244,6 @@ if (!isset($_SESSION['token_code'])) {
       var ctlZoom = L.control.zoom({position:'bottomright'}).addTo(mymap);
 
       //************************  Load Data  ******
-
       refreshPlaces();
 
       //  ********* Events on Map *********
@@ -231,6 +264,12 @@ if (!isset($_SESSION['token_code'])) {
     function refreshPlaces(){
       var cntChecks = 0;
       var whereClause = "";
+
+      // get values for symbology
+      symbology_type = $("input[name='chooseTypeSymbology']:checked").val();
+      // console.log(symbology_type);
+      number_classes = document.getElementById("range_nrClasses").value;
+      // console.log(number_classes);
 
       // Checkboxes Liked and Disliked places
       $('input[type=checkbox].cbx_fltPlaces:checked').each(function () {
@@ -272,98 +311,63 @@ if (!isset($_SESSION['token_code'])) {
         //It will not matter the attribute select. No features must be seen
         whereClause = "(1=2)"; //This is a false claure, returning no elements
       };
-      console.log(whereClause);
+      // console.log(whereClause);
 
       // Calculating Stats for styling the opacity of each polygon based on the count of liked and disliked place
-      //stats category 1
+      //stats for the data
       $.ajax({
-        url:'eimg_viewer-calculate_stats.php',
+        url:'eimg_viewer-echo_eimg_result.php',
         data: {
-          select:"max(ct_liked+ct_disliked), min(ct_liked+ct_disliked), count(*)",
-          where: "category_nr = 1"
+          type_op: "info",
+          tbl: "eimg_result",
+          select:"max(ct_liked+ct_disliked), min(ct_liked+ct_disliked), count(*)"
         },
         type:'POST',
-        success:function(response){
-          if (response.substring(0,5)=="ERROR"){
-            alert(response);
-          }else{
-            stats_cat_1 = JSON.parse(response);
-          }//end else
-        },//end success
-        error: function(xhr, status, error){
-          alert("ERROR: "+error);
-        }
+        success:function(response){ eimg_stats = JSON.parse(response); },
+        error: function(xhr, status, error){ alert("ERROR: "+error); }
       }); // End ajax
-      //stats category 2
+
       $.ajax({
-        url:'eimg_viewer-calculate_stats.php',
+        url:'eimg_viewer-echo_eimg_result.php',
         data: {
-          select:"max(ct_liked+ct_disliked), min(ct_liked+ct_disliked), count(*)",
-          where: "category_nr = 2"
+          type_op: "data",
+          tbl: "eimg_result",
+          select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent",
+          where: whereClause,
+          order: "liked_percent"
         },
         type:'POST',
         success:function(response){
-          if (response.substring(0,5)=="ERROR"){
-            alert(response);
-          }else{
-            stats_cat_2 = JSON.parse(response);
-          }//end else
-        },//end success
-        error: function(xhr, status, error){
-          alert("ERROR: "+error);
-        }
-      }); // End ajax
-      //stats category 3
-      $.ajax({
-        url:'eimg_viewer-calculate_stats.php',
-        data: {
-          select:"max(ct_liked+ct_disliked), min(ct_liked+ct_disliked), count(*)",
-          where: "category_nr = 3"
-        },
-        type:'POST',
-        success:function(response){
-          if (response.substring(0,5)=="ERROR"){
-            alert(response);
-          }else{
-            stats_cat_3 = JSON.parse(response);
-          }//end else
+          // console.log(response);
+          if (lyrEIMG) {
+            mymap.removeLayer(lyrEIMG);
+          };
+
+          //reseting global variables in each call of refreshPlaces()
+          feat_loaded = 0;
+          quantile_class = 1;
+          array_cnt_feat_class=[0,0,0,0,0];
+          lyrEIMG=L.geoJSON(JSON.parse(response),{
+            style:stylePlaces,
+            onEachFeature:aggAttributes
+          });
+          console.log("count features per class: ",array_cnt_feat_class);
+          lyrEIMG.addTo(mymap);
+          console.log("number of features loaded in lyrEIMG:", lyrEIMG.getLayers().length);
+          mymap.fitBounds(lyrEIMG.getBounds());
+          console.log("Areas updated successfully...");
         },//end success
         error: function(xhr, status, error){
           alert("ERROR: "+error);
         }
       }); // End ajax
 
-      $.ajax({
-        url:'eimg_viewer-refresh_polys.php',
-        data: {flds:"*", where: whereClause},
-        type:'POST',
-        success:function(response){
-          if (response.substring(0,5)=="ERROR"){
-            alert(response);
-          }else{
-            //console.log(response);
-            if (lyrEIMG) {
-              mymap.removeLayer(lyrEIMG);
-            };
-            lyrEIMG=L.geoJSON(JSON.parse(response),{
-              style:stylePlaces,
-              onEachFeature:aggAttributes
-            });
-            lyrEIMG.addTo(mymap);
-            mymap.fitBounds(lyrEIMG.getBounds());
-            console.log("Areas updated successfully...");
-          }//end else
-        },//end success
-        error: function(xhr, status, error){
-          alert("ERROR: "+error);
-        }
-      }); // End ajax
     }//End refreshPlaces
 
     function aggAttributes(json, lyr) {
       var att = json.properties;
       strToolTip = "<i class='fa fa-thumbs-up' ></i> "+att.ct_liked;
-      strToolTip += " | ";
+      strToolTip += "   ";
       strToolTip += "<i class='fa fa-thumbs-down'></i> "+att.ct_disliked;
       switch (att.category_nr) {
         case 1: //In the field "category_nr" means liked places
@@ -394,62 +398,47 @@ if (!isset($_SESSION['token_code'])) {
 
       //bind events
       lyr.on('mouseover', function(e){
-        switch (att.category_nr) {
-          case 1: //In the field "category_nr" means liked places
-          lyr.setStyle({ weight: 2});
-          break;
-          case 2: //In the field "category_nr" means disliked places
-          lyr.setStyle({ weight: 2});
-          break;
-          case 3: //In the field "category_nr" means liked/disliked places
-          lyr.setStyle({ weight: 2});
-          break;
-        }
+        lyr.setStyle({ weight: 2});
       });
       lyr.on('mouseout', function(e){
-        switch (att.category_nr) {
-          case 1: //In the field "category_nr" means liked places
-          lyr.setStyle({weight: 0});
-          break;
-          case 2: //In the field "category_nr" means disliked places
-          lyr.setStyle({weight: 0});
-          break;
-          case 3: //In the field "category_nr" means liked/disliked places
-          lyr.setStyle({weight: 0});
-          break;
-        }
+        lyr.setStyle({ weight: 0});
       });
 
-      //WORKING Turf function -- Keep it ere as a test
-      // var jsnBuffer = turf.buffer(lyr.toGeoJSON(), 0.1, 'kilometers');
-      // jsnLayer = L.geoJSON(jsnBuffer, {style:{color:'yellow', dashArray:'5,5', fillOpacity:0}}).addTo(mymap);
     }
 
     function stylePlaces(json) {
-      var max_opacity = 0.8;
+      feat_loaded++;
+
+      //Setting the max of opacity for each layer
+      var max_opacity = 0.95;
       var min_opacity = 0.15;
-
+      var array_colors =
+      [
+        ['red', 'green'],
+        ['red', 'gold', 'green'],
+        ['red', 'darkorange', 'yellowgreen', 'green'],
+        ['red', 'darkorange', 'gold', 'yellowgreen', 'green']
+      ];
       var att = json.properties;
-      console.log(min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(stats_cat_1.min))*(max_opacity-min_opacity))/(parseInt(stats_cat_1.max)-parseInt(stats_cat_1.min)))  );
+      var opacity_calc = min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(eimg_stats.min))*(max_opacity-min_opacity))/(parseInt(eimg_stats.max)-parseInt(eimg_stats.min)));
 
-      switch (att.category_nr) {
-        case 1: //In the field "category_nr" means liked places
-        return {color: 'green', weight:0, fillColor: 'green',
-                //Normalization of the opacity based on the ct_liked + ct_disliked
-                fillOpacity: min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(stats_cat_1.min))*(max_opacity-min_opacity))/(parseInt(stats_cat_1.max)-parseInt(stats_cat_1.min))) };
-        break;
-        case 2: //In the field "category_nr" means disliked places
-        return {color: 'red', weight:0, fillColor: 'red',
-                fillOpacity: min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(stats_cat_2.min))*(max_opacity-min_opacity))/(parseInt(stats_cat_2.max)-parseInt(stats_cat_2.min))) };
-        break;
-        case 3: //In the field "category_nr" means liked/disliked places
-        return {color: 'blue', weight:0, fillColor: 'blue',
-                fillOpacity: min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(stats_cat_3.min))*(max_opacity-min_opacity))/(parseInt(stats_cat_3.max)-parseInt(stats_cat_3.min))) };
-        break;
-        default: //If something went wrong it'll display grey
-        return {color:'grey'}
+      //the values were ordered in the AJAX call
+      if (feat_loaded > eimg_stats.count/number_classes*quantile_class){quantile_class++;}
+      if (symbology_type == "quantile"){
+        array_cnt_feat_class[quantile_class-1] = (array_cnt_feat_class[quantile_class-1])+1;
+        return {color: array_colors[number_classes-2][quantile_class-1], weight:0, fillColor: array_colors[number_classes-2][quantile_class-1], fillOpacity: opacity_calc };
       }
-    }
+      if (symbology_type == "eq_interval"){
+        var eq_interval_class=1;
+        while (eq_interval_class<=number_classes){
+          if( att.liked_percent <= 100/number_classes*eq_interval_class){
+            array_cnt_feat_class[eq_interval_class-1] = (array_cnt_feat_class[eq_interval_class-1])+1;
+            return {color: array_colors[number_classes-2][eq_interval_class-1], weight:0, fillColor: array_colors[number_classes-2][eq_interval_class-1], fillOpacity: opacity_calc };
+          }
+          eq_interval_class++;
+        }
+      }
+    }//End stylePlaces(json)
 
     //  ********* Sidebar Functions *********
     function getActiveTab(with_hash){
@@ -515,7 +504,7 @@ if (!isset($_SESSION['token_code'])) {
 
     $("#btnProcess").on("click", function () {
       //var text = $(this).attr("text");
-      console.log("Clicked");
+      // console.log("Clicked");
 
       $.ajax({
           url:'eimg_viewer-flatten_polys.php',
@@ -523,6 +512,7 @@ if (!isset($_SESSION['token_code'])) {
           type:'POST',
           success:function(response){
             console.log("flatten polygons worked fine");
+            console.log(response);
             refreshPlaces();
             console.log("areas refreshed...");
           },//End success
@@ -537,8 +527,14 @@ if (!isset($_SESSION['token_code'])) {
     $( "#divFilterEvaluation" ).on( "change", ".cbx_fltPlaces", function() {
       refreshPlaces();
     });
-
     $( "#divFilterAttributes" ).on( "change", ".cbx_fltAttributes", function() {
+      refreshPlaces();
+    });
+
+    $( "#divSymbology" ).on( "change", ".radio_typeSymbology", function() {
+      refreshPlaces();
+    });
+    $( "#divSymbology" ).on( "change", ".range_numberOfClasses", function() {
       refreshPlaces();
     });
 

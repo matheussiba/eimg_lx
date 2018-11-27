@@ -20,7 +20,4 @@
 
     //Include the PHP functions
     include "php_functions.php";
-
-    //Creating token for the client who accessed the page
-    $_SESSION['token_code'] = generate_token();
 ?>

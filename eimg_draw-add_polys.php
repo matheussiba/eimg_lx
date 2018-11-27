@@ -28,7 +28,16 @@
     }
 
     // 1, Liked, 1,1,1,0,1
-    $db = new PDO('pgsql:host=localhost;port=5432;dbname=eimg_lx;', 'postgres', 'admin');
+    $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=eimg_lx;', 'postgres', 'admin');
+
+    $result = $pdo->query("SELECT count(*) FROM eimg_raw_polys;");
+    $returnJson= "";
+    $row=$result->fetch();
+    if ($row) {
+      $returnJson .= json_encode($row);
+    }
+    echo $returnJson;
+
     $str = "INSERT INTO $table
             ( geom_4326,
               eval_nr, eval_str,
@@ -47,12 +56,21 @@
             )";
     $params = ["gjsn"=>$geojson, "e_nr"=>$eval_nr, "e_str"=>$eval_str, "nat"=>$att_nat, "open"=>$att_open, "ord"=>$att_ord, "up"=>$att_up, "hist"=>$att_hist];
 
-    echo $str;
+
     try{
-      $sql = $db->prepare($str);
+      $sql = $pdo->prepare($str);
       if ($sql->execute($params)) {
         echo "place succesfully added";
         // session_destroy();
+
+        $result = $pdo->query("SELECT count(*) FROM eimg_raw_polys;");
+        $returnJson= "";
+        $row=$result->fetch();
+        if ($row) {
+          $returnJson .= json_encode($row);
+        }
+        echo $returnJson;
+
       } else {
         echo var_dump($sql->errorInfo());
       };

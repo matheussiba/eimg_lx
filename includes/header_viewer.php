@@ -118,7 +118,7 @@
 
   #header {
     /* height: 75px; */
-    height:5vh;
+    height:4vh;
     background-color: #2a6592;
     color: white;
   }
@@ -132,7 +132,7 @@
   /* NEEDTO: There will be no header and footer all the information will be added to the map */
   #mapdiv {
     /* height: 650px; */
-    height:95vh;
+    height:96vh;
     background-color: #f6d8ac;
   }
 

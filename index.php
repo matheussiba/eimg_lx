@@ -1,4 +1,11 @@
-<?php include "includes/init.php" ?>
+<?php include "includes/init.php"?>
+<?php
+  print_r($_SESSION);
+  //Creating token for the client who accessed the page
+  $_SESSION['user_id'] = generate_token();
+  print_r($_SESSION);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,14 +13,14 @@
 <?php include "includes/header.php" ?>
 
 <body>
-  
+
   <div id="header" clas0s="col-md-12">
     <h1 class="text-center">eimg Lisbon - Demo Version </h1>
   </div>
   <div id="side_panel" class="col-md-3">
     <!-- Side Panel Title-->
     <h1 class="text-center">Controler</h1>
-    <button id='btnMerge' class='btn btn-primary btn-block'>Merge Features</button>
+    <button id='btnRedirectPage' class='btn btn-primary btn-block'>Go To Map Draw</button>
 
     <!-- Div to display a message to the user, if needed -->
     <div id="divLog"></div>
@@ -136,7 +143,7 @@ $(document).ready(function(){
 
     createQuestionaryPopUp();
 
-    //$("#btnMerge").removeAttr("disabled");
+    //$("#btnRedirectPage").removeAttr("disabled");
 
     //console.log("Type: "+e.shape+"\nGeometry: "+JSON.stringify(jsn));
   });
@@ -187,27 +194,10 @@ $("#btnCheckAtt").on("click", function () {
   refreshPlaces();
 });
 
-$("#btnMerge").on("click", function () {
+$("#btnRedirectPage").on("click", function () {
   //var text = $(this).attr("text");
   //alert("Clicked");
-
-  $.ajax({
-      url:'merge_features.php',
-      //data:{ },
-      type:'POST',
-      success:function(response){
-        console.log(response);
-        lyrPlaces.remove();
-        lyrMerge = L.geoJSON(JSON.parse(response),{
-          style:stylePlaces
-        });
-        lyrMerge.addTo(mymap);
-        $("#divLog").text("Merge added successfully...");
-      },
-      error:function(xhr, status, error){
-        $("#divLog").text("Something went wront... "+error);
-      }
-  });
+  window.location.href = 'eimg_draw.php';
 
 });
 

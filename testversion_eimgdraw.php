@@ -73,7 +73,7 @@ var lyrHistCenter;
 var jsn_draw;
 var lyrDraw;
 var lyrMerge;
-
+console.log(Math.floor(100/3));
 $(document).ready(function(){
 
   //  ********* Map Initialization ****************
@@ -442,14 +442,14 @@ function refreshPlaces(){
   //console.log("whereClause: "+whereClause);
   $.ajax({
     url:'load_gsp_data.php',
-    data: {tbl: "eimglx_areas_demo", where: whereClause},
+    data: {tbl: "test_eimg_raw_polys", where: whereClause},
     type:'POST',
     //data:{filter:$("filterPlaces").val()},
     success:function(response){
       if (response.substring(0,5)=="ERROR"){
         alert(response);
       }else{
-        //console.log(response);
+        console.log(response);
         if (lyrPlaces) {
           mymap.removeLayer(lyrPlaces);
           $("#divLog").html("");

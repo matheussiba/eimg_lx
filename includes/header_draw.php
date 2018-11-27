@@ -15,10 +15,12 @@
    <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/leaflet-1.2.0.css"
         integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
         crossorigin=""/>
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/leaflet.pm.css"/>
+  <!-- <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/leaflet.pm.css"/> -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
   <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/L.Control.MousePosition.css">
   <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/leaflet-sidebar.min-v3.0.2.css">
   <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
   <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
   <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/leaflet.awesome-markers.css">
   <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/easy-button.css">
@@ -36,7 +38,10 @@
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
   <script src="/<?php  echo $root_directory?>/resources/bootstrap-3.3.7.min.js"></script>
   <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet-sidebar.js"></script>
-  <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.pm.min.js"></script>
+  <!-- <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.geometryutil.js"></script> -->
+  <!-- <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.pm.min.js"></script> -->
+  <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
+
   <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.ajax.min.js"></script>
   <script src="/<?php  echo $root_directory?>/resources/plugins/L.Control.MousePosition.js"></script>
   <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.awesome-markers.min.js"></script>
@@ -47,25 +52,21 @@
   <!-- CSS -->
   <style>
 
-  /* ****************** CSS for the LeafletToolTip of eimg_viewer ****************** */
-    .labelstyle {
-        all: revert;/*
-        color: green;
-        font-size:14px;
-        font-weight: 700;
-        fillColor: none;
-        fillOpacity: 0;
-        background-color: none;
-        border-color: none;
-        background: none;
-        border: none;
-        box-shadow: none;
-        margin: 0px;
-        cursor: none;
-        direction: 'center';
-        interactive: false;
-        fill: false;*/
-    }
+  /* ****************** The Modal (background) ****************** */
+  .modal {
+      z-index: 1000; /* Sit on top */
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      display: none; /* Hidden by default */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+      padding: 20px;
+      background-color:tan;
+      margin-top: 10%;
+  }
 
     /* ****************** CSS for the sidebar ****************** */
   .leaflet-sidebar-content{
@@ -83,6 +84,9 @@
   .sidebar_tab_icon_disliked{
     background-color: rgba(256, 0, 0, 0.2);
   }
+  .sidebar_tab_liked_disliked_clicked{
+    background-color: rgba(0, 116, 217, 1);
+  }
   .tab_separator{
     background-color: rgba(0,0,0,0.6);
   }
@@ -94,7 +98,7 @@
 
   #header {
     /* height: 75px; */
-    height:5vh;
+    height:4vh;
     background-color: #2a6592;
     color: white;
   }
@@ -108,10 +112,31 @@
   /* NEEDTO: There will be no header and footer all the information will be added to the map */
   #mapdiv {
     /* height: 650px; */
-    height:95vh;
+    height:96vh;
     background-color: #f6d8ac;
   }
 
+  .popupInfo {
+      /* font-size:14px; */
+      /* font-weight: 700; */
+      /* background: #ccccff;
+      border-color: #ccccff; */
+
+      /* margin: 0px;
+      padding: 0px; */
+      /* padding: 0px;  */
+  }
+
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup-tip {
+    padding: 0px;
+    margin: -20px;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+  }
+  .leaflet-popup-tip {
+    display: none;
+  }
   /* ****************** CSS for the Modal DIV ****************** */
   /* The Modal (background) */
   .modal {
@@ -128,7 +153,7 @@
     color: saddlebrown;
     padding: 20px;
     margin-top: 5%;
-    background-color:antiquewhite;
+    background-color:#e6f2f5;
     height:80%;
     /* When the text displayed in the modal content is greater than 80% of the height it will add a scroll bar in the y position */
     overflow-y:auto;
