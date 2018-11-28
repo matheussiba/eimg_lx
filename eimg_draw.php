@@ -173,6 +173,7 @@ if (isset($_SESSION['user_id'])) {
     var cnt_DislikedPlaces = 0;
     var num_mapClick;
 
+    var log_functions = true;
     // # To Delete
     var cnt_test = 0;
 
@@ -290,8 +291,6 @@ if (isset($_SESSION['user_id'])) {
         //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
         sidebarClick();
 
-
-
         //to not overide the edit mode style
         if(editMode==false){removeclickedEffect()}
 
@@ -310,7 +309,7 @@ if (isset($_SESSION['user_id'])) {
         //Mimics a sidebar click, to change the background of the icon to blue, if the tab opened is a liked or disliked place
         sidebarClick();
 
-        console.log(cnt_test,"OPEN Prev: ",previousTab, "Act: ", activeTab);
+        // console.log(cnt_test,"OPEN Prev: ",previousTab, "Act: ", activeTab);
         var getTab = getActiveTab();
         if (getTab=="#temp_tab"){
           document.getElementById('dynamic-icon-tab').className = 'fa fa-question-circle';
@@ -384,7 +383,12 @@ if (isset($_SESSION['user_id'])) {
         // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
         if(editMode){
           finishEditArea();
+
+          var button_saveArea_id = place_id+"_saveArea";
+          if (createMode==false){document.getElementById(button_saveArea_id).click(); }
         }
+
+
       });
 
       mymap.on('mousemove', function(e){
@@ -706,10 +710,60 @@ if (isset($_SESSION['user_id'])) {
   }
 
   //  # Drawing Functions
+  function drawArea(button_clicked_properties){
+    /* ### FUNCTION DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
+    // Passing the ID gotten from the id of the button clicked to the global variable in order to be accesed in the anonymous functions
+    if(mymap.getZoom()<14){
+      alert("zoomIn further to draw");
+    }else if(mymap.getZoom()>18){
+      alert("zoomOut to draw");
+    }else{
+      place_id = ((button_clicked_properties.id).split("_"))[0];
+
+      if (log_functions){console.log('drawArea', place_id);}
+      document.getElementById(place_id+"_removeArea").style.display="block";
+
+      document.getElementById(place_id+"_str_startdrawing").innerHTML ="none";
+      console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
+
+      ctlSidebar.close();
+      if (place_id.split("-")[0] == "liked") {
+        color_line_place = "forestgreen";
+        color_fill_place = "#0F0";
+      }else{
+        color_line_place = "#F00";
+        color_fill_place = "#F00";
+      }
+      var drawingOptions = {
+        // snapping
+        snappable: true,
+        snapDistance: 15,
+        finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
+        templineStyle: {color: color_line_place, weight: 2} ,
+        hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
+      };
+      mymap.pm.enableDraw('Poly', drawingOptions);
+    }
+  }//END drawArea()
+
   function saveArea(button_clicked_properties){
     /* ### FUNCTION DESCRIPTION: Function fired up when the user clicks on the 'Save Place' button of the sidebar tab */
-    place_id = ((button_clicked_properties.id).split("_"))[0];
+    if (button_clicked_properties) {place_id = ((button_clicked_properties.id).split("_"))[0];}
+    if (log_functions){console.log('saveArea', place_id);}
+
     // place_id = ((button_clicked_properties).split("_"))[0];
+
+    fgpDrawnItems.eachLayer(function(layer){
+      var layer_id = layer.feature.properties.id;
+      if(layer_id == place_id){
+        // removeclickedEffect();
+        editMode=false;
+        layer.pm.disable();
+        mymap.pm.disableDraw('Poly');
+        layer.setStyle({"weight": 2, "fillOpacity": 1});
+        return;
+      }
+    });
 
     // save: "fillOpacity": 0.20
     document.getElementById(place_id+"_saveArea").style.display="none";
@@ -798,50 +852,35 @@ if (isset($_SESSION['user_id'])) {
 
   };//END saveArea()
 
-  function drawArea(button_clicked_properties){
-    /* ### FUNCTION DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
-    // Passing the ID gotten from the id of the button clicked to the global variable in order to be accesed in the anonymous functions
-    if(mymap.getZoom()<14){
-      alert("zoomIn further to draw");
-    }else if(mymap.getZoom()>18){
-      alert("zoomOut to draw");
-    }else{
-      place_id = ((button_clicked_properties.id).split("_"))[0];
-      document.getElementById(place_id+"_removeArea").style.display="block";
-      ctlSidebar.close();
-      if (place_id.split("-")[0] == "liked") {
-        color_line_place = "forestgreen";
-        color_fill_place = "#0F0";
-      }else{
-        color_line_place = "#F00";
-        color_fill_place = "#F00";
+  function finishEditArea(sidebarOpen){
+    if (log_functions){console.log('finishEditArea', place_id);}
+    if(mymap.hasLayer(fgpDrawnItems)){
+      fgpDrawnItems.eachLayer(
+        function(layer){
+          var layer_id = layer.feature.properties.id;
+          // console.log(layer_id);
+          // place_id is a global variable that contains the variable of the editted area
+          if(layer_id == place_id){
+            layer.pm.disable();
+            mymap.pm.disableDraw('Poly');
+            layer.setStyle({"weight": 2, "fillOpacity": 0.20 });
+            if(sidebarOpen){
+              var getTab = getActiveTab();
+              if (getTab!=place_id){ctlSidebar.open(place_id);}
+            }
+            editMode = false;
+            document.getElementById(place_id+"_saveArea").style.display="none";
+            document.getElementById(place_id+"_editArea").style.display="block";
+            return;
+          }
+        });
       }
-      var drawingOptions = {
-        // snapping
-        snappable: true,
-        snapDistance: 15,
-        finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
-        templineStyle: {color: color_line_place, weight: 2} ,
-        hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
-      };
-      mymap.pm.enableDraw('Poly', drawingOptions);
-    }
-  }//END drawArea()
+  }//END finishEditArea()
 
   function editArea(button_clicked_properties){
     //To use place_id inside an anonymous function (mymap.on('contextmenu', function(){}), it must be global
     place_id = ((button_clicked_properties.id).split("_"))[0];
-
-    fgpDrawnItems.eachLayer(
-      function(layer){
-        var layer_id = layer.feature.properties.id;
-        // console.log(layer_id);
-        if(layer_id == place_id){
-          console.log(place_id);
-          layer.bringToFront();
-          return;
-        }
-      });
+    if (log_functions){console.log('editArea', place_id);}
 
     var att_nat = document.getElementById(place_id+"_cbxAtt-nat");
     var att_open = document.getElementById(place_id+"_cbxAtt-open");
@@ -875,6 +914,7 @@ if (isset($_SESSION['user_id'])) {
       document.getElementById(place_id+"_cbxAtt-hist").disabled = false;
     }
 
+
     if(mymap.hasLayer(fgpDrawnItems)){
       fgpDrawnItems.eachLayer(
         function(layer){
@@ -883,16 +923,11 @@ if (isset($_SESSION['user_id'])) {
           if(layer_id == place_id){
             //The layer was found so start the editing process...
             // ctlSidebar.close();
+            layer.bringToFront();
             removeclickedEffect();
             layer.setStyle({"weight": 5, "fillOpacity": 1 });
             editMode = true;
             layer.pm.enable();
-            mymap.on('contextmenu', function(){
-              layer.pm.disable();
-              mymap.pm.disableDraw('Poly');
-              layer.setStyle({"weight": 2, "fillOpacity": 1});
-            });
-            return;
           }
         });
       }//END if(mymap.hasLayer(fgpDrawnItems))
@@ -902,30 +937,6 @@ if (isset($_SESSION['user_id'])) {
 
   };//END editArea()
 
-  function finishEditArea(sidebarOpen){
-    if(mymap.hasLayer(fgpDrawnItems)){
-      fgpDrawnItems.eachLayer(
-        function(layer){
-          var layer_id = layer.feature.properties.id;
-          // console.log(layer_id);
-          // place_id is a global variable that contains the variable of the editted area
-          if(layer_id == place_id){
-            layer.pm.disable();
-            mymap.pm.disableDraw('Poly');
-            layer.setStyle({"weight": 2, "fillOpacity": 0.20 });
-            if(sidebarOpen){
-              var getTab = getActiveTab();
-              if (getTab!=place_id){ctlSidebar.open(place_id);}
-            }
-            editMode = false;
-            document.getElementById(place_id+"_saveArea").style.display="none";
-            document.getElementById(place_id+"_editArea").style.display="block";
-            return;
-          }
-        });
-      }
-  }//END finishEditArea()
-
   function removeArea(button_clicked_properties, no_button){
     if (no_button){
       place_id = button_clicked_properties;
@@ -934,7 +945,7 @@ if (isset($_SESSION['user_id'])) {
       place_id = (button_clicked_properties.id).split("_")[0];
       var close_sidebar = true;
     }
-
+    if (log_functions){console.log('removeArea', place_id, no_button);}
     mymap.pm.disableDraw('Poly');
     // console.log(fgpDrawnItems.getLayers() );
     if(mymap.hasLayer(fgpDrawnItems)){
@@ -982,7 +993,6 @@ if (isset($_SESSION['user_id'])) {
   function create_placeTab(typeOfPlace){
     /* ### FUNCTION DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
     createplaceTab =  true;
-    console.log("createplaceTab",createplaceTab);
     if(typeOfPlace=="liked"){
       var icon = "thumbs-up";
       cnt_LikedPlaces++;
@@ -1011,27 +1021,28 @@ if (isset($_SESSION['user_id'])) {
 
     str_newtab += '<div id="'+tab_id+'_divChosenAttr" style="display:none;" class="container text-left">';
     str_newtab +=   '<div class="[ col-xs-12 col-sm-6 ]">';
-    str_newtab +=     '<p>Choose an attribute: </p>';
+    str_newtab +=     '<h4>Choose at least 1 attribute for the area: </h4>';
+    str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_nat">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" for="'+tab_id+'_cbxAtt-nat">Naturalness</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" for="'+tab_id+'_cbxAtt-nat"> Naturalness</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_open">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" title="Click in the edit button to edit" for="'+tab_id+'_cbxAtt-open">Openness</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" title="" for="'+tab_id+'_cbxAtt-open"> Openness</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_order">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" for="'+tab_id+'_cbxAtt-order">Order<br></label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" for="'+tab_id+'_cbxAtt-order"> Order<br></label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_upkeep">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" for="'+tab_id+'_cbxAtt-upkeep">Upkeep</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" for="'+tab_id+'_cbxAtt-upkeep"> Upkeep</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_hist">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" for="'+tab_id+'_cbxAtt-hist">Historical Significance</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" for="'+tab_id+'_cbxAtt-hist"> Historical Significance</label><br />';
 
     str_newtab +=  '</div>';
     str_newtab += '</div>';
     str_newtab += '<div class="[ col-xs-12 ]">';
-    str_newtab +=   '<h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4>';
+    str_newtab +=   '<span id="'+tab_id+'_str_startdrawing" ><h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4></span>';
     str_newtab +=   '<div class="col-xs-6">';
     str_newtab +=     '<button id="'+tab_id+'_drawArea" class="btn btn-warning" onclick="drawArea(this)">';
     str_newtab +=     '<i class="fa fa-edit"></i> Draw Area';
     str_newtab +=     '</button>';
-    str_newtab +=     '<button id="'+tab_id+'_saveArea" class="btn btn-primary" style="display:none;" onclick="saveArea(this)">';
+    str_newtab +=     '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
     str_newtab +=     '<i class="fa fa-save"></i> Save';
     str_newtab +=     '</button>';
     str_newtab +=     '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
