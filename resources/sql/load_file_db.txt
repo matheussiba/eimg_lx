@@ -1,0 +1,5 @@
+psql -d eimg_lx -f <file_name>
+
+psql -d <db_name> 			#connect postgres
+
+

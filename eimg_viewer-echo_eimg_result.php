@@ -6,18 +6,16 @@ if (isset($_POST['where']))   {$where = " WHERE ".$_POST['where'];} else { $wher
 if (isset($_POST['order']))   {$order=" ORDER BY ".$_POST['order'];} else { $order="";}
 
 // Credentials
-$db_name = "eimg_lx";
-$host = "localhost";
-$username = "postgres";
-$password = "admin";
-$port = "5432";
+include "db_credentials.php";
 $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
 $opt = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false
+  PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,//If occur some error fom the DB, it is displayed
+  // PDO::ATTR_ERRMODE            => PDO::ERRMODE_SILENT, //If occur some error fom the DB, it's not displayed
+  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+  PDO::ATTR_EMULATE_PREPARES   => false //true, for send multiple queries in one line and false in order to it not be possible
 ];
 $pdo = new PDO($dsn, $username, $password, $opt);
+
 
 if($type_op == "info"){
   $strQry="SELECT {$fields} FROM {$table}{$where}{$order}";

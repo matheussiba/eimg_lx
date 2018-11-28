@@ -8,39 +8,39 @@
 
   <!-- Adding CSS files -->
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/bootstrap-3.3.7.min.css"/>
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/bootstrap-3.3.7.min.css"/>
   <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
        integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
        crossorigin=""/> -->
-   <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/leaflet-1.2.0.css"
+   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/leaflet-1.2.0.css"
         integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
         crossorigin=""/>
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/leaflet.pm.css"/>
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/L.Control.MousePosition.css">
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/leaflet-sidebar.min-v3.0.2.css">
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet.pm.css"/>
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/L.Control.MousePosition.css">
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet-sidebar.min-v3.0.2.css">
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/css/font-awesome.min.css">
   <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/leaflet.awesome-markers.css">
-  <link rel="stylesheet" href="/<?php  echo $root_directory?>/resources/plugins/easy-button.css">
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet.awesome-markers.css">
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/easy-button.css">
   <!-- Adding JS files -->
   <!-- <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
         integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
         crossorigin="">
   </script> -->
-  <script src="/<?php  echo $root_directory?>/resources/leaflet-1.2.0.js"
+  <script src="<?php  echo $root_directory?>resources/leaflet-1.2.0.js"
         integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
         crossorigin="">
   </script>
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
-  <script src="/<?php  echo $root_directory?>/resources/jquery-3.3.1.min.js"></script>
+  <script src="<?php  echo $root_directory?>resources/jquery-3.3.1.min.js"></script>
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-  <script src="/<?php  echo $root_directory?>/resources/bootstrap-3.3.7.min.js"></script>
-  <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet-sidebar.js"></script>
-  <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.pm.min.js"></script>
-  <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.ajax.min.js"></script>
-  <script src="/<?php  echo $root_directory?>/resources/plugins/L.Control.MousePosition.js"></script>
-  <script src="/<?php  echo $root_directory?>/resources/plugins/leaflet.awesome-markers.min.js"></script>
-  <script src="/<?php  echo $root_directory?>/resources/plugins/easy-button.js"></script>
+  <script src="<?php  echo $root_directory?>resources/bootstrap-3.3.7.min.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/leaflet-sidebar.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/leaflet.pm.min.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/leaflet.ajax.min.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/L.Control.MousePosition.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/leaflet.awesome-markers.min.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/easy-button.js"></script>
 
 
 

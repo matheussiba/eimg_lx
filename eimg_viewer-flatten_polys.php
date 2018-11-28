@@ -1,20 +1,13 @@
 <?php
 
 // Credentials
-$db_name = "eimg_lx";
-$host = "localhost";
-$username = "postgres";
-$password = "admin";
-$port = "5432";
-
-
+include "db_credentials.php";
 $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
 $opt = [
   PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
   PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
   PDO::ATTR_EMULATE_PREPARES   => true //true, for send multiple queries in one line and false in order to it not be possible
 ];
-
 $pdo = new PDO($dsn, $username, $password, $opt);
 try{
   $result = $pdo->query("SELECT count(*) FROM eimg_raw_polys;");

@@ -234,6 +234,7 @@ if (isset($_SESSION['user_id'])) {
       //   console.log(mymap.getBounds(),  mymap.getZoom());
       // });
 
+    
       //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
       ctlSidebar = L.control.sidebar({
         container:'sidebar_div',
@@ -718,31 +719,36 @@ if (isset($_SESSION['user_id'])) {
     }else if(mymap.getZoom()>18){
       alert("zoomOut to draw");
     }else{
-      place_id = ((button_clicked_properties.id).split("_"))[0];
+      if (createMode==false){
+        place_id = ((button_clicked_properties.id).split("_"))[0];
+        if (log_functions){console.log('drawArea', place_id);}
+        document.getElementById(place_id+"_removeArea").style.display="block";
 
-      if (log_functions){console.log('drawArea', place_id);}
-      document.getElementById(place_id+"_removeArea").style.display="block";
+        document.getElementById(place_id+"_drawArea").innerHTML="End Drawing";
+        document.getElementById(place_id+"_str_startdrawing").innerHTML ="<h4>And now, what do you want to do? </h4>";
+        console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
 
-      document.getElementById(place_id+"_str_startdrawing").innerHTML ="none";
-      console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
-
-      ctlSidebar.close();
-      if (place_id.split("-")[0] == "liked") {
-        color_line_place = "forestgreen";
-        color_fill_place = "#0F0";
+        ctlSidebar.close();
+        if (place_id.split("-")[0] == "liked") {
+          color_line_place = "forestgreen";
+          color_fill_place = "#0F0";
+        }else{
+          color_line_place = "#F00";
+          color_fill_place = "#F00";
+        }
+        var drawingOptions = {
+          // snapping
+          snappable: true,
+          snapDistance: 15,
+          finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
+          templineStyle: {color: color_line_place, weight: 2} ,
+          hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
+        };
+        mymap.pm.enableDraw('Poly', drawingOptions);
       }else{
-        color_line_place = "#F00";
-        color_fill_place = "#F00";
+
       }
-      var drawingOptions = {
-        // snapping
-        snappable: true,
-        snapDistance: 15,
-        finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
-        templineStyle: {color: color_line_place, weight: 2} ,
-        hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
-      };
-      mymap.pm.enableDraw('Poly', drawingOptions);
+
     }
   }//END drawArea()
 
