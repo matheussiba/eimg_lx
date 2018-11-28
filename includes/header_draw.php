@@ -52,22 +52,6 @@
   <!-- CSS -->
   <style>
 
-  /* ****************** The Modal (background) ****************** */
-  .modal {
-      z-index: 1000; /* Sit on top */
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      display: none; /* Hidden by default */
-      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-
-  /* Modal Content */
-  .modal-content {
-      padding: 20px;
-      background-color:tan;
-      margin-top: 10%;
-  }
-
     /* ****************** CSS for the sidebar ****************** */
   .leaflet-sidebar-content{
     background-color: rgba(256, 256, 256, 0.7);
@@ -103,11 +87,6 @@
     color: white;
   }
 
-  /* ****************** CSS for div in sidebar ****************** */
-
-
-
-
   /* ****************** CSS for the map ****************** */
   /* NEEDTO: There will be no header and footer all the information will be added to the map */
   #mapdiv {
@@ -139,6 +118,7 @@
   }
   /* ****************** CSS for the Modal DIV ****************** */
   /* The Modal (background) */
+
   .modal {
     /* This is what makes everything greyed out when the modal content is displayed */
     /* Makes the modal on top of the sidebar */
@@ -158,6 +138,26 @@
     /* When the text displayed in the modal content is greater than 80% of the height it will add a scroll bar in the y position */
     overflow-y:auto;
   }
+
+
+  #indexfile.modal{
+      z-index: 10000; /* Sit on top */
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      background-color: rgba(0,0,0,0.8) !important; /* Black w/ opacity */
+  }
+  
+    #indexfile.modal{
+        z-index: 10000; /* Sit on top */
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    #indexfile_content.modal-content{
+        background-color: red !important;
+    }
 
   /* ****************** CSS for the Google tranlate tool ****************** */
   .ct-topbar {

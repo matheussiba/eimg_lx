@@ -6,7 +6,8 @@ if (isset($_POST['where']))   {$where = " WHERE ".$_POST['where'];} else { $wher
 if (isset($_POST['order']))   {$order=" ORDER BY ".$_POST['order'];} else { $order="";}
 
 // Credentials
-include "db_credentials.php";
+include "includes/db_credentials.php";
+
 $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
 $opt = [
   PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,//If occur some error fom the DB, it is displayed

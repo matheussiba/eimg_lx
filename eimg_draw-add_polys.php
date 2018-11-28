@@ -31,7 +31,7 @@
     $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=eimg_lx;', 'postgres', 'admin');
 
     // Credentials
-    include "db_credentials.php";
+    include "includes/db_credentials.php";
     $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
     $pdo = new PDO($dsn, $username, $password);
 

@@ -11,6 +11,4 @@ $host = "localhost";
 $username = "postgres";
 $password = "admin";
 $port = "5432";
-
-
- ?>
+?>

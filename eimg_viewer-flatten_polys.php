@@ -1,7 +1,7 @@
 <?php
 
 // Credentials
-include "db_credentials.php";
+include "includes/db_credentials.php";
 $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
 $opt = [
   PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,

@@ -73,11 +73,11 @@ if (isset($_SESSION['user_id'])) {
             <ul class="list-unstyled list-inline ct-topbar__list">
               <li class="ct-language">Choose a Language <i class="fa fa-arrow-down"></i>
                 <ul class="list-unstyled ct-language__dropdown">
-                  <li><a href="#lang-pt" class="lang-pt lang-select" data-lang="pt"><img src="/<?php  echo $root_directory?>/resources/images/flags/flag-pt-24x16px.png" alt="PORTUGAL"></a></li>
-                  <li><a href="#lang-en" class="lang-us lang-select" data-lang="en"><img src="/<?php  echo $root_directory?>/resources/images/flags/flag-usa-24x16px.png" alt="USA"></a></li>
-                  <li><a href="#lang-es" class="lang-es lang-select" data-lang="es"><img src="/<?php  echo $root_directory?>/resources/images/flags/flag-spain-24x16px.png" alt="SPAIN"></a></li>
-                  <li><a href="#lang-fr" class="lang-fr lang-select" data-lang="fr"><img src="/<?php  echo $root_directory?>/resources/images/flags/flag-france-24x16px.png" alt="FRANCE"></a></li>
-                  <li><a href="#lang-de" class="lang-de lang-select" data-lang="de"><img src="/<?php  echo $root_directory?>/resources/images/flags/flag-germany-24x16px.png" alt="GERMANY"></a></li>
+                  <li><a href="#lang-pt" class="lang-pt lang-select" data-lang="pt"><img src="<?php  echo $root_directory?>resources/images/flags/flag-pt-24x16px.png" alt="PORTUGAL"></a></li>
+                  <li><a href="#lang-en" class="lang-us lang-select" data-lang="en"><img src="<?php  echo $root_directory?>resources/images/flags/flag-usa-24x16px.png" alt="USA"></a></li>
+                  <li><a href="#lang-es" class="lang-es lang-select" data-lang="es"><img src="<?php  echo $root_directory?>resources/images/flags/flag-spain-24x16px.png" alt="SPAIN"></a></li>
+                  <li><a href="#lang-fr" class="lang-fr lang-select" data-lang="fr"><img src="<?php  echo $root_directory?>resources/images/flags/flag-france-24x16px.png" alt="FRANCE"></a></li>
+                  <li><a href="#lang-de" class="lang-de lang-select" data-lang="de"><img src="<?php  echo $root_directory?>resources/images/flags/flag-germany-24x16px.png" alt="GERMANY"></a></li>
                 </ul>
               </li>
             </ul>
@@ -234,7 +234,7 @@ if (isset($_SESSION['user_id'])) {
       //   console.log(mymap.getBounds(),  mymap.getZoom());
       // });
 
-    
+
       //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
       ctlSidebar = L.control.sidebar({
         container:'sidebar_div',
