@@ -296,8 +296,24 @@ if (isset($_SESSION['user_id'])) {
         //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
         sidebarChange('closing');
 
-        //to not overide the edit mode style
-        if( editMode==false ){removeclickedEffect()}
+
+        //When closing the sidebar it's in the editMode and createMode==false, force the user to give an attribute to the area
+        if(editMode){
+          // if(createMode==false){
+            //count the number of checkbox checked for the place_id
+            countCheckCbx();
+            if(cntCheckedCbx == 0){
+              // No attribute was selected
+              warnCheckAtt();
+              return null;
+            }
+          // }
+        }else{
+          //to not overide the edit mode style
+          setStyleNormal();
+        }
+        console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM",
+         createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
 
         if(cnt_LikedPlaces+cnt_DislikedPlaces<6){
           document.getElementById('dynamic-icon-tab').className = 'fa fa-plus';
@@ -323,20 +339,25 @@ if (isset($_SESSION['user_id'])) {
           previousTab = null;
         }
         activeTab = e.id; //Returns the ID of the clicked tab
-        console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab);
+
+        if(editMode){
+          // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
+          if (activeTab != place_id){ saveArea(); }
+        }
 
         //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
         sidebarChange('content');
 
         if(editMode){
+          // Set style of layer based on the sidebar status
+          toggleLyrStyle(activeTab, setStyle_edit);
           // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
-          //if in editMode place_id is already set to be accessed in the function
-          if (activeTab != place_id){ saveArea(); }
+          if (activeTab != place_id) saveArea();
         }else{
-          clickedEffect(activeTab);
+          toggleLyrStyle(activeTab, setStyle_clicked);
         }
 
-        
+        console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
 
       });//END content
 
@@ -361,6 +382,7 @@ if (isset($_SESSION['user_id'])) {
           num_mapClick++;
         }
 
+        //Adding Instructions popup when the user is creating the first area on the map
         if(createMode==true && (cnt_LikedPlaces+cnt_DislikedPlaces)==1 ){
           if (num_mapClick==1){
             var customOptions =
@@ -380,7 +402,6 @@ if (isset($_SESSION['user_id'])) {
             .openOn(mymap);
             setTimeout(function(){ mymap.closePopup(popup_draw_start); }, 5000);
           }
-
           if ((num_mapClick==5) && mobileDevice==false){
             var customOptions =
             {
@@ -391,19 +412,18 @@ if (isset($_SESSION['user_id'])) {
             .setContent('<p>You can use Ctrl+z<br /><b>to remove the last vertex</b></p>')
             .openOn(mymap);
           }
-
         }
 
         // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
         if(clickedLayerId != null){
-          //if getActiveTab(false) != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
-          if ((getActiveTab()!=clickedLayerId) && (createMode==false)){
+          //if getActiveTabId() != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
+          if ((getActiveTabId()!=clickedLayerId) && (createMode==false)){
             ctlSidebar.open(clickedLayerId);
             clickedLayerId = null;
           }
         }else{
-          //if(getActiveTab() != null) means that the sidebar is opened
-          if(getActiveTab() != null){
+          //if(getActiveTabId() != null) means that the sidebar is opened
+          if(getActiveTabId() != null){
             ctlSidebar.close();
           }
         }
@@ -453,6 +473,10 @@ if (isset($_SESSION['user_id'])) {
           alert("The area drawn is not a polygon. It has only "+numberOfVertices.toString()+" vertices.\nPlease draw it again!");
           // Start a new draw again
           mymap.removeLayer(lyrDraw);
+          mymap.closePopup();
+          //restart variables
+          editMode=false;
+          createMode=false;
           var button_drawArea_id = place_id+"_drawArea";
           document.getElementById(button_drawArea_id).click();
           return;
@@ -481,9 +505,6 @@ if (isset($_SESSION['user_id'])) {
         //Show attributes div
         document.getElementById(place_id+"_divChosenAttr").style.display = "block";
 
-        //Open the sidebar
-        if (getActiveTab()!=place_id){ctlSidebar.open(place_id);}
-
         // Enabling edit to the layer
         fgpDrawnItems.eachLayer(function(layer){
           var layer_id = layer.feature.properties.id;
@@ -495,6 +516,9 @@ if (isset($_SESSION['user_id'])) {
             return;
           }
         });
+
+        //Open the sidebar
+        if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
 
       });//pm:create
 
@@ -554,25 +578,17 @@ if (isset($_SESSION['user_id'])) {
       //if no 'button_clicked_properties', it means that this function was called by some behaviour of the user
       // it only has 1 possibilities to call this function. createMode == true
       if (button_clicked_properties) {place_id = ((button_clicked_properties.id).split("_"))[0];}
-      if (log_functions) console.log('saveArea', place_id);
+      if (log_functions) console.log('saveArea', place_id, createMode, editMode);
 
-      //count the number of checkbox was checked
-      cntCheckedCbx = 0;
-      var att_nat = document.getElementById(place_id+"_cbxAtt-nat").checked;
-      var att_open = document.getElementById(place_id+"_cbxAtt-open").checked;
-      var att_ord = document.getElementById(place_id+"_cbxAtt-order").checked;
-      var att_up = document.getElementById(place_id+"_cbxAtt-upkeep").checked;
-      var att_hist = document.getElementById(place_id+"_cbxAtt-hist").checked;
-
-      if(att_nat)   cntCheckedCbx++;
-      if(att_open)  cntCheckedCbx++;
-      if(att_ord)   cntCheckedCbx++;
-      if(att_up)    cntCheckedCbx++;
-      if(att_hist)  cntCheckedCbx++;
+      //count the number of checkbox checked for the place_id
+      countCheckCbx();
 
       if(cntCheckedCbx == 0){
         // No attribute was selected
         warnCheckAtt();
+
+        //Open the sidebar
+        if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
         return null;
       }else{
         //At least one attribute was selected, can proceed with saving...
@@ -586,7 +602,8 @@ if (isset($_SESSION['user_id'])) {
             editMode = false;
             layer.pm.disable();
             mymap.pm.disableDraw('Poly');
-            if(getActiveTab()==place_id){
+
+            if(getActiveTabId()==place_id){
               //If the tab is opened in the place_id tab the style must receive the setStyle_clicked
               layer.setStyle(setStyle_clicked);
             }else{
@@ -596,6 +613,12 @@ if (isset($_SESSION['user_id'])) {
             return;
           }
         });
+
+        var att_nat = document.getElementById(place_id+"_cbxAtt-nat").checked;
+        var att_open = document.getElementById(place_id+"_cbxAtt-open").checked;
+        var att_ord = document.getElementById(place_id+"_cbxAtt-order").checked;
+        var att_up = document.getElementById(place_id+"_cbxAtt-upkeep").checked;
+        var att_hist = document.getElementById(place_id+"_cbxAtt-hist").checked;
 
         //change style of checkboxes
         if( att_nat ){
@@ -697,7 +720,7 @@ if (isset($_SESSION['user_id'])) {
             //The layer was found so start the editing process...
             editMode = true;
             // Set the style for all the layers to normal
-            removeclickedEffect();
+            setStyleNormal();
             layer.bringToFront();
             //Change the style for the layer being editted
             layer.setStyle(setStyle_edit);
@@ -706,6 +729,7 @@ if (isset($_SESSION['user_id'])) {
         });
       }//END if(mymap.hasLayer(fgpDrawnItems))
 
+      // Show 'save' button, hide 'edit' button
       document.getElementById(place_id+"_editArea").style.display="none";
       document.getElementById(place_id+"_saveArea").style.display="block";
 
@@ -748,24 +772,7 @@ if (isset($_SESSION['user_id'])) {
       }
     };//END removeArea()
 
-    function clickedEffect(item_id){
-      /* DESCRIPTION: add the style to a clicked layer*/
-      //Set all layers to normal style
-      removeclickedEffect();
-      if(mymap.hasLayer(fgpDrawnItems)){
-        fgpDrawnItems.eachLayer(function(layer){
-          var layer_id = layer.feature.properties.id;
-          if(layer_id == item_id){
-            //The layer was found so start the editing process...
-            //Just change the style of the clicked layer
-            layer.setStyle(setStyle_clicked);
-            return;
-          }
-        });
-      }//END if(mymap.hasLayer(fgpDrawnItems))
-    };//END editArea()
-
-    function removeclickedEffect(){
+    function setStyleNormal(){
       /* DESCRIPTION: setStyle_normal for all the layers*/
       if(mymap.hasLayer(fgpDrawnItems)){
         fgpDrawnItems.eachLayer(function(layer){
@@ -780,7 +787,7 @@ if (isset($_SESSION['user_id'])) {
       // just a temporary count for testing to see how many times the sidebar was changed
       cnt_test++;
       // get the active Tab the sidebar founds itself. if 'e'=="closing", clickedTab == null
-      var clickedTab = getActiveTab();
+      var clickedTab = getActiveTabId(true);
       //close all popup in the map if any is open
       mymap.closePopup();
 
@@ -967,7 +974,7 @@ if (isset($_SESSION['user_id'])) {
         }
       });
       //Open sidebar tab if it's not open already
-      if (getActiveTab()!=tab_id){ctlSidebar.open(tab_id);}
+      if (getActiveTabId()!=tab_id){ctlSidebar.open(tab_id);}
 
       //variable for verifying when a 'liked' or 'disliked' place was created. It should be after the sidebar is opened
       newTabCreated = true;
@@ -1040,7 +1047,7 @@ if (isset($_SESSION['user_id'])) {
       $( "div" ).remove( href );
     };//END deleteTabByHref()
 
-    function getActiveTab(with_hash){
+    function getActiveTabId(with_hash){
       /* DESCRIPTION: Returns the href of the tab that is active (open) in the sidebar.
       if "with_hash"==true returns f.e. '#temp_tab'. else returns 'temp_tab'. If no tab is opened, it returns null*/
       var lis = document.querySelectorAll('#sidebarTab_div li');
@@ -1053,7 +1060,7 @@ if (isset($_SESSION['user_id'])) {
       if ( hrefActive ) {
         //console.log( hrefActive );
         // alert( hrefActive );
-        if( (typeof with_hash === "undefined") || (with_hash == true)){
+        if(with_hash){
           return hrefActive; //returns ex: "#temp_tab"
         }else{
           return hrefActive.substring(1, hrefActive.length); //returns ex: "temp_tab"
@@ -1061,7 +1068,7 @@ if (isset($_SESSION['user_id'])) {
       }else{
         return null;
       }
-    };//END getActiveTab()
+    };//END getActiveTabId()
 
     function searchTagIfExistsByHref(href){
       /* DESCRIPTION: returns true if a tab exists and false if not
@@ -1109,6 +1116,40 @@ if (isset($_SESSION['user_id'])) {
       }
     };//END createTitleLiByHref()
 
+    function countCheckCbx(){
+      /* DESCRIPTION: Count the number of checkbox checked for the place_id that's being edited. Only works for editMode==true*/
+      if(editMode){
+        cntCheckedCbx = 0;
+        var att_nat = document.getElementById(place_id+"_cbxAtt-nat").checked;
+        var att_open = document.getElementById(place_id+"_cbxAtt-open").checked;
+        var att_ord = document.getElementById(place_id+"_cbxAtt-order").checked;
+        var att_up = document.getElementById(place_id+"_cbxAtt-upkeep").checked;
+        var att_hist = document.getElementById(place_id+"_cbxAtt-hist").checked;
+
+        if(att_nat)   cntCheckedCbx++;
+        if(att_open)  cntCheckedCbx++;
+        if(att_ord)   cntCheckedCbx++;
+        if(att_up)    cntCheckedCbx++;
+        if(att_hist)  cntCheckedCbx++;
+      }
+    };//END countCheckCbx()
+
+    function toggleLyrStyle(activeTab, styleOption){
+      /* DESCRIPTION: Set style of layer based on the sidebar opened*/
+      if(mymap.hasLayer(fgpDrawnItems)){
+        //change the style for all the layers to normal
+        setStyleNormal();
+        fgpDrawnItems.eachLayer(function(layer){
+          var layer_id = layer.feature.properties.id;
+          if(layer_id == activeTab){
+            // console.log("lyr_id:", layer_id, 'ActTab', activeTab, "EM", editMode );
+            layer.bringToFront();
+            layer.setStyle(styleOption);
+          }
+        });
+      }
+    };//END toggleLyrStyle()
+
     function removeLastVertex(){
       /* DESCRIPTION: When the layer is being drawn, for more than 2 vertices the user can remove the last vertex by pressing Ctrl+z */
       var num_vertices = document.workingLayer._latlngs.length;
@@ -1137,8 +1178,8 @@ if (isset($_SESSION['user_id'])) {
       }
     };//END removeLastVertex()
 
-    //call functions based on the combination of keys the users is pressing
     function KeyPress(e) {
+      /* DESCRIPTION: call functions based on the combination of keys the users is pressing */
       var evtobj = window.event? event : e
       //Ctrl+z
       if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
@@ -1158,7 +1199,10 @@ if (isset($_SESSION['user_id'])) {
 
     //  ********* Warnings Functions *********
     function warnCheckAtt(){
+      /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
       alert("Check at least one attribute for the area");
+      //Open the sidebar
+      if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
     }
 
     //  ********* jQuery Functions *********

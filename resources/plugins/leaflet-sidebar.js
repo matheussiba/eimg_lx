@@ -252,9 +252,9 @@ L.Control.Sidebar = L.Control.extend(/** @lends L.Control.Sidebar.prototype */ {
 
         // close sidebar, if it's opened
         if (!L.DomUtil.hasClass(this._container, 'collapsed')) {
-            this.fire('closing');
             L.DomUtil.addClass(this._container, 'collapsed');
             if (this.options.autopan) this._panMap('close');
+			this.fire('closing');
         }
 
         return this;
