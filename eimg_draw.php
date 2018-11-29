@@ -66,31 +66,7 @@ if (isset($_SESSION['user_id'])) {
         <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
           Settings<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
         </h1>
-        <!-- <div id="google_translate_element"></div> -->
         <!-- SOURCE for design the translate box  https://jsfiddle.net/solodev/0stLrpqg/ -->
-        <div >
-          <div class="ct-topbar" style="padding: 1vh;">
-            <ul class="list-unstyled list-inline ct-topbar__list">
-              <li class="ct-language">Choose a Language <i class="fa fa-arrow-down"></i>
-                <ul class="list-unstyled ct-language__dropdown">
-                  <li><a href="#lang-pt" class="lang-pt lang-select" data-lang="pt"><img src="<?php  echo $root_directory?>resources/images/flags/flag-pt-24x16px.png" alt="PORTUGAL"></a></li>
-                  <li><a href="#lang-en" class="lang-us lang-select" data-lang="en"><img src="<?php  echo $root_directory?>resources/images/flags/flag-usa-24x16px.png" alt="USA"></a></li>
-                  <li><a href="#lang-es" class="lang-es lang-select" data-lang="es"><img src="<?php  echo $root_directory?>resources/images/flags/flag-spain-24x16px.png" alt="SPAIN"></a></li>
-                  <li><a href="#lang-fr" class="lang-fr lang-select" data-lang="fr"><img src="<?php  echo $root_directory?>resources/images/flags/flag-france-24x16px.png" alt="FRANCE"></a></li>
-                  <li><a href="#lang-de" class="lang-de lang-select" data-lang="de"><img src="<?php  echo $root_directory?>resources/images/flags/flag-germany-24x16px.png" alt="GERMANY"></a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <p>
-              <button class="btn btn-primary btn-block" onclick="ctlSidebar.enablePanel('info')">enable Info panel</button>
-              <button class="btn btn-primary btn-block" onclick="ctlSidebar.disablePanel('info')">disable Info panel</button>
-            </p>
-            <p><button class="btn btn-primary btn-block" onclick="alert('Delete This Button')">add user</button></b>'
-            </div>
-          </div>
-
         </div> <!-- close DIV id="settings"> -->
 
       </div> <!-- close DIV class="sidebar-content"> -->
@@ -296,7 +272,6 @@ if (isset($_SESSION['user_id'])) {
         //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
         sidebarChange('closing');
 
-
         //When closing the sidebar it's in the editMode and createMode==false, force the user to give an attribute to the area
         if(editMode){
           // if(createMode==false){
@@ -320,14 +295,12 @@ if (isset($_SESSION['user_id'])) {
         }
 
       });
-
       ctlSidebar.on('opening', function() {
         cnt_SidebarOpens++;
         sidebarOpened = true;
         //Mimics a sidebar click, to change the background of the icon to blue, if the tab opened is a liked or disliked place
         sidebarChange('opening');
       });
-
       ctlSidebar.on('content', function(e) {
         //When the sidebar opens the 'content' and 'opening' are fired up together. The order of them, chnges randomly;
         // When sidebarOpened==true, it means the sidebar is being opened, otherwise, the user is just changing tabs
@@ -370,12 +343,10 @@ if (isset($_SESSION['user_id'])) {
           saveArea();
         }
       });
-
       mymap.on('mousemove', function(e){
         /* DESCRIPTION: listener when a click is given on the map  */
         // console.log(1);
       });
-
       mymap.on('click', function(e){
         /* DESCRIPTION: listener when a click is given on the map  */
         if(createMode){
@@ -429,12 +400,10 @@ if (isset($_SESSION['user_id'])) {
         }
         // console.log(e.layer);
       });
-
       mymap.on('pm:drawend', function(e) {
         //When the user is drawing it means that the 'place_id' should exist and it's the id of the area being drawn
 
       });
-
       mymap.on('pm:drawstart', function(e) {
         //A new layer has started to be drawn.
         createMode = true; //the createMode will receive 'false' when the save button is clicked
@@ -442,7 +411,6 @@ if (isset($_SESSION['user_id'])) {
         this.workingLayer = e.workingLayer;
         // console.log(this.workingLayer);
       },this);
-
       mymap.on('pm:create', function(e) {
         // console.log(e);
         var lyrDraw = e.layer;
@@ -524,10 +492,8 @@ if (isset($_SESSION['user_id'])) {
 
       // opening the sidebar to show the basic info to the user
       ctlSidebar.open('home');
-
       // Capture the pressed key in the document
       document.onkeydown = KeyPress;
-
     }); //END $(document).ready()
 
     //  ********* JS Functions *********
@@ -572,7 +538,6 @@ if (isset($_SESSION['user_id'])) {
 
       }
     }//END drawArea()
-
     function saveArea(button_clicked_properties){
       /* DESCRIPTION: Function fired up when the user clicks on the 'Save Place' button of the sidebar tab */
       //if no 'button_clicked_properties', it means that this function was called by some behaviour of the user
@@ -672,7 +637,6 @@ if (isset($_SESSION['user_id'])) {
         document.getElementById(place_id+"_editArea").style.display="block";
       }
     };//END saveArea()
-
     function editArea(button_clicked_properties){
       /* DESCRIPTION: It's run when the user clicks in the edit button of the sidebar*/
       //To use place_id inside an anonymous function (mymap.on('contextmenu', function(){}), it must be global
@@ -734,7 +698,6 @@ if (isset($_SESSION['user_id'])) {
       document.getElementById(place_id+"_saveArea").style.display="block";
 
     };//END editArea()
-
     function removeArea(button_clicked_properties, no_button){
       if (log_functions) console.log('removeArea');
       if (no_button) {
@@ -742,7 +705,7 @@ if (isset($_SESSION['user_id'])) {
         var retVal = true;
       }else{
         //ask the user if is sure to delete the area
-        var retVal = confirm("Are you sure you want to delete this area permanently?");
+        var retVal = warnDeleteArea();
       }
       if( retVal ){
         if (no_button){
@@ -771,7 +734,6 @@ if (isset($_SESSION['user_id'])) {
         deleteTabByHref('#'+place_id, close_sidebar);
       }
     };//END removeArea()
-
     function setStyleNormal(){
       /* DESCRIPTION: setStyle_normal for all the layers*/
       if(mymap.hasLayer(fgpDrawnItems)){
@@ -780,6 +742,48 @@ if (isset($_SESSION['user_id'])) {
         });
       }
     };//END editArea()
+    function toggleLyrStyle(activeTab, styleOption){
+      /* DESCRIPTION: Set style of layer based on the sidebar opened*/
+      if(mymap.hasLayer(fgpDrawnItems)){
+        //change the style for all the layers to normal
+        setStyleNormal();
+        fgpDrawnItems.eachLayer(function(layer){
+          var layer_id = layer.feature.properties.id;
+          if(layer_id == activeTab){
+            // console.log("lyr_id:", layer_id, 'ActTab', activeTab, "EM", editMode );
+            layer.bringToFront();
+            layer.setStyle(styleOption);
+          }
+        });
+      }
+    };//END toggleLyrStyle()
+    function removeLastVertex(){
+      /* DESCRIPTION: When the layer is being drawn, for more than 2 vertices the user can remove the last vertex by pressing Ctrl+z */
+      var num_vertices = document.workingLayer._latlngs.length;
+      if (num_vertices>2){
+        document.workingLayer.pm.enable();
+        var markers = document.workingLayer.pm._markers;
+        var m = markers[markers.length - 1];
+        var e = {target:m};
+        document.workingLayer.pm._removeMarker(e);
+
+        //Removing last line segment created
+        var segments = document.workingLayer.pm._map.pm.Draw.Line._map._layers;
+        //get the key of the last line segment (ls)
+        var last_ls_key = Object.keys(segments).pop();
+        segments[last_ls_key].remove();
+        delete segments[last_ls_key];
+
+        //Removing last vertex
+        var num_vertices = document.workingLayer._latlngs.length;
+        var targets = document.workingLayer.pm._map._targets;
+        var last_marker_key = Object.keys(targets)[(5+num_vertices)];
+        targets[last_marker_key].remove();
+        delete targets[last_marker_key];
+
+        document.workingLayer.pm.disable();
+      }
+    };//END removeLastVertex()
 
     //  # Sidebar Functions
     function sidebarChange(e){
@@ -866,7 +870,6 @@ if (isset($_SESSION['user_id'])) {
       }
 
     }//END function sidebarChange()
-
     function create_placeTab(typeOfPlace){
       /* DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
 
@@ -980,7 +983,6 @@ if (isset($_SESSION['user_id'])) {
       newTabCreated = true;
 
     };//END create_placeTab()
-
     function returnTempTabContent(){
       /* DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called */
       temp_tab_content = {
@@ -1009,7 +1011,6 @@ if (isset($_SESSION['user_id'])) {
       };
       return temp_tab_content;
     };//END returnTempTabContent()
-
     function deleteTabByHref(href, close_sidebar){
       /* DESCRIPTION: Deletes the tab based on the href that was passed
       ### If no href was passed it means that  a 'Remove Area' button inside a 'liked' or 'disliked' tab was clicked.
@@ -1046,7 +1047,6 @@ if (isset($_SESSION['user_id'])) {
       //Remove the "div" element whose id == href.
       $( "div" ).remove( href );
     };//END deleteTabByHref()
-
     function getActiveTabId(with_hash){
       /* DESCRIPTION: Returns the href of the tab that is active (open) in the sidebar.
       if "with_hash"==true returns f.e. '#temp_tab'. else returns 'temp_tab'. If no tab is opened, it returns null*/
@@ -1069,7 +1069,6 @@ if (isset($_SESSION['user_id'])) {
         return null;
       }
     };//END getActiveTabId()
-
     function searchTagIfExistsByHref(href){
       /* DESCRIPTION: returns true if a tab exists and false if not
       ### Data entry example: href = "#temp_tab"  */
@@ -1083,7 +1082,6 @@ if (isset($_SESSION['user_id'])) {
       }
       return foundStatus;
     };//END searchTagIfExistsByHref()
-
     function existentTabs(){
       /* DESCRIPTION: returns true if a tab exists and false if not
       ### Data entry example: href = "#temp_tab"  */
@@ -1097,7 +1095,6 @@ if (isset($_SESSION['user_id'])) {
       }
       return array_tabs
     };//END searchTagIfExistsByHref()
-
     function createTitleLiByHref(href, newtitle){
       /* DESCRIPTION: Updates the title of the tab "li" element when it's hovered
       ### When a new tab is added using the API, the title receives a HTML, f.e:
@@ -1115,7 +1112,6 @@ if (isset($_SESSION['user_id'])) {
         }
       }
     };//END createTitleLiByHref()
-
     function countCheckCbx(){
       /* DESCRIPTION: Count the number of checkbox checked for the place_id that's being edited. Only works for editMode==true*/
       if(editMode){
@@ -1134,50 +1130,19 @@ if (isset($_SESSION['user_id'])) {
       }
     };//END countCheckCbx()
 
-    function toggleLyrStyle(activeTab, styleOption){
-      /* DESCRIPTION: Set style of layer based on the sidebar opened*/
-      if(mymap.hasLayer(fgpDrawnItems)){
-        //change the style for all the layers to normal
-        setStyleNormal();
-        fgpDrawnItems.eachLayer(function(layer){
-          var layer_id = layer.feature.properties.id;
-          if(layer_id == activeTab){
-            // console.log("lyr_id:", layer_id, 'ActTab', activeTab, "EM", editMode );
-            layer.bringToFront();
-            layer.setStyle(styleOption);
-          }
-        });
-      }
-    };//END toggleLyrStyle()
+    //  # Warnings Functions
+    function warnCheckAtt(){
+      /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
+      alert("Check at least one attribute for the area");
+      //Open the sidebar
+      if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
+    }
+    function warnDeleteArea(){
+      /* DESCRIPTION: Warn the user tries to delete an area */
+      return confirm("Are you sure you want to delete this area permanently?")
+    }
 
-    function removeLastVertex(){
-      /* DESCRIPTION: When the layer is being drawn, for more than 2 vertices the user can remove the last vertex by pressing Ctrl+z */
-      var num_vertices = document.workingLayer._latlngs.length;
-      if (num_vertices>2){
-        document.workingLayer.pm.enable();
-        var markers = document.workingLayer.pm._markers;
-        var m = markers[markers.length - 1];
-        var e = {target:m};
-        document.workingLayer.pm._removeMarker(e);
-
-        //Removing last line segment created
-        var segments = document.workingLayer.pm._map.pm.Draw.Line._map._layers;
-        //get the key of the last line segment (ls)
-        var last_ls_key = Object.keys(segments).pop();
-        segments[last_ls_key].remove();
-        delete segments[last_ls_key];
-
-        //Removing last vertex
-        var num_vertices = document.workingLayer._latlngs.length;
-        var targets = document.workingLayer.pm._map._targets;
-        var last_marker_key = Object.keys(targets)[(5+num_vertices)];
-        targets[last_marker_key].remove();
-        delete targets[last_marker_key];
-
-        document.workingLayer.pm.disable();
-      }
-    };//END removeLastVertex()
-
+    //  # Document Functions
     function KeyPress(e) {
       /* DESCRIPTION: call functions based on the combination of keys the users is pressing */
       var evtobj = window.event? event : e
@@ -1197,15 +1162,7 @@ if (isset($_SESSION['user_id'])) {
       }//Do something;
     }
 
-    //  ********* Warnings Functions *********
-    function warnCheckAtt(){
-      /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
-      alert("Check at least one attribute for the area");
-      //Open the sidebar
-      if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
-    }
-
-    //  ********* jQuery Functions *********
+    //  # jQuery Functions
     $( "#btn_Finish" ).click(function(){
       if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
         if ( (cnt_LikedPlaces >= 1) && (cnt_DislikedPlaces >= 1) ){
@@ -1312,7 +1269,6 @@ if (isset($_SESSION['user_id'])) {
         alert("Please, draw at least one liked and disliked area");
       }
     });//end btnFinish click event
-
     $(".btnClose").click(function(){
       $("#dlgUsabilityQuest").hide();
       window.location.href = 'eimg_viewer.php';
@@ -1326,36 +1282,6 @@ if (isset($_SESSION['user_id'])) {
       //   }
       // });
     });//end btnClose click event
-
-    //  ********* Google Translate Functions *********
-    function googleTranslateElementInit() {
-      /* "GOOGLE TRANSLATE:Inline SVG tags are the DOM elements that don't have the 'indexOf' function and \
-      break when Google Translate a page. But it won't affect anything on the app" */
-      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-    }
-
-    function triggerHtmlEvent(element, eventName) {
-      var event;
-      if (document.createEvent) {
-        event = document.createEvent('HTMLEvents');
-        event.initEvent(eventName, true, true);
-        element.dispatchEvent(event);
-      } else {
-        event = document.createEventObject();
-        event.eventType = eventName;
-        element.fireEvent('on' + event.eventType, event);
-      }
-    }
-
-    jQuery('.lang-select').click(function() {
-      var theLang = jQuery(this).attr('data-lang');
-      jQuery('.goog-te-combo').val(theLang);
-      //alert(jQuery(this).attr('href'));
-      window.location = jQuery(this).attr('href');
-      location.reload();
-    });
-
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   </body>
   </html>
