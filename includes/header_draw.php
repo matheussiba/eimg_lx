@@ -38,7 +38,6 @@
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
   <script src="<?php  echo $root_directory?>resources/bootstrap-3.3.7.min.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/leaflet-sidebar.js"></script>
-  <!-- <script src="<?php  echo $root_directory?>resources/plugins/leaflet.geometryutil.js"></script> -->
   <!-- <script src="<?php  echo $root_directory?>resources/plugins/leaflet.pm.min.js"></script> -->
   <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
 

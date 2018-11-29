@@ -14,11 +14,6 @@
     ];
     $pdo = new PDO($dsn, $username, $password, $opt);
 
-    //Defining PHP variable for the root directory
-    $root_directory = "/0_thesis/eimglx_demo/";
-    $from_email = "matheus.eco.2010@gmail.com";
-    $reply_email = "matheus.eco.2010@gmail.com";
-
     //Include the PHP functions
     include "php_functions.php";
 ?>
