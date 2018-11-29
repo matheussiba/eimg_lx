@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/L.Control.MousePosition.css">
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet-sidebar.min-v3.0.2.css">
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet-overview.css">
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
   <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
@@ -38,6 +39,7 @@
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
   <script src="<?php  echo $root_directory?>resources/bootstrap-3.3.7.min.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/leaflet-sidebar.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/leaflet-overview.js"></script>
   <!-- <script src="<?php  echo $root_directory?>resources/plugins/leaflet.pm.min.js"></script> -->
   <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
 
@@ -50,7 +52,20 @@
 
   <!-- CSS -->
   <style>
-
+  div.sidebarContentParent{
+    padding-top: 20px;
+  }
+  div.sidebarContentChild{
+    display:table;
+    width:100%;
+    table-layout: fixed;
+  }
+  div.sidebarContentChild span {
+    padding: 5px;
+    display:table-cell;
+    text-align:center;
+    border: 1px solid gray;
+  }
     /* ****************** CSS for the sidebar ****************** */
   .leaflet-sidebar-content{
     background-color: rgba(256, 256, 256, 0.7);
@@ -138,7 +153,7 @@
     overflow-y:auto;
   }
 
-  input[type="checkbox"]{
+  input[type="checkbox"].cbxsidebar{
     cursor: pointer;
     width: 18px;
     height: 18px;
@@ -149,7 +164,7 @@
     top: -5px;
   }
 
-  label {
+  label.cbxsidebar {
     cursor: pointer;
     /* display: block; */
     padding-left: 7px;

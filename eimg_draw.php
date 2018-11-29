@@ -58,6 +58,20 @@ if (isset($_SESSION['user_id'])) {
             </p>
           </div>
           <button id='btn_Finish' class='btn btn-info btn-block'>Finish...</button>
+
+          <div class="sidebarContentParent">
+            <div class="sidebarContentChild">
+                <span> Elem 1 </span>
+            </div>
+            <div class="sidebarContentChild">
+                <span> Elem 1 </span>
+                <span> Elem 2dsadas </span>
+                <span style="display:none;"> Elem 2dsadas </span>
+                <span style="display:none;"> Elem 2dsadas </span>
+                <span> Elem 2dsadas </span>
+            </div>
+          </div>
+
         </div>
       </div> <!-- close DIV id="home"> -->
 
@@ -192,28 +206,60 @@ if (isset($_SESSION['user_id'])) {
     });//END $( window ).on( "orientationchange", ())
 
     //  ********* Create Map *********
+    // set mapbox tile layer
+
     $(document).ready(function(){
       /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
       //  ********* Map Initialization *********
-      var southWest = L.latLng(38.702, -9.160),
-      northEast = L.latLng(38.732, -9.118),
-      mybounds = L.latLngBounds(southWest, northEast);
+      //Adds the basemap
+      var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
+        name: 'basemap',
+        attribution: '&copy;<a href="http://osm.org/copyright">OSM</a>'
+      });
+      var mapbox = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
+        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
+        name: 'basemap',
+        attribution: '&copy;<a href="https://www.mapbox.com/feedback/">Mapbox</a>'
+      });
+      var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
+        name: 'basemap',
+        attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
+      });
+      var Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
+        name: 'overlay',
+        maxZoom: 18
+      });
+      // We can't reuse the layers from the main map for the overview, so we
+      // need to create a second instance of each layer option
+      var mapbox_overview = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
+        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
+        name: 'basemap'
+      });
 
+      // defining the max bounds the user can see
+      //previous values
+      // var southWest = L.latLng(38.702, -9.160);
+      // var northEast = L.latLng(38.732, -9.118);
+      // var mybounds =  L.latLngBounds(southWest, northEast);
+      // var center =    L.latLng(38.715, -9.140);
+      var southWest = L.latLng(38.690, -9.180);
+      var northEast = L.latLng(38.740, -9.100);
+      var mybounds =  L.latLngBounds(southWest, northEast);
+      var center =    L.latLng(38.716, -9.150);
+      //Create the Leaflet map elemetn
       mymap = L.map('mapdiv', {
-        center:[38.715, -9.140],
+        center: center,
+        layers: mapbox,
         zoom:14,
         maxZoom: 18,
-        minZoom: 13,
+        minZoom: 14,
         attributionControl:false,
         zoomControl:false,
         maxBounds: mybounds,
         maxBoundsViscosity: 1.0
       });
-
-      // mymap.on('dragend', function onDragEnd(){
-      //   console.log(mymap.getBounds(),  mymap.getZoom());
-      // });
-
 
       //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
       ctlSidebar = L.control.sidebar({
@@ -245,23 +291,35 @@ if (isset($_SESSION['user_id'])) {
       //Add attribution to the map
       ctlAttribute = L.control.attribution({position:'bottomright'}).addTo(mymap);
       ctlAttribute.addAttribution('OSM');
-      ctlAttribute.addAttribution('&copy; <a href="http://mastergeotech.info">Master in Geospatial Technologies</a>');
+      ctlAttribute.addAttribution('&copy;<a href="http://mastergeotech.info">Master GeoTech</a>');
+      ctlAttribute.addAttribution('&copy;<a href="https://github.com/codeofsumit/leaflet.pm">LeafletPM</a>');
+
       //Control scale
       ctlScale = L.control.scale({position:'bottomright', metric:true, imperial:false, maxWidth:200}).addTo(mymap);
       //Control Latitude and Longitude
       if (!mobileDevice){
         ctlMouseposition = L.control.mousePosition({position:'bottomright'}).addTo(mymap);
       }
+
+      // Add the overview control to the map
+      L.control.overview([mapbox_overview]).addTo(mymap);
+
       // Adds a control using the easy button plugin
       ctlEasybutton = L.easyButton('fa-circle', function(){
         alert("populate");
       }, 'NEEDTO: add a title here', {position:'topright'}).addTo(mymap);
 
-      //Adds the basemap
-      backgroundLayer = new L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png").addTo(mymap);
+      var layerControl = L.control.layers(
+        {
+          '<i class="fas fa-map-marked"></i>': mapbox,
+          '<i class="fas fa-image"></i>': Esri_WorldImagery
+        }, null, {collapsed: false}
+      ).addTo(mymap);
 
-      // Add the Zoom control
-      var ctlZoom = L.control.zoom({position:'bottomright'}).addTo(mymap);
+      if (!mobileDevice){
+        // Add the Zoom control
+        var ctlZoom = L.control.zoom({position:'bottomright'}).addTo(mymap);
+      }
 
       //  ********* Events on Map *********
       // # Sidebar events
@@ -339,6 +397,16 @@ if (isset($_SESSION['user_id'])) {
       });//END content
 
       // # Map events
+      mymap.on('baselayerchange', function(e){
+        // alert("LAYER HAS BEEN CHANGED.");
+        // console.log(e);
+        if (e.name == '<i class="fas fa-image"></i>'){
+          layerControl.addOverlay(Hydda_RoadsAndLabels, 'labels');
+        }else{
+          mymap.removeLayer(Hydda_RoadsAndLabels);
+          layerControl.removeLayer(Hydda_RoadsAndLabels);
+        }
+      })
       mymap.on('contextmenu', function(e){
         /* DESCRIPTION: listener when a click is given on the map  */
         // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
@@ -909,16 +977,16 @@ if (isset($_SESSION['user_id'])) {
       str_newtab +=     '<h4>Choose an attribute for the area:*</h4>';
       str_newtab +=     '<p>*Mark at least 1 attribute</p>';
       str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>';
-      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat" style="padding-bottom:10px;" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_nat">';
-      str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" for="'+tab_id+'_cbxAtt-nat"> Naturalness</label><br />';
-      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_open">';
-      str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" for="'+tab_id+'_cbxAtt-open"> Openness</label><br />';
-      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_order">';
-      str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" for="'+tab_id+'_cbxAtt-order"> Order<br></label><br />';
-      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_upkeep">';
-      str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" for="'+tab_id+'_cbxAtt-upkeep"> Upkeep</label><br />';
-      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_hist">';
-      str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" for="'+tab_id+'_cbxAtt-hist"> Historical Significance</label><br />';
+      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat"" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_nat">';
+      str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" class="cbxsidebar" for="'+tab_id+'_cbxAtt-nat"> Naturalness</label><br />';
+      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_open">';
+      str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" class="cbxsidebar" for="'+tab_id+'_cbxAtt-open"> Openness</label><br />';
+      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_order">';
+      str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" class="cbxsidebar" for="'+tab_id+'_cbxAtt-order"> Order<br></label><br />';
+      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_upkeep">';
+      str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> Upkeep</label><br />';
+      str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
+      str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> Historical Significance</label><br />';
       str_newtab +=    '</div>';
       // str_newtab += '</div>';
       str_newtab +=    '<span id="'+tab_id+'_str_startdrawing" ><h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4></span>';
@@ -989,6 +1057,29 @@ if (isset($_SESSION['user_id'])) {
     };//END create_placeTab()
     function returnTempTabContent(){
       /* DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called */
+      var str_temptab= "";
+      str_temptab += '<div id="col-xs-12">';
+      str_temptab +=  '<div class="sidebarContentParent">';
+      str_temptab +=    '<div class="sidebarContentChild">';
+      str_temptab +=      '<span>';
+      str_temptab +=        '<h4>Which type of area do you want to draw?</h4>';
+      str_temptab +=      '</span>';
+      str_temptab +=    '</div>';
+      str_temptab +=    '<div class="sidebarContentChild">';
+      str_temptab +=     '<span>';
+      str_temptab +=        '<button class="btn btn-success" onclick="create_placeTab(\'liked\')" '+statusAddLikeButton+'>';
+      str_temptab +=          '<i class="fa fa-thumbs-up"></i>Liked Place';
+      str_temptab +=        '</button>';
+      str_temptab +=     '</span>';
+      str_temptab +=    '<span>';
+      str_temptab +=        '<button class="btn btn-danger" onclick="create_placeTab(\'disliked\')" '+statusAddDislikeButton+'>';
+      str_temptab +=          '<i class="fa fa-thumbs-down"></i>Disliked Place';
+      str_temptab +=       '</button>';
+      str_temptab +=    '</span>';
+      str_temptab +=   '</div>';
+      str_temptab +=  '</div>';
+      str_temptab += '</div>';
+
       temp_tab_content = {
         id:   'temp_tab',
         tab:  '<i id="dynamic-icon-tab" class="fa fa-plus"></i>',
@@ -996,23 +1087,9 @@ if (isset($_SESSION['user_id'])) {
         <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()">'+
         '<i class="fa fa-chevron-circle-left"></i>'+
         '</span>',
-        pane: '   <div id="col-xs-12">                                           \
-        <h4>Which type of area do you want to draw?</h4>                            \
-        <div class="col-xs-6">                                       \
-        <button class="btn btn-success" onclick="create_placeTab(\'liked\')" '+statusAddLikeButton+'>   \
-        <i class="fa fa-thumbs-up"></i>                                                       \
-        Liked Place                                                                           \
-        </button>                                               \
-        </div>                                                    \
-        <div class="col-xs-6">                                       \
-        <button class="btn btn-danger" onclick="create_placeTab(\'disliked\')" '+statusAddDislikeButton+'>   \
-        <i class="fa fa-thumbs-down"></i>                                                       \
-        Disliked Place                                                                           \
-        </button>                                               \
-        </div>                                                    \
-        </div>                                                      \
-        '
+        pane: str_temptab
       };
+
       return temp_tab_content;
     };//END returnTempTabContent()
     function deleteTabByHref(href, close_sidebar){
