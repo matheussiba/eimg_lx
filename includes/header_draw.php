@@ -139,6 +139,35 @@
     overflow-y:auto;
   }
 
+  input[type="checkbox"]{
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin:0;
+    vertical-align: bottom;
+    position: relative;
+    top: -5px;
+  }
+
+  label {
+    cursor: pointer;
+    /* display: block; */
+    padding-left: 7px;
+    text-indent: 0px;
+  }
+
+  h4{
+    padding: 0;
+    margin-bottom: 3px;
+    font-size: 16px;
+  }
+
+  .div_sidebar_content {
+    padding-left:5px;
+  }
+
+
 
   #indexfile.modal{
       z-index: 10000; /* Sit on top */
@@ -146,7 +175,7 @@
       height: 100%; /* Full height */
       background-color: rgba(0,0,0,0.8) !important; /* Black w/ opacity */
   }
-  
+
     #indexfile.modal{
         z-index: 10000; /* Sit on top */
         width: 100%; /* Full width */

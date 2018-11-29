@@ -165,6 +165,10 @@ if (isset($_SESSION['user_id'])) {
     var editMode = false;
     var createMode = false;
     var createplaceTab = false;
+    var setStyle_normal = {"weight": 2, "fillOpacity": 0.20 };
+    var setStyle_edit = {"weight": 5, "fillOpacity": 0.1};
+    var setStyle_clicked = {"weight": 3.5, "fillOpacity": 0.20};
+    var cntCheckedCbx;
 
     // # Logging variables
     var cnt_SidebarOpens = 0;
@@ -194,7 +198,7 @@ if (isset($_SESSION['user_id'])) {
       }
     }
     $( window ).on( "orientationchange", function( event ) {
-      /* ### FUNCTION DESCRIPTION: ADDDESCRIPTION  */
+      /* DESCRIPTION: ADDDESCRIPTION  */
       //Do things based on the orientation of the mobile device
       if(mobileDevice){
         if("orientation" in screen) {
@@ -213,7 +217,7 @@ if (isset($_SESSION['user_id'])) {
 
     //  ********* Create Map *********
     $(document).ready(function(){
-      /*### FUNCTION DESCRIPTION: Only run it here when all the DOM elements are already added   */
+      /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
       //  ********* Map Initialization *********
       var southWest = L.latLng(38.702, -9.160),
           northEast = L.latLng(38.732, -9.118),
@@ -274,7 +278,7 @@ if (isset($_SESSION['user_id'])) {
       }
       // Adds a control using the easy button plugin
       ctlEasybutton = L.easyButton('fa-circle', function(){
-        finishEditArea(true);
+        alert("populate");
       }, 'NEEDTO: add a title here', {position:'topright'}).addTo(mymap);
 
       //Adds the basemap
@@ -293,7 +297,7 @@ if (isset($_SESSION['user_id'])) {
         sidebarClick();
 
         //to not overide the edit mode style
-        if(editMode==false){removeclickedEffect()}
+        if( editMode == false ){removeclickedEffect()}
 
         cnt_test++;
         // console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab);
@@ -334,11 +338,12 @@ if (isset($_SESSION['user_id'])) {
         sidebarClick();
 
         //Add a style to the layer that has the same ID as the tab
-        if(editMode == false){
-          clickedEffect(activeTab);
-        }else{
+        if(editMode){
           // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
-          if (activeTab != place_id){ finishEditArea(); }
+          //if in editMode place_id is already set to be accessed in the function
+          if (activeTab != place_id){ saveArea(); }
+        }else{
+          clickedEffect(activeTab);
         }
 
         cnt_test++;
@@ -380,25 +385,23 @@ if (isset($_SESSION['user_id'])) {
 
       // # Map events
       mymap.on('contextmenu', function(e){
-        /* ### FUNCTION DESCRIPTION: listener when a click is given on the map  */
+        /* DESCRIPTION: listener when a click is given on the map  */
         // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
-        if(editMode){
-          finishEditArea();
-
-          var button_saveArea_id = place_id+"_saveArea";
-          if (createMode==false){document.getElementById(button_saveArea_id).click(); }
+        if(editMode || createMode){
+          //if in editMode or createMode the place_id is already set to be accessed in the function
+          saveArea();
         }
 
 
       });
 
       mymap.on('mousemove', function(e){
-        /* ### FUNCTION DESCRIPTION: listener when a click is given on the map  */
+        /* DESCRIPTION: listener when a click is given on the map  */
         // console.log(1);
       });
 
       mymap.on('click', function(e){
-        /* ### FUNCTION DESCRIPTION: listener when a click is given on the map  */
+        /* DESCRIPTION: listener when a click is given on the map  */
         if(createMode){
           num_mapClick++;
         }
@@ -457,23 +460,20 @@ if (isset($_SESSION['user_id'])) {
       });
 
       mymap.on('pm:drawend', function(e) {
-        // e.shape; // the name of the shape being drawn (i.e. 'Circle')
-        createMode = false;
+        //When the user is drawing it means that the 'place_id' should exist and it's the id of the area being drawn
+
       });
 
       mymap.on('pm:drawstart', function(e) {
-        createMode = true;
-        // editMode = false;
-        num_mapClick = 0;
+        //A new layer has started to be drawn.
+        createMode = true; //the createMode will receive 'false' when the save button is clicked
+        num_mapClick = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
         this.workingLayer = e.workingLayer;
         // console.log(this.workingLayer);
-
-
       },this);
 
       mymap.on('pm:create', function(e) {
         // console.log(e);
-        createMode = false;
         var lyrDraw = e.layer;
 
         var width = lyrDraw.getBounds().getEast() - lyrDraw.getBounds().getWest();
@@ -485,19 +485,13 @@ if (isset($_SESSION['user_id'])) {
             'height:' + height +'\n'
         );
 
-
-
         //Initialize the attributes. We can name it the way we want
         var feature = lyrDraw.feature = lyrDraw.feature || {};
         feature.type = feature.type || "Feature"; //Could be the name we want
         var props = feature.properties = feature.properties || {};
         props.id = place_id;
-        lyrDraw.setStyle({
-          //Border options
-          "color": color_line_place,"weight": 2,"opacity": 0.75,
-          //Fill options
-          'fillColor': color_fill_place, "fillOpacity": 0.10
-        });
+        //General style
+        lyrDraw.setStyle({"color": color_line_place, "opacity": 0.75, 'fillColor': color_fill_place });
 
         jsn_draw=lyrDraw.toGeoJSON().geometry;
         //Count the number of coordinates inside the JSON geometry.
@@ -539,19 +533,17 @@ if (isset($_SESSION['user_id'])) {
         //Open the sidebar
         var getTab = getActiveTab();
         if (getTab!=place_id){ctlSidebar.open(place_id);}
-        fgpDrawnItems.eachLayer(
-          function(layer){
-            var layer_id = layer.feature.properties.id;
-            // console.log(layer_id);
-            if(layer_id == place_id){
-              //The layer was found so start the editing process...
-              layer.setStyle({"weight": 5, "fillOpacity": 0.10 });
-              //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user hits save
-              editMode = true;
-              layer.pm.enable();
-              return;
-            }
-          });
+
+        fgpDrawnItems.eachLayer(function(layer){
+          var layer_id = layer.feature.properties.id;
+          if(layer_id == place_id){
+            //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user clicks save
+            editMode = true;
+            layer.setStyle(setStyle_edit);
+            layer.pm.enable();
+            return;
+          }
+        });
 
       });//pm:create
 
@@ -683,36 +675,9 @@ if (isset($_SESSION['user_id'])) {
   }); //END $(document).ready()
 
   //  ********* JS Functions *********
-  function removeLastVertex(){
-    var num_vertices = document.workingLayer._latlngs.length;
-    if (num_vertices>2){
-      document.workingLayer.pm.enable();
-      var markers = document.workingLayer.pm._markers;
-      var m = markers[markers.length - 1];
-      var e = {target:m};
-
-      //Removing segment of line
-      document.workingLayer.pm._removeMarker(e);
-      var segments = document.workingLayer.pm._map.pm.Draw.Line._map._layers;
-      var d = Object.keys(segments).pop();
-      segments[d].remove();
-      delete segments[d];
-
-      //Removing last vertex
-      var num_vertices = document.workingLayer._latlngs.length;
-      var targets = document.workingLayer.pm._map._targets;
-      var last_marker_key = Object.keys(targets)[(5+num_vertices)];
-      targets[last_marker_key].remove();
-      delete targets[last_marker_key];
-
-      document.workingLayer.pm.disable();
-    }
-
-  }
-
   //  # Drawing Functions
   function drawArea(button_clicked_properties){
-    /* ### FUNCTION DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
+    /* DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
     // Passing the ID gotten from the id of the button clicked to the global variable in order to be accesed in the anonymous functions
     if(mymap.getZoom()<14){
       alert("zoomIn further to draw");
@@ -753,137 +718,123 @@ if (isset($_SESSION['user_id'])) {
   }//END drawArea()
 
   function saveArea(button_clicked_properties){
-    /* ### FUNCTION DESCRIPTION: Function fired up when the user clicks on the 'Save Place' button of the sidebar tab */
+    /* DESCRIPTION: Function fired up when the user clicks on the 'Save Place' button of the sidebar tab */
     if (button_clicked_properties) {place_id = ((button_clicked_properties.id).split("_"))[0];}
     if (log_functions){console.log('saveArea', place_id);}
 
-    // place_id = ((button_clicked_properties).split("_"))[0];
-
-    fgpDrawnItems.eachLayer(function(layer){
-      var layer_id = layer.feature.properties.id;
-      if(layer_id == place_id){
-        // removeclickedEffect();
-        editMode=false;
-        layer.pm.disable();
-        mymap.pm.disableDraw('Poly');
-        layer.setStyle({"weight": 2, "fillOpacity": 1});
-        return;
-      }
-    });
-
-    // save: "fillOpacity": 0.20
-    document.getElementById(place_id+"_saveArea").style.display="none";
-    document.getElementById(place_id+"_editArea").style.display="block";
-
-    var cntChecks = 0;
+    cntCheckedCbx = 0;
     var att_nat = document.getElementById(place_id+"_cbxAtt-nat").checked;
     var att_open = document.getElementById(place_id+"_cbxAtt-open").checked;
     var att_ord = document.getElementById(place_id+"_cbxAtt-order").checked;
     var att_up = document.getElementById(place_id+"_cbxAtt-upkeep").checked;
     var att_hist = document.getElementById(place_id+"_cbxAtt-hist").checked;
 
-    if( att_nat ){
-      att_nat = 1;
-      document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "none";
-      document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
-      cntChecks++;
-    } else {
-      att_nat = 0;
-      document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "line-through";
-      document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
-    }
-    if( att_open ){
-      att_open = 1;
-      document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "none";
-      document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-open").disabled = true;
-      cntChecks++;
-    } else {
-      att_open = 0;
-      document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "line-through";
-      document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-open").disabled = true;
-    }
-    if( att_ord ){
-      att_ord = 1;
-      document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "none";
-      document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-order").disabled = true;
-      cntChecks++;
-    } else {
-      att_ord = 0;
-      document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "line-through";
-      document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-order").disabled = true;
-    }
-    if( att_up ){
-      att_up = 1;
-      document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "none";
-      document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
-      cntChecks++;
-    } else {
-      att_up = 0;
-      document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "line-through";
-      document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
-    }
-    if( att_hist ){
-      att_hist = 1;
-      document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "none";
-      document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
-      cntChecks++;
-    } else {
-      att_hist = 0;
-      document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "line-through";
-      document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
-      document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
-    }
+    if(att_nat)   cntCheckedCbx++;
+    if(att_open)  cntCheckedCbx++;
+    if(att_ord)   cntCheckedCbx++;
+    if(att_up)    cntCheckedCbx++;
+    if(att_hist)  cntCheckedCbx++;
 
-    // console.log("nat: ", att_nat,"\nopen: ", att_open,"\nord: ", att_ord,"\nu: ", att_up,"\nhist: ", att_hist,"\nCnt: ",cntChecks);
-
-    if(cntChecks == 0){
+    if(cntCheckedCbx == 0){
       // No attribute was selected
       warnCheckAtt();
       return null;
     }else{
-      //Close all Popups of the map
-      if(editMode){finishEditArea();}
-    }
 
-    return null;
+      //A creation of a new area is only finished when the user clicks the save button
+      createMode = false;
+
+      fgpDrawnItems.eachLayer(function(layer){
+        var layer_id = layer.feature.properties.id;
+        if(layer_id == place_id){
+          editMode = false;
+          layer.pm.disable();
+          mymap.pm.disableDraw('Poly');
+          layer.setStyle(setStyle_normal);
+          return;
+        }
+      });
+
+      if( att_nat ){
+        document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "none";
+        document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
+      } else {
+        document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "line-through";
+        document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
+      }
+      if( att_open ){
+        document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "none";
+        document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-open").disabled = true;
+      } else {
+        document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "line-through";
+        document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-open").disabled = true;
+      }
+      if( att_ord ){
+        document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "none";
+        document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-order").disabled = true;
+      } else {
+        document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "line-through";
+        document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-order").disabled = true;
+      }
+      if( att_up ){
+        document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "none";
+        document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
+      } else {
+        document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "line-through";
+        document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
+      }
+      if( att_hist ){
+        document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "none";
+        document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
+      } else {
+        document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "line-through";
+        document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
+        document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
+      }
+
+      // Show 'edit' button, hide 'save' button
+      document.getElementById(place_id+"_saveArea").style.display="none";
+      document.getElementById(place_id+"_editArea").style.display="block";
+    }
 
   };//END saveArea()
 
-  function finishEditArea(sidebarOpen){
-    if (log_functions){console.log('finishEditArea', place_id);}
-    if(mymap.hasLayer(fgpDrawnItems)){
-      fgpDrawnItems.eachLayer(
-        function(layer){
-          var layer_id = layer.feature.properties.id;
-          // console.log(layer_id);
-          // place_id is a global variable that contains the variable of the editted area
-          if(layer_id == place_id){
-            layer.pm.disable();
-            mymap.pm.disableDraw('Poly');
-            layer.setStyle({"weight": 2, "fillOpacity": 0.20 });
-            if(sidebarOpen){
-              var getTab = getActiveTab();
-              if (getTab!=place_id){ctlSidebar.open(place_id);}
-            }
-            editMode = false;
-            document.getElementById(place_id+"_saveArea").style.display="none";
-            document.getElementById(place_id+"_editArea").style.display="block";
-            return;
-          }
-        });
-      }
-  }//END finishEditArea()
+  // function finishEditArea(sidebarOpen){
+  //   if (log_functions){console.log('finishEditArea', place_id);}
+  //   if(mymap.hasLayer(fgpDrawnItems)){
+  //     fgpDrawnItems.eachLayer(
+  //       function(layer){
+  //         var layer_id = layer.feature.properties.id;
+  //         // console.log(layer_id);
+  //         // place_id is a global variable that contains the variable of the editted area
+  //         if(layer_id == place_id){
+  //           layer.pm.disable();
+  //           mymap.pm.disableDraw('Poly');
+  //           layer.setStyle({"weight": 2, "fillOpacity": 0.20 });
+  //           if(sidebarOpen){
+  //             var getTab = getActiveTab();
+  //             if (getTab!=place_id){ctlSidebar.open(place_id);}
+  //           }
+  //           editMode = false;
+  //           document.getElementById(place_id+"_saveArea").style.display="none";
+  //           document.getElementById(place_id+"_editArea").style.display="block";
+  //           return;
+  //         }
+  //       });
+  //     }
+  // }//END finishEditArea()
 
   function editArea(button_clicked_properties){
+    /* DESCRIPTION: It's run when the user clicks in the edit button of the sidebar*/
     //To use place_id inside an anonymous function (mymap.on('contextmenu', function(){}), it must be global
     place_id = ((button_clicked_properties.id).split("_"))[0];
     if (log_functions){console.log('editArea', place_id);}
@@ -920,42 +871,44 @@ if (isset($_SESSION['user_id'])) {
       document.getElementById(place_id+"_cbxAtt-hist").disabled = false;
     }
 
-
+    //Style options
     if(mymap.hasLayer(fgpDrawnItems)){
-      fgpDrawnItems.eachLayer(
-        function(layer){
-          var layer_id = layer.feature.properties.id;
-          // console.log(layer_id);
-          if(layer_id == place_id){
-            //The layer was found so start the editing process...
-            // ctlSidebar.close();
-            layer.bringToFront();
-            removeclickedEffect();
-            layer.setStyle({"weight": 5, "fillOpacity": 1 });
-            editMode = true;
-            layer.pm.enable();
-          }
-        });
-      }//END if(mymap.hasLayer(fgpDrawnItems))
+      fgpDrawnItems.eachLayer(function(layer){
+        var layer_id = layer.feature.properties.id;
+        // console.log(layer_id);
+        if(layer_id == place_id){
+          //The layer was found so start the editing process...
+          editMode = true;
+          // Set the style for all the layers to normal
+          removeclickedEffect();
+          layer.bringToFront();
+          //Change the style for the layer being editted
+          layer.setStyle(setStyle_edit);
+          layer.pm.enable();
+        }
+      });
+    }//END if(mymap.hasLayer(fgpDrawnItems))
 
-      document.getElementById(place_id+"_editArea").style.display="none";
-      document.getElementById(place_id+"_saveArea").style.display="block";
+    document.getElementById(place_id+"_editArea").style.display="none";
+    document.getElementById(place_id+"_saveArea").style.display="block";
 
   };//END editArea()
 
   function removeArea(button_clicked_properties, no_button){
-    if (no_button){
-      place_id = button_clicked_properties;
-      var close_sidebar = false;
-    }else{
-      place_id = (button_clicked_properties.id).split("_")[0];
-      var close_sidebar = true;
-    }
-    if (log_functions){console.log('removeArea', place_id, no_button);}
-    mymap.pm.disableDraw('Poly');
-    // console.log(fgpDrawnItems.getLayers() );
-    if(mymap.hasLayer(fgpDrawnItems)){
-      fgpDrawnItems.eachLayer(
+    if (log_functions){console.log('removeArea');}
+    var retVal = confirm("Are you sure you want to delete this area permanently?");
+    if( retVal == true ){
+      if (no_button){
+        place_id = button_clicked_properties;
+        var close_sidebar = false;
+      }else{
+        place_id = (button_clicked_properties.id).split("_")[0];
+        var close_sidebar = true;
+      }
+      mymap.pm.disableDraw('Poly');
+      // console.log(fgpDrawnItems.getLayers() );
+      if(mymap.hasLayer(fgpDrawnItems)){
+        fgpDrawnItems.eachLayer(
         function(layer){
           var layer_id = layer.feature.properties.id;
           // console.log(layer_id);
@@ -970,277 +923,37 @@ if (isset($_SESSION['user_id'])) {
         });
       }
       deleteTabByHref('#'+place_id, close_sidebar);
+    }
+
   };//END removeArea()
 
   function clickedEffect(item_id){
+    /* DESCRIPTION: add the style to a clicked layer*/
+    //Set all layers to normal style
     removeclickedEffect();
     if(mymap.hasLayer(fgpDrawnItems)){
-      fgpDrawnItems.eachLayer(
-        function(layer){
-          var layer_id = layer.feature.properties.id;
-          if(layer_id == item_id){
-            //The layer was found so start the editing process...
-            layer.setStyle({"weight": 3.5 });
-            return;
-          }
-        });
-      }//END if(mymap.hasLayer(fgpDrawnItems))
+      fgpDrawnItems.eachLayer(function(layer){
+        var layer_id = layer.feature.properties.id;
+        if(layer_id == item_id){
+          //The layer was found so start the editing process...
+          //Just change the style of the clicked layer
+          layer.setStyle(setStyle_clicked);
+          return;
+        }
+      });
+    }//END if(mymap.hasLayer(fgpDrawnItems))
   };//END editArea()
 
   function removeclickedEffect(){
+    /* DESCRIPTION: setStyle_normal for all the layers*/
     if(mymap.hasLayer(fgpDrawnItems)){
       fgpDrawnItems.eachLayer(function(layer){
-        layer.setStyle({"weight": 2, "fillOpacity": 0.20 });
+        layer.setStyle(setStyle_normal);
       });
     }
   };//END editArea()
 
   //  # Sidebar Functions
-  function create_placeTab(typeOfPlace){
-    /* ### FUNCTION DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
-    createplaceTab =  true;
-    if(typeOfPlace=="liked"){
-      var icon = "thumbs-up";
-      cnt_LikedPlaces++;
-      for (cnt = 1; cnt <= 3; cnt++) {
-        if( !(searchTagIfExistsByHref("#"+typeOfPlace+'-'+cnt.toString())) ){
-          break;
-        }
-      }
-      var tab_id = typeOfPlace+'-'+cnt.toString();
-      var title = typeOfPlace.charAt(0).toUpperCase()+typeOfPlace.slice(1) +' Place '+cnt;
-
-    }else if(typeOfPlace=="disliked"){
-      var icon = "thumbs-down";
-      cnt_DislikedPlaces++;
-      var cnt = cnt_DislikedPlaces;
-      for (cnt = 1; cnt <= 3; cnt++) {
-        if( !(searchTagIfExistsByHref("#"+typeOfPlace+'-'+cnt.toString())) ){
-          break;
-        }
-      }
-      var tab_id = typeOfPlace+'-'+cnt.toString();
-      var title = typeOfPlace.charAt(0).toUpperCase()+typeOfPlace.slice(1) +' Place '+cnt;
-    }
-    // alert(tab_id);
-    var str_newtab = "";
-
-    str_newtab += '<div id="'+tab_id+'_divChosenAttr" style="display:none;" class="container text-left">';
-    str_newtab +=   '<div class="[ col-xs-12 col-sm-6 ]">';
-    str_newtab +=     '<h4>Choose at least 1 attribute for the area: </h4>';
-    str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>';
-    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_nat">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" for="'+tab_id+'_cbxAtt-nat"> Naturalness</label><br />';
-    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_open">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" title="" for="'+tab_id+'_cbxAtt-open"> Openness</label><br />';
-    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_order">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" for="'+tab_id+'_cbxAtt-order"> Order<br></label><br />';
-    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_upkeep">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" for="'+tab_id+'_cbxAtt-upkeep"> Upkeep</label><br />';
-    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_hist">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" for="'+tab_id+'_cbxAtt-hist"> Historical Significance</label><br />';
-
-    str_newtab +=  '</div>';
-    str_newtab += '</div>';
-    str_newtab += '<div class="[ col-xs-12 ]">';
-    str_newtab +=   '<span id="'+tab_id+'_str_startdrawing" ><h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4></span>';
-    str_newtab +=   '<div class="col-xs-6">';
-    str_newtab +=     '<button id="'+tab_id+'_drawArea" class="btn btn-warning" onclick="drawArea(this)">';
-    str_newtab +=     '<i class="fa fa-edit"></i> Draw Area';
-    str_newtab +=     '</button>';
-    str_newtab +=     '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
-    str_newtab +=     '<i class="fa fa-save"></i> Save';
-    str_newtab +=     '</button>';
-    str_newtab +=     '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
-    str_newtab +=     '<i class="fa fa-pen"></i> Edit';
-    str_newtab +=     '</button>';
-    str_newtab +=   '</div>';
-    str_newtab +=   '<div class="col-xs-6">';
-    str_newtab +=     '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
-    str_newtab +=       '<i class="fa fa-trash-alt"></i> Remove';
-    str_newtab +=     '</button>';
-    str_newtab +=   '</div>';
-    str_newtab += '</div>';
-    var newtab_content = {
-      id:   tab_id,
-      tab:  '<i class="fa fa-'+icon+'"></i>',
-      title: title+
-      '<span class="leaflet-sidebar-close" onclick="(function(){ctlSidebar.close()})">'+
-      '<i class="fa fa-chevron-circle-left"></i>'+
-      '</span>',
-      pane: str_newtab
-    };
-    //Re-organize the sidebar tabs
-    deleteTabByHref("#temp_tab", false);
-    ctlSidebar.addPanel(newtab_content);
-    createTitleLiByHref( "#"+tab_id , "See "+title );
-
-    if ( cnt_LikedPlaces == 3){
-      statusAddLikeButton = "disabled";
-    }
-    if ( cnt_DislikedPlaces == 3){
-      statusAddDislikeButton = "disabled";
-    }
-    if ( (cnt_LikedPlaces + cnt_DislikedPlaces) < 6 ){
-      // If num=6 doesn't add the tab
-      ctlSidebar.addPanel(returnTempTabContent());
-      createTitleLiByHref( "#temp_tab" , "Add a new Place" );
-    }
-
-    //Add class to the icon of the new created tab. Liked:"green", Disliked:"red"
-    document.querySelectorAll('[role="tab"]').forEach(function (e){
-      var tab_href = e.getAttribute("href");
-      // If the tab_href is exactly the tab I'm creating right now:
-      if ( tab_href == ("#"+tab_id) ){
-        if ( tab_href.split("-")[0] == "#liked" ){
-          e.classList.add("sidebar_tab_icon_liked");  //Change the class to the tab receive green as a background
-        }
-        if ( tab_href.split("-")[0] == "#disliked" ){
-          e.classList.add("sidebar_tab_icon_disliked"); //Change the class to the tab receive red as a background
-        }
-      }
-    });
-    //Open sidebar tab if it's not open already
-    var getTab = getActiveTab();
-    if (getTab!=tab_id){ctlSidebar.open(tab_id);}
-
-  };//END create_placeTab()
-
-  function returnTempTabContent(){
-    /* ### FUNCTION DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called */
-    temp_tab_content = {
-      id:   'temp_tab',
-      tab:  '<i id="dynamic-icon-tab" class="fa fa-plus"></i>',
-      title: 'Add new Place\
-      <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()">'+
-      '<i class="fa fa-chevron-circle-left"></i>'+
-      '</span>',
-      pane: '   <div id="col-xs-12">                                           \
-      <h4>Which type of area do you want to draw?</h4>                            \
-      <div class="col-xs-6">                                       \
-      <button class="btn btn-success" onclick="create_placeTab(\'liked\')" '+statusAddLikeButton+'>   \
-      <i class="fa fa-thumbs-up"></i>                                                       \
-      Liked Place                                                                           \
-      </button>                                               \
-      </div>                                                    \
-      <div class="col-xs-6">                                       \
-      <button class="btn btn-danger" onclick="create_placeTab(\'disliked\')" '+statusAddDislikeButton+'>   \
-      <i class="fa fa-thumbs-down"></i>                                                       \
-      Disliked Place                                                                           \
-      </button>                                               \
-      </div>                                                    \
-      </div>                                                      \
-      '
-    };
-    return temp_tab_content;
-  };//END returnTempTabContent()
-
-  function deleteTabByHref(href, close_sidebar){
-    /* ### FUNCTION DESCRIPTION: Deletes the tab based on the href that was passed
-    ### If no href was passed it means that  a 'Remove Area' button inside a 'liked' or 'disliked' tab was clicked.
-    ### Therefore this tab will be deleted tab was clicked. Therefore, this tab will be removed*/
-    if ( href.split("-")[0] == "#liked"){
-      cnt_LikedPlaces--;
-      statusAddLikeButton = "";
-    }else if ( href.split("-")[0] == "#disliked"){
-      cnt_DislikedPlaces--;
-      statusAddDislikeButton = "";
-    }
-    //If the tab being deleted is a liked or disliked palce, update the "#temp_tab" status of the buttons
-    if ( ( href.split("-")[0] == "#liked") || ( href.split("-")[0] == "#disliked") ){
-      // Update the temp_tab
-      deleteTabByHref('#temp_tab');
-      ctlSidebar.addPanel(returnTempTabContent());
-      createTitleLiByHref( "#temp_tab" , "Add a new Place" );
-    }
-
-    //If after the deletion the sidebar needs to be closed: close_sidebar==true
-    //close_sidebar==false for "#temp_id".
-    if(close_sidebar){
-      ctlSidebar.close();
-    }
-
-    //Search for all the "li" elements of the "sidebarTab_div" and remove the one which has
-    var lis = document.querySelectorAll('#sidebarTab_div li');
-    for(var i=0; li=lis[i]; i++) {
-      //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
-      if( li.getElementsByTagName("a")[0].getAttribute("href") == href ){
-        li.parentNode.removeChild(li);
-      }
-    }
-    //Remove the "div" element whose id == href.
-    $( "div" ).remove( href );
-  };//END deleteTabByHref()
-
-  function getActiveTab(with_hash){
-    /* ### FUNCTION DESCRIPTION: Returns the href of the tab that is active (open) in the sidebar.
-    if "with_hash"==true returns f.e. '#temp_tab'. else returns 'temp_tab'. If no tab is opened, it returns null*/
-    var lis = document.querySelectorAll('#sidebarTab_div li');
-    var hrefActive;
-    for(var i=0; li=lis[i]; i++) {
-      if( $( li ).hasClass( "active" ) ){
-        hrefActive = li.getElementsByTagName("a")[0].getAttribute("href");
-      }
-    }
-    if ( hrefActive ) {
-      //console.log( hrefActive );
-      // alert( hrefActive );
-      if( (typeof with_hash === "undefined") || (with_hash == true)){
-        return hrefActive; //returns ex: "#temp_tab"
-      }else{
-        return hrefActive.substring(1, hrefActive.length); //returns ex: "temp_tab"
-      }
-    }else{
-      return null;
-    }
-  };//END getActiveTab()
-
-  function searchTagIfExistsByHref(href){
-    /* ### FUNCTION DESCRIPTION: returns true if a tab exists and false if not
-    ### Data entry example: href = "#temp_tab"  */
-    var lis = document.querySelectorAll('#sidebarTab_div li');
-    var foundStatus = false;
-    for(var i=0; li=lis[i]; i++) {
-      //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
-      if( li.getElementsByTagName("a")[0].getAttribute("href") == href ){
-        var foundStatus = true;
-      }
-    }
-    return foundStatus;
-  };//END searchTagIfExistsByHref()
-
-  function existentTabs(){
-    /* ### FUNCTION DESCRIPTION: returns true if a tab exists and false if not
-    ### Data entry example: href = "#temp_tab"  */
-    var array_tabs = [];
-    var lis = document.querySelectorAll('#sidebarTab_div li');
-    for(var i=0; li=lis[i]; i++) {
-      //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
-      var tab = li.getElementsByTagName("a")[0].getAttribute("href")
-      tab = tab.substring(1, tab.length); //returns ex: "temp_tab"
-      array_tabs.push(tab);
-    }
-    return array_tabs
-  };//END searchTagIfExistsByHref()
-
-  function createTitleLiByHref(href, newtitle){
-    /* ### FUNCTION DESCRIPTION: Updates the title of the tab "li" element when it's hovered
-    ### When a new tab is added using the API, the title receives a HTML, f.e:
-    ### temp_tab_content = { title: 'Add new Place<span class="leaflet-sidebar-close"><i class="fa fa-times-circle"></i></span>'}
-    ### All this element is shown when the user hover the button icon.
-    ### Therefore, this function changes the title component of the "li" element to the text passed in the 'newtitle' variable
-    */
-    var lis = document.querySelectorAll('#sidebarTab_div li');
-    for(var i=0; li=lis[i]; i++) {
-      //console.log( li );
-      if( li.getElementsByTagName("a")[0].getAttribute("href") == href ){
-        // console.log(li.parentNode.innerHTML);
-        $(li).attr("title", newtitle);
-        //console.log( $( li ).attr( "title" ) );
-      }
-    }
-  };//END createTitleLiByHref()
-
   function sidebarClick(){
     mymap.closePopup();
 
@@ -1312,19 +1025,293 @@ if (isset($_SESSION['user_id'])) {
     }
   }//END function sidebarClick()
 
+  function create_placeTab(typeOfPlace){
+    /* DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
+    createplaceTab =  true;
+    if(typeOfPlace=="liked"){
+      var icon = "thumbs-up";
+      cnt_LikedPlaces++;
+      for (cnt = 1; cnt <= 3; cnt++) {
+        if( !(searchTagIfExistsByHref("#"+typeOfPlace+'-'+cnt.toString())) ){
+          break;
+        }
+      }
+      var tab_id = typeOfPlace+'-'+cnt.toString();
+      var title = typeOfPlace.charAt(0).toUpperCase()+typeOfPlace.slice(1) +' Place '+cnt;
+
+    }else if(typeOfPlace=="disliked"){
+      var icon = "thumbs-down";
+      cnt_DislikedPlaces++;
+      var cnt = cnt_DislikedPlaces;
+      for (cnt = 1; cnt <= 3; cnt++) {
+        if( !(searchTagIfExistsByHref("#"+typeOfPlace+'-'+cnt.toString())) ){
+          break;
+        }
+      }
+      var tab_id = typeOfPlace+'-'+cnt.toString();
+      var title = typeOfPlace.charAt(0).toUpperCase()+typeOfPlace.slice(1) +' Place '+cnt;
+    }
+    // alert(tab_id);
+    var str_newtab = "";
+
+    str_newtab += '<div style="position:relative;">';
+    str_newtab += '<div class="col-xs-12 div_sidebar_content">';
+    str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:10px;">';
+    str_newtab +=     '<h4>Choose an attribute for the area:*</h4>';
+    str_newtab +=     '<p>*Mark at least 1 attribute</p>';
+    str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>';
+    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat" style="padding-bottom:10px;" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_nat">';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" for="'+tab_id+'_cbxAtt-nat"> Naturalness</label><br />';
+    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_open">';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" for="'+tab_id+'_cbxAtt-open"> Openness</label><br />';
+    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_order">';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" for="'+tab_id+'_cbxAtt-order"> Order<br></label><br />';
+    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_upkeep">';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" for="'+tab_id+'_cbxAtt-upkeep"> Upkeep</label><br />';
+    str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes" name="dlg_fltAttributes" value="att_hist">';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" for="'+tab_id+'_cbxAtt-hist"> Historical Significance</label><br />';
+    str_newtab +=    '</div>';
+    // str_newtab += '</div>';
+    str_newtab +=    '<span id="'+tab_id+'_str_startdrawing" ><h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4></span>';
+    str_newtab +=    '<div class="col-xs-6">';
+    str_newtab +=     '<button id="'+tab_id+'_drawArea" class="btn btn-warning" onclick="drawArea(this)">';
+    str_newtab +=       '<i class="fa fa-edit"></i> Draw Area';
+    str_newtab +=     '</button>';
+    str_newtab +=     '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
+    str_newtab +=       '<i class="fa fa-save"></i> Save';
+    str_newtab +=     '</button>';
+    str_newtab +=     '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
+    str_newtab +=       '<i class="fa fa-pen"></i> Edit';
+    str_newtab +=     '</button>';
+    str_newtab +=    '</div>';
+    str_newtab +=    '<div class="col-xs-6">';
+    str_newtab +=     '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
+    str_newtab +=       '<i class="fa fa-trash-alt"></i> Remove Area';
+    str_newtab +=     '</button>';
+    str_newtab +=    '</div>';
+    str_newtab += '</div>';
+    str_newtab += '</div>';
+
+    var newtab_content = {
+      id:   tab_id,
+      tab:  '<i class="fa fa-'+icon+'"></i>',
+      title: title+
+      '<span class="leaflet-sidebar-close" onclick="(function(){ctlSidebar.close()})">'+
+      '<i class="fa fa-chevron-circle-left"></i>'+
+      '</span>',
+      pane: str_newtab
+    };
+    //Re-organize the sidebar tabs
+    deleteTabByHref("#temp_tab", false);
+    ctlSidebar.addPanel(newtab_content);
+    createTitleLiByHref( "#"+tab_id , "See "+title );
+
+    if ( cnt_LikedPlaces == 3){
+      statusAddLikeButton = "disabled";
+    }
+    if ( cnt_DislikedPlaces == 3){
+      statusAddDislikeButton = "disabled";
+    }
+    if ( (cnt_LikedPlaces + cnt_DislikedPlaces) < 6 ){
+      // If num=6 doesn't add the tab
+      ctlSidebar.addPanel(returnTempTabContent());
+      createTitleLiByHref( "#temp_tab" , "Add a new Place" );
+    }
+
+    //Add class to the icon of the new created tab. Liked:"green", Disliked:"red"
+    document.querySelectorAll('[role="tab"]').forEach(function (e){
+      var tab_href = e.getAttribute("href");
+      // If the tab_href is exactly the tab I'm creating right now:
+      if ( tab_href == ("#"+tab_id) ){
+        if ( tab_href.split("-")[0] == "#liked" ){
+          e.classList.add("sidebar_tab_icon_liked");  //Change the class to the tab receive green as a background
+        }
+        if ( tab_href.split("-")[0] == "#disliked" ){
+          e.classList.add("sidebar_tab_icon_disliked"); //Change the class to the tab receive red as a background
+        }
+      }
+    });
+    //Open sidebar tab if it's not open already
+    var getTab = getActiveTab();
+    if (getTab!=tab_id){ctlSidebar.open(tab_id);}
+
+  };//END create_placeTab()
+
+  function returnTempTabContent(){
+    /* DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called */
+    temp_tab_content = {
+      id:   'temp_tab',
+      tab:  '<i id="dynamic-icon-tab" class="fa fa-plus"></i>',
+      title: 'Add new Place\
+      <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()">'+
+      '<i class="fa fa-chevron-circle-left"></i>'+
+      '</span>',
+      pane: '   <div id="col-xs-12">                                           \
+      <h4>Which type of area do you want to draw?</h4>                            \
+      <div class="col-xs-6">                                       \
+      <button class="btn btn-success" onclick="create_placeTab(\'liked\')" '+statusAddLikeButton+'>   \
+      <i class="fa fa-thumbs-up"></i>                                                       \
+      Liked Place                                                                           \
+      </button>                                               \
+      </div>                                                    \
+      <div class="col-xs-6">                                       \
+      <button class="btn btn-danger" onclick="create_placeTab(\'disliked\')" '+statusAddDislikeButton+'>   \
+      <i class="fa fa-thumbs-down"></i>                                                       \
+      Disliked Place                                                                           \
+      </button>                                               \
+      </div>                                                    \
+      </div>                                                      \
+      '
+    };
+    return temp_tab_content;
+  };//END returnTempTabContent()
+
+  function deleteTabByHref(href, close_sidebar){
+    /* DESCRIPTION: Deletes the tab based on the href that was passed
+    ### If no href was passed it means that  a 'Remove Area' button inside a 'liked' or 'disliked' tab was clicked.
+    ### Therefore this tab will be deleted tab was clicked. Therefore, this tab will be removed*/
+    if ( href.split("-")[0] == "#liked"){
+      cnt_LikedPlaces--;
+      statusAddLikeButton = "";
+    }else if ( href.split("-")[0] == "#disliked"){
+      cnt_DislikedPlaces--;
+      statusAddDislikeButton = "";
+    }
+    //If the tab being deleted is a liked or disliked palce, update the "#temp_tab" status of the buttons
+    if ( ( href.split("-")[0] == "#liked") || ( href.split("-")[0] == "#disliked") ){
+      // Update the temp_tab
+      deleteTabByHref('#temp_tab');
+      ctlSidebar.addPanel(returnTempTabContent());
+      createTitleLiByHref( "#temp_tab" , "Add a new Place" );
+    }
+
+    //If after the deletion the sidebar needs to be closed: close_sidebar==true
+    //close_sidebar==false for "#temp_id".
+    if(close_sidebar){
+      ctlSidebar.close();
+    }
+
+    //Search for all the "li" elements of the "sidebarTab_div" and remove the one which has
+    var lis = document.querySelectorAll('#sidebarTab_div li');
+    for(var i=0; li=lis[i]; i++) {
+      //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
+      if( li.getElementsByTagName("a")[0].getAttribute("href") == href ){
+        li.parentNode.removeChild(li);
+      }
+    }
+    //Remove the "div" element whose id == href.
+    $( "div" ).remove( href );
+  };//END deleteTabByHref()
+
+  function getActiveTab(with_hash){
+    /* DESCRIPTION: Returns the href of the tab that is active (open) in the sidebar.
+    if "with_hash"==true returns f.e. '#temp_tab'. else returns 'temp_tab'. If no tab is opened, it returns null*/
+    var lis = document.querySelectorAll('#sidebarTab_div li');
+    var hrefActive;
+    for(var i=0; li=lis[i]; i++) {
+      if( $( li ).hasClass( "active" ) ){
+        hrefActive = li.getElementsByTagName("a")[0].getAttribute("href");
+      }
+    }
+    if ( hrefActive ) {
+      //console.log( hrefActive );
+      // alert( hrefActive );
+      if( (typeof with_hash === "undefined") || (with_hash == true)){
+        return hrefActive; //returns ex: "#temp_tab"
+      }else{
+        return hrefActive.substring(1, hrefActive.length); //returns ex: "temp_tab"
+      }
+    }else{
+      return null;
+    }
+  };//END getActiveTab()
+
+  function searchTagIfExistsByHref(href){
+    /* DESCRIPTION: returns true if a tab exists and false if not
+    ### Data entry example: href = "#temp_tab"  */
+    var lis = document.querySelectorAll('#sidebarTab_div li');
+    var foundStatus = false;
+    for(var i=0; li=lis[i]; i++) {
+      //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
+      if( li.getElementsByTagName("a")[0].getAttribute("href") == href ){
+        var foundStatus = true;
+      }
+    }
+    return foundStatus;
+  };//END searchTagIfExistsByHref()
+
+  function existentTabs(){
+    /* DESCRIPTION: returns true if a tab exists and false if not
+    ### Data entry example: href = "#temp_tab"  */
+    var array_tabs = [];
+    var lis = document.querySelectorAll('#sidebarTab_div li');
+    for(var i=0; li=lis[i]; i++) {
+      //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
+      var tab = li.getElementsByTagName("a")[0].getAttribute("href")
+      tab = tab.substring(1, tab.length); //returns ex: "temp_tab"
+      array_tabs.push(tab);
+    }
+    return array_tabs
+  };//END searchTagIfExistsByHref()
+
+  function createTitleLiByHref(href, newtitle){
+    /* DESCRIPTION: Updates the title of the tab "li" element when it's hovered
+    ### When a new tab is added using the API, the title receives a HTML, f.e:
+    ### temp_tab_content = { title: 'Add new Place<span class="leaflet-sidebar-close"><i class="fa fa-times-circle"></i></span>'}
+    ### All this element is shown when the user hover the button icon.
+    ### Therefore, this function changes the title component of the "li" element to the text passed in the 'newtitle' variable
+    */
+    var lis = document.querySelectorAll('#sidebarTab_div li');
+    for(var i=0; li=lis[i]; i++) {
+      //console.log( li );
+      if( li.getElementsByTagName("a")[0].getAttribute("href") == href ){
+        // console.log(li.parentNode.innerHTML);
+        $(li).attr("title", newtitle);
+        //console.log( $( li ).attr( "title" ) );
+      }
+    }
+  };//END createTitleLiByHref()
+
+  function removeLastVertex(){
+    /* DESCRIPTION: When the layer is being drawn, for more than 2 vertices the user can remove the last vertex by pressing Ctrl+z */
+    var num_vertices = document.workingLayer._latlngs.length;
+    if (num_vertices>2){
+      document.workingLayer.pm.enable();
+      var markers = document.workingLayer.pm._markers;
+      var m = markers[markers.length - 1];
+      var e = {target:m};
+      document.workingLayer.pm._removeMarker(e);
+
+      //Removing last line segment created
+      var segments = document.workingLayer.pm._map.pm.Draw.Line._map._layers;
+      //get the key of the last line segment (ls)
+      var last_ls_key = Object.keys(segments).pop();
+      segments[last_ls_key].remove();
+      delete segments[last_ls_key];
+
+      //Removing last vertex
+      var num_vertices = document.workingLayer._latlngs.length;
+      var targets = document.workingLayer.pm._map._targets;
+      var last_marker_key = Object.keys(targets)[(5+num_vertices)];
+      targets[last_marker_key].remove();
+      delete targets[last_marker_key];
+
+      document.workingLayer.pm.disable();
+    }
+  };//END removeLastVertex()
+
   //call functions based on the combination of keys the users is pressing
   function KeyPress(e) {
     var evtobj = window.event? event : e
     //Ctrl+z
     if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
-      // alert("pressed");
-      removeLastVertex();
-    }//Do something;
+      // if the user press Ctrl+z and a new layer is being created, remove the last vertex of the layer
+      if(createMode) removeLastVertex();
+    }
     //Ctrl+c
     if (evtobj.keyCode == 67 && evtobj.ctrlKey) {
 
     }//Do something;
-
   }
 
   //  ********* Warnings Functions *********
