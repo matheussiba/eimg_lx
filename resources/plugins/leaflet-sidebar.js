@@ -227,9 +227,12 @@ L.Control.Sidebar = L.Control.extend(/** @lends L.Control.Sidebar.prototype */ {
 
         // Open sidebar if it's closed
         if (L.DomUtil.hasClass(this._container, 'collapsed')) {
-            this.fire('opening');
+			// Originally the fire event is runned before the sidebar really open.
+			//this.fire('opening'); 
             L.DomUtil.removeClass(this._container, 'collapsed');
             if (this.options.autopan) this._panMap('open');
+			//MatheusSiba-edit-29/11/18: in order to do some workarounds in my code. The event must fire after the sidebar is opened
+			this.fire('opening');
         }
 
         return this;
@@ -252,9 +255,15 @@ L.Control.Sidebar = L.Control.extend(/** @lends L.Control.Sidebar.prototype */ {
 
         // close sidebar, if it's opened
         if (!L.DomUtil.hasClass(this._container, 'collapsed')) {
+			// Originally the fire event is runned before the sidebar really close.
+			//this.fire('closing'); 
             L.DomUtil.addClass(this._container, 'collapsed');
             if (this.options.autopan) this._panMap('close');
 			this.fire('closing');
+			//MatheusSiba-edit-29/11/18: in order to do some workarounds in my code. The event must fire after the sidebar is closed
+			this.fire('closing');
+			
+			
         }
 
         return this;

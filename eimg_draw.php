@@ -297,17 +297,21 @@ if (isset($_SESSION['user_id'])) {
       });
       ctlSidebar.on('opening', function() {
         cnt_SidebarOpens++;
+        //because the context event fires the opening event (if sidebar is closed), the following variable is to know the status of the sidebar, in order to organize the previous and active tab in the 'content' event.
         sidebarOpened = true;
         //Mimics a sidebar click, to change the background of the icon to blue, if the tab opened is a liked or disliked place
         sidebarChange('opening');
+        if (createMode){
+          warnFinishCreation();
+        }
       });
       ctlSidebar.on('content', function(e) {
-        //When the sidebar opens the 'content' and 'opening' are fired up together. The order of them, chnges randomly;
+        //When the sidebar opens the 'content' and 'opening' are fired up together, consecutively
         // When sidebarOpened==true, it means the sidebar is being opened, otherwise, the user is just changing tabs
         if(sidebarOpened){
           previousTab = activeTab;
           cnt_SidebarChangeTab++;
-        }else //sidebarOpened == false, the sidebar is being opened
+        }else //sidebarOpened == false, the sidebar is being opened, the opening event will start after this one and set sidebarOpened to true
         {
           previousTab = null;
         }
@@ -402,7 +406,8 @@ if (isset($_SESSION['user_id'])) {
       });
       mymap.on('pm:drawend', function(e) {
         //When the user is drawing it means that the 'place_id' should exist and it's the id of the area being drawn
-
+        //A creation of a new area is only finished when the user clicks the save button
+        createMode = false;
       });
       mymap.on('pm:drawstart', function(e) {
         //A new layer has started to be drawn.
@@ -511,7 +516,6 @@ if (isset($_SESSION['user_id'])) {
           if (log_functions){console.log('drawArea', place_id);}
           document.getElementById(place_id+"_removeArea").style.display="block";
 
-          document.getElementById(place_id+"_drawArea").innerHTML="End Drawing";
           document.getElementById(place_id+"_str_startdrawing").innerHTML ="<h4>And now, what do you want to do? </h4>";
           console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
 
@@ -557,8 +561,6 @@ if (isset($_SESSION['user_id'])) {
         return null;
       }else{
         //At least one attribute was selected, can proceed with saving...
-        //A creation of a new area is only finished when the user clicks the save button
-        createMode = false;
 
         // Disable edit mode and setStyle for layer
         fgpDrawnItems.eachLayer(function(layer){
@@ -731,6 +733,8 @@ if (isset($_SESSION['user_id'])) {
             }
           });
         }
+        editMode = false;
+        createMode = false;
         deleteTabByHref('#'+place_id, close_sidebar);
       }
     };//END removeArea()
@@ -1138,10 +1142,14 @@ if (isset($_SESSION['user_id'])) {
       if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
     }
     function warnDeleteArea(){
-      /* DESCRIPTION: Warn the user tries to delete an area */
+      /* DESCRIPTION: Warn the user if tries to delete an area */
       return confirm("Are you sure you want to delete this area permanently?")
     }
-
+    function warnFinishCreation(){
+      /* DESCRIPTION: Warn the user if tries open the sidebar in a creation mode */
+      alert("Please, finish the draw first. By right clicking or cliking in the first node.");
+      ctlSidebar.close();
+    }
     //  # Document Functions
     function KeyPress(e) {
       /* DESCRIPTION: call functions based on the combination of keys the users is pressing */
