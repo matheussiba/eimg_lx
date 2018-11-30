@@ -343,7 +343,6 @@ if (isset($_SESSION['user_id'])) {
       // Add the overview control to the map
       L.control.overview([mapbox_overview]).addTo(mymap);
 
-
       layerControls = L.control.layers(
         {
           '<i class="fas fa-map-marked"></i>': basemap_mapbox,
@@ -353,50 +352,21 @@ if (isset($_SESSION['user_id'])) {
         }, null, {collapsed: false}
       ).addTo(mymap);
 
-
       // Adds a control using the easy button plugin
-      ctlFinishArea = L.easyButton('fa-draw-polygon', function(control, map){
-        // alert("populate");
-      }, 'Click to complete the drawing').addTo(mymap);
-      ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(control, map){
-        // alert("populate");
-      }, 'Click to remove the last vertex').addTo(mymap);
-      ctlCancelArea = L.easyButton('fa-times-circle', function(control, map){
-        // alert("populate");
-      }, 'Click to cancel the drawing').addTo(mymap);
-      var ctlCreateAreaBar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'}).addTo(mymap);
+      ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
+      ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
+      ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(place_id, true);}, 'Click to cancel the drawing');
+      var ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'}).addTo(mymap);
 
-      var container = L.DomUtil.create('div', 'easy_button_label leaflet-bar leaflet-control', ctlCreateAreaBar.getContainer());
-      container.title="Tools";
+      var container = L.DomUtil.create('div', 'easy_button_label leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
+      container.title="Toolbar Instructions";
       container.innerHTML = '\
-      <i class="fas fa-draw-polygon"> Finish drawing<br /><br />\
-      <i class="fas fa-undo-alt"> Remove last vertex<br /><br />\
-      <i class="fas fa-times-circle"> Cancel Drawing<br />';
-      // styles
-      container.style.backgroundColor = 'rgba(255,255,255,0.4)';
-      container.style.marginTop = '2px';
-      container.style.marginLeft = '-135px';
-      container.style.width = '130px';
-      container.style.height = '80px';
+      <p>Finish drawing</p> \
+      <p style="padding-top:5px;">Remove last vertex</p> \
+      <p style="padding-top:5px;">Cancel Drawing</p>';
+      // styles: .easy_button_label
       // events
-      container.onmouseover = function(){
-        container.style.visibility = 'hidden';
-        container.style.opacity = '0.5';
-      }
-      container.onclick = function(){
-        console.log('buttonClicked');
-        console.log(this);
-      }
-
-      // easy_button_label.appendChild(zoom.getContainer()); // works
-      jQuery('.easy-button-button').click(function() {
-    		target = jQuery('.easy-button-button').not(this);
-    		target = jQuery('.easy-button-button');
-        console.log(target);
-    		target = target.parent().find('.easy_button_label').css({
-    			'display' : 'block',
-    		});
-    	});
+      container.onmouseover = function(){ container.style.visibility = 'hidden';}
 
       // Add Zoom if not in the
       if (!mobileDevice){
@@ -510,6 +480,14 @@ if (isset($_SESSION['user_id'])) {
       });//END content
 
       // # Map events
+      mymap.on("moveend", function () {
+        // console.log(mymap.getCenter().toString());
+        // alert("moveend");
+      });
+      mymap.on("movestart", function () {
+        // console.log(mymap.getCenter().toString());
+        // alert("movestar");
+      });
       mymap.on('baselayerchange', function(e){
         // alert("LAYER HAS BEEN CHANGED.");
         // console.log(e);
@@ -534,42 +512,6 @@ if (isset($_SESSION['user_id'])) {
       });
       mymap.on('click', function(e){
         /* DESCRIPTION: listener when a click is given on the map  */
-        if(createMode){
-          num_mapClick++;
-        }
-
-        //Adding Instructions popup when the user is creating the first area on the map
-        if(createMode==true && (cnt_LikedPlaces+cnt_DislikedPlaces)==1 ){
-          if (num_mapClick==1){
-            var customOptions =
-            {
-              // 'autoClose':	false,
-              'closeOnClick':	false,
-              'className' : 'popupInfo'
-            }
-            if (mobileDevice){
-              var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b></p>'
-            }else{
-              var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b> or right-click</p>'
-            }
-            var popup_draw_start = L.popup(customOptions)
-            .setLatLng([e.latlng.lat, e.latlng.lng])
-            .setContent(str_popup)
-            .openOn(mymap);
-            setTimeout(function(){ mymap.closePopup(popup_draw_start); }, 5000);
-          }
-          if ((num_mapClick==5) && mobileDevice==false){
-            var customOptions =
-            {
-              'className' : 'popupInfo'
-            }
-            var popup_ctrlZ = L.popup(customOptions)
-            .setLatLng([e.latlng.lat, e.latlng.lng])
-            .setContent('<p>You can use Ctrl+z<br /><b>to remove the last vertex</b></p>')
-            .openOn(mymap);
-          }
-        }
-
         // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
         if(clickedLayerId != null){
           //if getActiveTabId() != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
@@ -598,17 +540,22 @@ if (isset($_SESSION['user_id'])) {
 
         var layer = e.workingLayer;
         layer.on('pm:vertexadded', function(e) {
-          // e includes the new vertex, it's marker
-          // the index in the coordinates array
-          // the working layer and shape
-          console.log('vertexadded', e);
+          // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
+          // console.log('vertexadded', e);
+          num_mapClick++;
+
+          //Adding Instructions popup when the user is creating the first area on the map
+          if(createMode==true && (cnt_LikedPlaces+cnt_DislikedPlaces)==1 ){
+            if (num_mapClick==1){
+              openInfoPopUp();
+            }
+          }
+
         });
         // also fired on the markers of the polygon
         layer.on('pm:snap', function(e) {
-          // e includes marker, snap coordinates
-          // segment, the working layer
-          // and the distance
-          console.log('snap', e);
+          // e includes marker, snap coordinates segment, the working layer and the distance
+          // console.log('snap', e);
         });
 
       },this);
@@ -641,13 +588,7 @@ if (isset($_SESSION['user_id'])) {
         if (numberOfVertices < 3){
           alert("The area drawn is not a polygon. It has only "+numberOfVertices.toString()+" vertices.\nPlease draw it again!");
           // Start a new draw again
-          mymap.removeLayer(lyrDraw);
-          mymap.closePopup();
-          //restart variables
-          editMode=false;
-          createMode=false;
-          var button_drawArea_id = place_id+"_drawArea";
-          document.getElementById(button_drawArea_id).click();
+          restartDraw(lyrDraw);
           return;
         }
 
@@ -702,40 +643,35 @@ if (isset($_SESSION['user_id'])) {
     function drawArea(button_clicked_properties){
       /* DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
       // Passing the ID gotten from the id of the button clicked to the global variable in order to be accesed in the anonymous functions
-      if(mymap.getZoom()<14){
-        alert("zoomIn further to draw");
-      }else if(mymap.getZoom()>18){
-        alert("zoomOut to draw");
-      }else{
-        if (createMode==false){
-          place_id = ((button_clicked_properties.id).split("_"))[0];
-          if (log_functions){console.log('drawArea', place_id);}
-          document.getElementById(place_id+"_removeArea").style.display="block";
+      if ((cnt_DislikedPlaces+cnt_LikedPlaces)<=2){
+        showInfoBoxCreation();
+      }
+      if (createMode==false){
+        place_id = ((button_clicked_properties.id).split("_"))[0];
+        if (log_functions){console.log('drawArea', place_id);}
+        document.getElementById(place_id+"_removeArea").style.display="block";
 
-          document.getElementById(place_id+"_str_startdrawing").innerHTML ="<h4>And now, what do you want to do? </h4>";
-          console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
+        document.getElementById(place_id+"_str_startdrawing").innerHTML ="<h4>And now, what do you want to do? </h4>";
+        console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
 
-          ctlSidebar.close();
-          if (place_id.split("-")[0] == "liked") {
-            color_line_place = "forestgreen";
-            color_fill_place = "#0F0";
-          }else{
-            color_line_place = "#F00";
-            color_fill_place = "#F00";
-          }
-          var drawingOptions = {
-            // snapping
-            snappable: true,
-            snapDistance: 15,
-            finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
-            templineStyle: {color: color_line_place, weight: 2} ,
-            hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
-            allowSelfIntersection: false
-          };
-          mymap.pm.enableDraw('Poly', drawingOptions);
+        ctlSidebar.close();
+        if (place_id.split("-")[0] == "liked") {
+          color_line_place = "forestgreen";
+          color_fill_place = "#0F0";
         }else{
-
+          color_line_place = "#F00";
+          color_fill_place = "#F00";
         }
+        var drawingOptions = {
+          // snapping
+          snappable: true,
+          snapDistance: 15,
+          finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
+          templineStyle: {color: color_line_place, weight: 2} ,
+          hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
+          allowSelfIntersection: false
+        };
+        mymap.pm.enableDraw('Poly', drawingOptions);
 
       }
     }//END drawArea()
@@ -902,7 +838,7 @@ if (isset($_SESSION['user_id'])) {
     function removeArea(button_clicked_properties, no_button){
       if (log_functions) console.log('removeArea');
       if (no_button) {
-        //no button was clicked. The removeArea() is made in the code, because some behaviour user did.
+        //no button was clicked. The removeArea() is called programatically, because some behaviour user did.
         var retVal = true;
       }else{
         //ask the user if is sure to delete the area
@@ -962,7 +898,12 @@ if (isset($_SESSION['user_id'])) {
     };//END toggleLyrStyle()
     function finishCreation() {
       /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
-      document.workingLayer._map.pm.Draw["Poly"]._finishShape();
+      var num_vertices = document.workingLayer._latlngs.length;
+      if (num_vertices>=3){
+        document.workingLayer._map.pm.Draw["Poly"]._finishShape();
+      }else{
+        alert("Please, add at least 3 vertices")
+      }
     }
     function removeLastVertex(){
       /* DESCRIPTION: When the layer is being drawn, for more than 2 vertices the user can remove the last vertex by pressing Ctrl+z */
@@ -970,13 +911,57 @@ if (isset($_SESSION['user_id'])) {
       if (num_vertices>1){
         document.workingLayer._map.pm.Draw["Poly"]._removeLastVertex();
       }else{
-        // Draw Area
+        restartDraw();
       }
     };//END removeLastVertex()
     function finishCreation() {
       /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
       document.workingLayer._map.pm.Draw["Poly"]._finishShape();
     }
+    function cancelCreation() {
+      /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
+      document.workingLayer._triggerClick();
+    }
+    function showInfoBoxCreation(){
+      /* DESCRIPTION: Shows a Information Box to the user in order to know how to use the CreationToolbar*/
+      $('.easy_button_label').css('visibility','visible');
+      //hide after 4 seconds
+      setTimeout(function() {
+        $('.easy_button_label').css('visibility','hidden');
+      }, 10000);
+    }
+    function restartDraw(lyrDraw){
+      /* DESCRIPTION: Start a new draw again*/
+      if(lyrDraw) //Layer was created but is not valid: ex: vertices<3
+      {
+        mymap.removeLayer(lyrDraw);
+      }else //removing workingLayer
+      {
+        mymap.removeLayer(document.workingLayer);
+      }
+      //restart variables
+      editMode=false;
+      createMode=false;
+      var button_drawArea_id = place_id+"_drawArea";
+      document.getElementById(button_drawArea_id).click();
+    }
+    function openInfoPopUp(popup_position, popup_content, duration_open){
+      var popup_options = {
+        // 'autoClose':	false,
+        'closeOnClick':	false,
+        'className' : 'popupInfo'
+      }
+      //close any popup if open
+      mymap.closePopup();
+      var infoPopUp = L.popup(popup_options)
+      // .setLatLng([e.latlng.lat, e.latlng.lng])
+      .setLatLng(popup_position)
+      .setContent(popup_content)
+      .openOn(mymap);
+      setTimeout(function(){ mymap.closePopup(infoPopUp);}, duration_open);
+    }
+
+
     //  # Sidebar Functions
     function sidebarChange(e){
       /* DESCRIPTION: Global events for the sidebar. 'e' can be either "closing", "opening" or "content"*/
@@ -1064,7 +1049,6 @@ if (isset($_SESSION['user_id'])) {
     }//END function sidebarChange()
     function create_placeTab(typeOfPlace){
       /* DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
-
       if(typeOfPlace=="liked"){
         var icon = "thumbs-up";
         cnt_LikedPlaces++;

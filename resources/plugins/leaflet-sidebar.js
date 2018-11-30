@@ -261,8 +261,6 @@ L.Control.Sidebar = L.Control.extend(/** @lends L.Control.Sidebar.prototype */ {
             if (this.options.autopan) this._panMap('close');
 			this.fire('closing');
 			//MatheusSiba-edit-29/11/18: in order to do some workarounds in my code. The event must fire after the sidebar is closed
-			this.fire('closing');
-			
 			
         }
 
