@@ -1,4 +1,4 @@
-<?php include "includes/init.php"?>
+<?php include "../includes/init.php"?>
 <?php
   //checking if the index page was accessed
   if (isset($_SESSION['user_id'])) {
@@ -21,7 +21,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- Adding the HEADER file -->
-<?php include "includes/header_viewer.php" ?>
+<?php include "../includes/header_viewer.php" ?>
 
 <body>
   <!-- ###############  Div that contains the header ############### -->

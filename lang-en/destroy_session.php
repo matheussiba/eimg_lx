@@ -1,4 +1,4 @@
-<?php include "includes/init.php"?>
+<?php include "../includes/init.php"?>
 <?php
     session_unset();
     // Creates a session

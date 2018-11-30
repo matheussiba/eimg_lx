@@ -12,11 +12,14 @@
   <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
        integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
        crossorigin=""/> -->
-   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/leaflet-1.2.0.css"
+   <!-- <link rel="stylesheet" href="<?php  echo $root_directory?>resources/leaflet-1.2.0.css"
         integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
-        crossorigin=""/>
-  <!-- <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet.pm.css"/> -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
+        crossorigin=""/> -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin=""/>
+  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet.pm.css"/>
+  <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" /> -->
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/L.Control.MousePosition.css">
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet-sidebar.min-v3.0.2.css">
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet-overview.css">
@@ -25,23 +28,28 @@
   <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet.awesome-markers.css">
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/easy-button.css">
+
+
   <!-- Adding JS files -->
   <!-- <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
         integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
         crossorigin="">
   </script> -->
-  <script src="<?php  echo $root_directory?>resources/leaflet-1.2.0.js"
+  <!-- <script src="<?php  echo $root_directory?>resources/leaflet-1.2.0.js"
         integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
         crossorigin="">
-  </script>
+  </script> -->
+  <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+  integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+  crossorigin=""></script>
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
   <script src="<?php  echo $root_directory?>resources/jquery-3.3.1.min.js"></script>
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
   <script src="<?php  echo $root_directory?>resources/bootstrap-3.3.7.min.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/leaflet-sidebar.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/leaflet-overview.js"></script>
-  <!-- <script src="<?php  echo $root_directory?>resources/plugins/leaflet.pm.min.js"></script> -->
-  <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
+  <script src="<?php  echo $root_directory?>resources/plugins/leaflet.pm.min.js"></script>
+  <!-- <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script> -->
 
   <script src="<?php  echo $root_directory?>resources/plugins/leaflet.ajax.min.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/L.Control.MousePosition.js"></script>
@@ -52,19 +60,58 @@
 
   <!-- CSS -->
   <style>
-  div.sidebarContentParent{
-    padding-top: 20px;
+  /* custom Zoom layer leaflet easy button*/
+  #mapdiv .easy-button-button{
+  transition-duration: .3s;
+  position: relative;
+  border-radius: 4px;
+  border: solid 0px transparent; }
+  #mapdiv .easy-button-container{
+  background-color: white;}
+  #mapdiv .zoom-btn{
+  position: absolute;
+  top: 0;
+  left: 0;}
+  #mapdiv .easy-button-button.disabled {
+  height: 0;}
+
+  .leaflet-control-layers-expanded {
+    padding: 0 5px 0 5px;
+    background-color: rgba(255,255,255,0.9);
   }
+  /* custom Zoom layer leaflet easy button*/
+  /* .easy_button_label * {margin: 0; padding: 0;} */
+  .easy_button_label {
+      /* display: block; */
+      visibility: hidden;
+      opacity: 1;
+      position: absolute;
+      top:0px;
+      z-index: 2000;
+      padding: 1px 5px 1px 5px; /*Top right botton left*/
+      transition: visibility 0.5s, opacity 0.5s linear;
+  }
+  .leaflet-bar.easy-button-container.leaflet-control {
+      text-align: left !important;
+  }
+
+  /* Sidebar content, elements equally spaced. To see better what's going one, comment it out the part of "border: 1px solid gray;" */
+  div.sidebarContentParent{
+    padding-top: 10px;
+  }
+
   div.sidebarContentChild{
+    /*EXTRACTED FROM:  http://jsfiddle.net/kqHWM/ */
     display:table;
     width:100%;
     table-layout: fixed;
   }
   div.sidebarContentChild span {
+    /*EXTRACTED FROM:  http://jsfiddle.net/kqHWM/ */
     padding: 5px;
     display:table-cell;
     text-align:center;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
   }
     /* ****************** CSS for the sidebar ****************** */
   .leaflet-sidebar-content{
@@ -177,9 +224,9 @@
     font-size: 16px;
   }
 
-  .div_sidebar_content {
+  /* .div_sidebar_content {
     padding-left:5px;
-  }
+  } */
 
 
 

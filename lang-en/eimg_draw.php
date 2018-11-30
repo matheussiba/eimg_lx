@@ -1,4 +1,4 @@
-<?php include "includes/init.php"?>
+<?php include "../includes/init.php"?>
 <?php
 //checking if the index page was accessed
 if (isset($_SESSION['user_id'])) {
@@ -20,7 +20,7 @@ if (isset($_SESSION['user_id'])) {
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- Adding the HEADER file -->
-<?php include "includes/header_draw.php" ?>
+<?php include "../includes/header_draw.php" ?>
 
 <body>
   <!-- ###############  Div that contains the header ############### -->
@@ -36,7 +36,7 @@ if (isset($_SESSION['user_id'])) {
         <li><a href="#home" role="tab"><i class="fa fa-home"></i></a></li>
       </ul>
       <ul id="sidebarTab_bottom" class="sidebarTab_ul" role="tablist">
-        <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+        <li><a href="#info" role="tab"><i class="fa fa-info-circle"></i></a></li>
       </ul>
     </div> <!-- close DIV class="sidebar-tabs"> -->
 
@@ -48,40 +48,72 @@ if (isset($_SESSION['user_id'])) {
         <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
           Home<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
         </h1>
-        <div style="padding-top: 1vh;">
-          <div id="div_Info" style="text-align: justify;text-justify: inter-word;">
-            <p>
-              Start to create a place by clicking in the <i class="fa fa-plus"></i> button of the sidebar.
-            </p>
-            <p>
-              When you're done come here again and press the finish button.
-            </p>
-          </div>
+
+        <div id="text_sidebar_home_1" style="text-align: justify;text-justify: inter-word; padding-top: 5px;">
+          <h4 style="padding-bottom: 5px;">
+            After you create at least 2 areas (1 liked and 1 disliked) come here again and press:
+          </h4>
           <button id='btn_Finish' class='btn btn-info btn-block'>Finish...</button>
-
-          <div class="sidebarContentParent">
-            <div class="sidebarContentChild">
-                <span> Elem 1 </span>
-            </div>
-            <div class="sidebarContentChild">
-                <span> Elem 1 </span>
-                <span> Elem 2dsadas </span>
-                <span style="display:none;"> Elem 2dsadas </span>
-                <span style="display:none;"> Elem 2dsadas </span>
-                <span> Elem 2dsadas </span>
-            </div>
-          </div>
-
         </div>
+
+        <div class="sidebarContentParent">
+          <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
+            <span>
+              <p>
+                To create a new area go to:
+              </p>
+            </span>
+              <span>
+              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('temp_tab')"><i class="fa fa-plus"></i> Create New Tab</button>
+            </span>
+          </div>
+          <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
+            <span>
+              <p>
+                For more details go to:
+              </p>
+            </span>
+              <span>
+              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('info')"><i class="fa fa-info-circle"></i> Info Tab</button>
+            </span>
+          </div>
+        </div>
+
+
       </div> <!-- close DIV id="home"> -->
 
-      <!-- sidebar_tab: SETTINGS -->
-      <div class="leaflet-sidebar-pane" id="settings">
+      <!-- sidebar_tab: info -->
+      <div class="leaflet-sidebar-pane" id="info">
         <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
-          Settings<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
+          Information<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
         </h1>
-        <!-- SOURCE for design the translate box  https://jsfiddle.net/solodev/0stLrpqg/ -->
-        </div> <!-- close DIV id="settings"> -->
+
+        <div class="sidebarContentParent">
+          <div class="sidebarContentChild">
+              <span> Elem 1 </span>
+          </div>
+          <div class="sidebarContentChild">
+              <span> Elem 1 </span>
+              <span> Elem 2dsadas </span>
+              <span style="display:none;"> Elem 2dsadas </span>
+              <span style="display:none;"> Elem 2dsadas </span>
+              <span> Elem 2dsadas </span>
+          </div>
+        </div>
+
+        <div class="sidebarContentParent">
+          <p> See the video for helping you in the application</p>
+          <div class="sidebarContentChild">
+            <span>
+              video
+              <!-- <iframe width="448" height="252" src="http://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+            </span>
+          </div>
+        </div>
+
+
+
+      </div> <!-- close DIV id="info"> -->
 
       </div> <!-- close DIV class="sidebar-content"> -->
     </div><!-- close DIV id="sidebar"> -->
@@ -137,7 +169,10 @@ if (isset($_SESSION['user_id'])) {
     var mymap;
     var backgroundLayer;
     var jsn_draw;
-    var ctlEasybutton;
+    var ctlFinishArea;
+    var ctlRemoveLastVertex;
+    var ctlCancelArea;
+    var layerControls;
     var mobileDevice = false;
     var ctlSidebar;
     var userpanel;
@@ -159,6 +194,7 @@ if (isset($_SESSION['user_id'])) {
     var setStyle_edit = {"weight": 5, "fillOpacity": 0.1};
     var setStyle_clicked = {"weight": 3.5, "fillOpacity": 0.20};
     var cntCheckedCbx;
+    var finishCreationControl;
 
     // # Logging variables
     var cnt_SidebarOpens = 0;
@@ -206,35 +242,38 @@ if (isset($_SESSION['user_id'])) {
     });//END $( window ).on( "orientationchange", ())
 
     //  ********* Create Map *********
-    // set mapbox tile layer
 
     $(document).ready(function(){
       /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
       //  ********* Map Initialization *********
       //Adds the basemap
-      var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
-        name: 'basemap',
+      var basemap_osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy;<a href="http://osm.org/copyright">OSM</a>'
       });
-      var mapbox = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
-        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
-        name: 'basemap',
+
+      var basemap_mapbox = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
         attribution: '&copy;<a href="https://www.mapbox.com/feedback/">Mapbox</a>'
       });
-      var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
-        name: 'basemap',
+      var basemap_Gterrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+          subdomains:['mt0','mt1','mt2','mt3']
+      });
+      var basemap_Gimagery = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+          subdomains:['mt0','mt1','mt2','mt3']
+      });
+      var basemap_GimageHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+          subdomains:['mt0','mt1','mt2','mt3']
+      });
+
+      var basemap_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
       });
+
       var Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
         name: 'overlay',
-        maxZoom: 18
       });
       // We can't reuse the layers from the main map for the overview, so we
       // need to create a second instance of each layer option
       var mapbox_overview = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
-        //all the names for the layers of the parent map were named the same as the overview map in order to not change the type of the base map (for the overview map) when the layer is changed for the parent map
         name: 'basemap'
       });
 
@@ -251,7 +290,7 @@ if (isset($_SESSION['user_id'])) {
       //Create the Leaflet map elemetn
       mymap = L.map('mapdiv', {
         center: center,
-        layers: mapbox,
+        layers: basemap_mapbox,
         zoom:14,
         maxZoom: 18,
         minZoom: 14,
@@ -274,7 +313,7 @@ if (isset($_SESSION['user_id'])) {
       fgpDrawnItems.addTo(mymap);
 
       // Adding the Historical Center of Lisbon
-      var LyrHistCenter = new L.GeoJSON.AJAX("data/historical_center_lx.geojson").addTo(mymap);
+      var LyrHistCenter = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
 
       //Global variable, in order to other functions also be able to add the "Temp tab"
       // Create elements to populate the tab and add it to the sidebar
@@ -285,7 +324,7 @@ if (isset($_SESSION['user_id'])) {
       // Creates the title, to appear when the "li" element is hovered.
       createTitleLiByHref( "#temp_tab" , "Add a new Place" );
       createTitleLiByHref( "#home" , "Click to see the Home" );
-      createTitleLiByHref( "#settings" , "Click to change settings" );
+      createTitleLiByHref( "#info" , "Click to see information" );
 
       // ********* Add Controls to the map *********
       //Add attribution to the map
@@ -295,7 +334,7 @@ if (isset($_SESSION['user_id'])) {
       ctlAttribute.addAttribution('&copy;<a href="https://github.com/codeofsumit/leaflet.pm">LeafletPM</a>');
 
       //Control scale
-      ctlScale = L.control.scale({position:'bottomright', metric:true, imperial:false, maxWidth:200}).addTo(mymap);
+      ctlScale = L.control.scale({position:'bottomright', metric:true, imperial:false, maxWidth:200, }).addTo(mymap);
       //Control Latitude and Longitude
       if (!mobileDevice){
         ctlMouseposition = L.control.mousePosition({position:'bottomright'}).addTo(mymap);
@@ -304,22 +343,92 @@ if (isset($_SESSION['user_id'])) {
       // Add the overview control to the map
       L.control.overview([mapbox_overview]).addTo(mymap);
 
-      // Adds a control using the easy button plugin
-      ctlEasybutton = L.easyButton('fa-circle', function(){
-        alert("populate");
-      }, 'NEEDTO: add a title here', {position:'topright'}).addTo(mymap);
 
-      var layerControl = L.control.layers(
+      layerControls = L.control.layers(
         {
-          '<i class="fas fa-map-marked"></i>': mapbox,
-          '<i class="fas fa-image"></i>': Esri_WorldImagery
+          '<i class="fas fa-map-marked"></i>': basemap_mapbox,
+          '<i class="fas fa-mountain"></i>': basemap_Gterrain,
+          '<i class="fas fa-globe-americas"></i>': basemap_GimageHybrid,
+          // '<i class="fas fa-image"></i>': basemap_WorldImagery
         }, null, {collapsed: false}
       ).addTo(mymap);
 
-      if (!mobileDevice){
-        // Add the Zoom control
-        var ctlZoom = L.control.zoom({position:'bottomright'}).addTo(mymap);
+
+      // Adds a control using the easy button plugin
+      ctlFinishArea = L.easyButton('fa-draw-polygon', function(control, map){
+        // alert("populate");
+      }, 'Click to complete the drawing').addTo(mymap);
+      ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(control, map){
+        // alert("populate");
+      }, 'Click to remove the last vertex').addTo(mymap);
+      ctlCancelArea = L.easyButton('fa-times-circle', function(control, map){
+        // alert("populate");
+      }, 'Click to cancel the drawing').addTo(mymap);
+      var ctlCreateAreaBar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'}).addTo(mymap);
+
+      var container = L.DomUtil.create('div', 'easy_button_label leaflet-bar leaflet-control', ctlCreateAreaBar.getContainer());
+      container.title="Tools";
+      container.innerHTML = '\
+      <i class="fas fa-draw-polygon"> Finish drawing<br /><br />\
+      <i class="fas fa-undo-alt"> Remove last vertex<br /><br />\
+      <i class="fas fa-times-circle"> Cancel Drawing<br />';
+      // styles
+      container.style.backgroundColor = 'rgba(255,255,255,0.4)';
+      container.style.marginTop = '2px';
+      container.style.marginLeft = '-135px';
+      container.style.width = '130px';
+      container.style.height = '80px';
+      // events
+      container.onmouseover = function(){
+        container.style.visibility = 'hidden';
+        container.style.opacity = '0.5';
       }
+      container.onclick = function(){
+        console.log('buttonClicked');
+        console.log(this);
+      }
+
+      // easy_button_label.appendChild(zoom.getContainer()); // works
+      jQuery('.easy-button-button').click(function() {
+    		target = jQuery('.easy-button-button').not(this);
+    		target = jQuery('.easy-button-button');
+        console.log(target);
+    		target = target.parent().find('.easy_button_label').css({
+    			'display' : 'block',
+    		});
+    	});
+
+      // Add Zoom if not in the
+      if (!mobileDevice){
+        // var ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
+        // listeners for disabling buttons
+        mymap.on('zoomend',function(e){
+          var map = e.target;
+          var max = map.getMaxZoom();
+          var min = map.getMinZoom();
+          var current = map.getZoom();
+
+          if( current < max ) zoomIn.enable()
+          if( current >= max ) zoomIn.disable()
+          if( current > min ) zoomOut.enable()
+          if( current <= min ) zoomOut.disable()
+        });
+
+        var zoomIn = L.easyButton('fa-plus',
+          function(control, map){
+            map.setZoom(map.getZoom()+1);
+          });
+        var zoomOut = L.easyButton('fa-minus',
+          function(control, map){
+            map.setZoom(map.getZoom()-1);
+          });
+        var zoomBar = L.easyBar([ zoomIn, zoomOut],{position:'topright'});
+        // zoomBar.addTo(mymap);
+        // mymap.setView({lat:50, lng:0}, 2);
+      }
+
+      // Add a custom Control
+      // mymap.addControl(new finishCreationControl());
 
       //  ********* Events on Map *********
       // # Sidebar events
@@ -327,6 +436,10 @@ if (isset($_SESSION['user_id'])) {
         previousTab = activeTab; //When the sidebar opens, it was closed before. So there was no active tab
         activeTab = null;
         sidebarOpened = false;
+
+        // mymap.removeLayer(basemap_WorldImagery);
+        // mymap.addLayer(basemap_mapbox);
+
         //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
         sidebarChange('closing');
 
@@ -401,10 +514,10 @@ if (isset($_SESSION['user_id'])) {
         // alert("LAYER HAS BEEN CHANGED.");
         // console.log(e);
         if (e.name == '<i class="fas fa-image"></i>'){
-          layerControl.addOverlay(Hydda_RoadsAndLabels, 'labels');
+          layerControls.addOverlay(Hydda_RoadsAndLabels, 'streets');
         }else{
           mymap.removeLayer(Hydda_RoadsAndLabels);
-          layerControl.removeLayer(Hydda_RoadsAndLabels);
+          layerControls.removeLayer(Hydda_RoadsAndLabels);
         }
       })
       mymap.on('contextmenu', function(e){
@@ -482,7 +595,22 @@ if (isset($_SESSION['user_id'])) {
         createMode = true; //the createMode will receive 'false' when the save button is clicked
         num_mapClick = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
         this.workingLayer = e.workingLayer;
-        // console.log(this.workingLayer);
+
+        var layer = e.workingLayer;
+        layer.on('pm:vertexadded', function(e) {
+          // e includes the new vertex, it's marker
+          // the index in the coordinates array
+          // the working layer and shape
+          console.log('vertexadded', e);
+        });
+        // also fired on the markers of the polygon
+        layer.on('pm:snap', function(e) {
+          // e includes marker, snap coordinates
+          // segment, the working layer
+          // and the distance
+          console.log('snap', e);
+        });
+
       },this);
       mymap.on('pm:create', function(e) {
         // console.log(e);
@@ -602,6 +730,7 @@ if (isset($_SESSION['user_id'])) {
             finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
             templineStyle: {color: color_line_place, weight: 2} ,
             hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
+            allowSelfIntersection: false
           };
           mymap.pm.enableDraw('Poly', drawingOptions);
         }else{
@@ -758,6 +887,8 @@ if (isset($_SESSION['user_id'])) {
             layer.bringToFront();
             //Change the style for the layer being editted
             layer.setStyle(setStyle_edit);
+            // var options = { snappable: false }; //Edit here some options for the editMode
+            // layer.pm.enable(options); //Send with option
             layer.pm.enable();
           }
         });
@@ -829,34 +960,23 @@ if (isset($_SESSION['user_id'])) {
         });
       }
     };//END toggleLyrStyle()
+    function finishCreation() {
+      /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
+      document.workingLayer._map.pm.Draw["Poly"]._finishShape();
+    }
     function removeLastVertex(){
       /* DESCRIPTION: When the layer is being drawn, for more than 2 vertices the user can remove the last vertex by pressing Ctrl+z */
       var num_vertices = document.workingLayer._latlngs.length;
-      if (num_vertices>2){
-        document.workingLayer.pm.enable();
-        var markers = document.workingLayer.pm._markers;
-        var m = markers[markers.length - 1];
-        var e = {target:m};
-        document.workingLayer.pm._removeMarker(e);
-
-        //Removing last line segment created
-        var segments = document.workingLayer.pm._map.pm.Draw.Line._map._layers;
-        //get the key of the last line segment (ls)
-        var last_ls_key = Object.keys(segments).pop();
-        segments[last_ls_key].remove();
-        delete segments[last_ls_key];
-
-        //Removing last vertex
-        var num_vertices = document.workingLayer._latlngs.length;
-        var targets = document.workingLayer.pm._map._targets;
-        var last_marker_key = Object.keys(targets)[(5+num_vertices)];
-        targets[last_marker_key].remove();
-        delete targets[last_marker_key];
-
-        document.workingLayer.pm.disable();
+      if (num_vertices>1){
+        document.workingLayer._map.pm.Draw["Poly"]._removeLastVertex();
+      }else{
+        // Draw Area
       }
     };//END removeLastVertex()
-
+    function finishCreation() {
+      /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
+      document.workingLayer._map.pm.Draw["Poly"]._finishShape();
+    }
     //  # Sidebar Functions
     function sidebarChange(e){
       /* DESCRIPTION: Global events for the sidebar. 'e' can be either "closing", "opening" or "content"*/
@@ -970,13 +1090,11 @@ if (isset($_SESSION['user_id'])) {
       }
       // alert(tab_id);
       var str_newtab = "";
-
-      str_newtab += '<div style="position:relative;">';
-      str_newtab += '<div class="col-xs-12 div_sidebar_content">';
+      str_newtab += '<div class="col-xs-12">';
       str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:10px;">';
       str_newtab +=     '<h4>Choose an attribute for the area:*</h4>';
       str_newtab +=     '<p>*Mark at least 1 attribute</p>';
-      str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>';
+      str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>'; //NEEDTO: say to user to click save button
       str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat"" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_nat">';
       str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" class="cbxsidebar" for="'+tab_id+'_cbxAtt-nat"> Naturalness</label><br />';
       str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_open">';
@@ -987,27 +1105,34 @@ if (isset($_SESSION['user_id'])) {
       str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> Upkeep</label><br />';
       str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
       str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> Historical Significance</label><br />';
-      str_newtab +=    '</div>';
-      // str_newtab += '</div>';
-      str_newtab +=    '<span id="'+tab_id+'_str_startdrawing" ><h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4></span>';
-      str_newtab +=    '<div class="col-xs-6">';
-      str_newtab +=     '<button id="'+tab_id+'_drawArea" class="btn btn-warning" onclick="drawArea(this)">';
-      str_newtab +=       '<i class="fa fa-edit"></i> Draw Area';
-      str_newtab +=     '</button>';
-      str_newtab +=     '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
-      str_newtab +=       '<i class="fa fa-save"></i> Save';
-      str_newtab +=     '</button>';
-      str_newtab +=     '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
-      str_newtab +=       '<i class="fa fa-pen"></i> Edit';
-      str_newtab +=     '</button>';
-      str_newtab +=    '</div>';
-      str_newtab +=    '<div class="col-xs-6">';
-      str_newtab +=     '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
-      str_newtab +=       '<i class="fa fa-trash-alt"></i> Remove Area';
-      str_newtab +=     '</button>';
-      str_newtab +=    '</div>';
+      str_newtab +=   '</div>';
+
+      str_newtab +=   '<div class="sidebarContentChild">';
+      str_newtab +=     '<span id="'+tab_id+'_str_startdrawing" >';
+      str_newtab +=       '<h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4>';
+      str_newtab +=     '</span>';
+      str_newtab +=   '</div>';
+      str_newtab +=   '<div class="sidebarContentChild">';
+      str_newtab +=     '<span>';
+      str_newtab +=       '<button id="'+tab_id+'_drawArea" class="btn btn-warning" onclick="drawArea(this)">';
+      str_newtab +=         '<i class="fa fa-edit"></i> Draw Area';
+      str_newtab +=       '</button>';
+      str_newtab +=       '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
+      str_newtab +=         '<i class="fa fa-save"></i> Save';
+      str_newtab +=       '</button>';
+      str_newtab +=       '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
+      str_newtab +=         '<i class="fa fa-pen"></i> Edit';
+      str_newtab +=       '</button>';
+      str_newtab +=     '</span>';
+      str_newtab +=     '<span>';
+      str_newtab +=       '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
+      str_newtab +=         '<i class="fa fa-trash-alt"></i> Remove Area';
+      str_newtab +=       '</button>';
+      str_newtab +=     '</span>';
+      str_newtab +=   '</div>';
+
       str_newtab += '</div>';
-      str_newtab += '</div>';
+
 
       var newtab_content = {
         id:   tab_id,
@@ -1367,6 +1492,38 @@ if (isset($_SESSION['user_id'])) {
       //   }
       // });
     });//end btnClose click event
+
+    //  # custom Controls
+    finishCreationControl =  L.Control.extend({
+      options: {
+        position: 'topright'
+      },
+      onAdd: function (mymap) {
+        var container = L.DomUtil.create('input');
+
+        container.type="button";
+        container.title="No cat";
+        container.value = 'Finish Layer';
+        // styles
+        container.style.backgroundColor = 'white';
+        //container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
+        container.style.backgroundSize = "30px 30px";
+        container.style.width = '100px';
+        container.style.height = '30px';
+        // events
+        container.onmouseover = function(){
+          container.style.backgroundColor = 'pink';
+        }
+        container.onmouseout = function(){
+          container.style.backgroundColor = 'white';
+        }
+        container.onclick = function(){
+          alert('buttonClicked');
+        }
+        return container;
+      }
+    });
+
     </script>
   </body>
   </html>
