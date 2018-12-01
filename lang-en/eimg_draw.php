@@ -167,8 +167,11 @@ if (isset($_SESSION['user_id'])) {
     <script>
     //  ********* Global Variables Definition *********
     var mymap;
+    var mymapOverview;
     var backgroundLayer;
+    var mapbox_overview;
     var jsn_draw;
+    var LyrHistCenter;
     var ctlFinishArea;
     var ctlRemoveLastVertex;
     var ctlCancelArea;
@@ -195,6 +198,7 @@ if (isset($_SESSION['user_id'])) {
     var setStyle_clicked = {"weight": 3.5, "fillOpacity": 0.20};
     var cntCheckedCbx;
     var finishCreationControl;
+    var firstClickLatLng;
 
     // # Logging variables
     var cnt_SidebarOpens = 0;
@@ -273,7 +277,7 @@ if (isset($_SESSION['user_id'])) {
       });
       // We can't reuse the layers from the main map for the overview, so we
       // need to create a second instance of each layer option
-      var mapbox_overview = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
+      mapbox_overview = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
         name: 'basemap'
       });
 
@@ -313,7 +317,11 @@ if (isset($_SESSION['user_id'])) {
       fgpDrawnItems.addTo(mymap);
 
       // Adding the Historical Center of Lisbon
-      var LyrHistCenter = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
+      LyrHistCenter = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
+      LyrHistCenter.on('data:loaded', function() {
+        console.log(LyrHistCenter.getBounds());
+        openInfoPopUp(LyrHistCenter.getBounds().getCenter(), "  <h4>This is the historical center of Lisbon :)   </h4>");
+      });
 
       //Global variable, in order to other functions also be able to add the "Temp tab"
       // Create elements to populate the tab and add it to the sidebar
@@ -341,7 +349,13 @@ if (isset($_SESSION['user_id'])) {
       }
 
       // Add the overview control to the map
-      L.control.overview([mapbox_overview]).addTo(mymap);
+      // mymapOverview = L.control.overview([mapbox_overview]).addTo(mymap);
+      mymapOverview = L.control.overview({
+        position: 'bottomright',
+        onAfterInitLayout: function (overview) {
+          console.log(overview);
+        }
+      }).addTo(mymap);
 
       layerControls = L.control.layers(
         {
@@ -356,46 +370,21 @@ if (isset($_SESSION['user_id'])) {
       ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
       ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
       ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(place_id, true);}, 'Click to cancel the drawing');
-      var ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'}).addTo(mymap);
+      var ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'});
 
-      var container = L.DomUtil.create('div', 'easy_button_label leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
+      var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
       container.title="Toolbar Instructions";
       container.innerHTML = '\
       <p>Finish drawing</p> \
       <p style="padding-top:5px;">Remove last vertex</p> \
       <p style="padding-top:5px;">Cancel Drawing</p>';
-      // styles: .easy_button_label
+      // styles: .infobox_for_toolbar
       // events
       container.onmouseover = function(){ container.style.visibility = 'hidden';}
 
       // Add Zoom if not in the
-      if (!mobileDevice){
-        // var ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
-        // listeners for disabling buttons
-        mymap.on('zoomend',function(e){
-          var map = e.target;
-          var max = map.getMaxZoom();
-          var min = map.getMinZoom();
-          var current = map.getZoom();
+      var ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
 
-          if( current < max ) zoomIn.enable()
-          if( current >= max ) zoomIn.disable()
-          if( current > min ) zoomOut.enable()
-          if( current <= min ) zoomOut.disable()
-        });
-
-        var zoomIn = L.easyButton('fa-plus',
-          function(control, map){
-            map.setZoom(map.getZoom()+1);
-          });
-        var zoomOut = L.easyButton('fa-minus',
-          function(control, map){
-            map.setZoom(map.getZoom()-1);
-          });
-        var zoomBar = L.easyBar([ zoomIn, zoomOut],{position:'topright'});
-        // zoomBar.addTo(mymap);
-        // mymap.setView({lat:50, lng:0}, 2);
-      }
 
       // Add a custom Control
       // mymap.addControl(new finishCreationControl());
@@ -525,9 +514,14 @@ if (isset($_SESSION['user_id'])) {
             ctlSidebar.close();
           }
         }
-        // console.log(e.layer);
       });
       mymap.on('pm:drawend', function(e) {
+        //toggle visibility of toolbar, overview map
+        ctlCreationToolbar.remove();
+        mymapOverview.addTo(mymap);
+        ctlZoom.addTo(mymap);
+        mymap.closePopup();
+
         //When the user is drawing it means that the 'place_id' should exist and it's the id of the area being drawn
         //A creation of a new area is only finished when the user clicks the save button
         createMode = false;
@@ -538,17 +532,30 @@ if (isset($_SESSION['user_id'])) {
         num_mapClick = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
         this.workingLayer = e.workingLayer;
 
+        //toggle visibility of controls when start the drawing mode
+        ctlCreationToolbar.addTo(mymap);
+        mymapOverview.remove();
+        ctlZoom.remove();
+        if ((cnt_DislikedPlaces+cnt_LikedPlaces)<=1){
+          showInfoBox();
+        }
+
         var layer = e.workingLayer;
         layer.on('pm:vertexadded', function(e) {
           // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
           // console.log('vertexadded', e);
           num_mapClick++;
+          if(num_mapClick==1){
+            firstClickLatLng = [e.latlng.lat, e.latlng.lng];
 
-          //Adding Instructions popup when the user is creating the first area on the map
-          if(createMode==true && (cnt_LikedPlaces+cnt_DislikedPlaces)==1 ){
-            if (num_mapClick==1){
-              openInfoPopUp();
+            //Adding Instructions popup when the user is creating the first area on the map
+            if( (cnt_LikedPlaces+cnt_DislikedPlaces)==1){
+              var str_popup = '';
+              str_popup += '<p>Click in this node again<br />';
+              str_popup += '<b>to finish drawing</b>';
+              openInfoPopUp(firstClickLatLng, str_popup);
             }
+
           }
 
         });
@@ -643,9 +650,6 @@ if (isset($_SESSION['user_id'])) {
     function drawArea(button_clicked_properties){
       /* DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
       // Passing the ID gotten from the id of the button clicked to the global variable in order to be accesed in the anonymous functions
-      if ((cnt_DislikedPlaces+cnt_LikedPlaces)<=2){
-        showInfoBoxCreation();
-      }
       if (createMode==false){
         place_id = ((button_clicked_properties.id).split("_"))[0];
         if (log_functions){console.log('drawArea', place_id);}
@@ -901,8 +905,17 @@ if (isset($_SESSION['user_id'])) {
       var num_vertices = document.workingLayer._latlngs.length;
       if (num_vertices>=3){
         document.workingLayer._map.pm.Draw["Poly"]._finishShape();
+      }else if(num_vertices>=1){
+        //At least one click was given, so firstClickLatLng exists
+        var str_popup = '';
+        str_popup += '<p>Please, add at least <br />';
+        str_popup += '<b>3 vertices</b>';
+        openInfoPopUp(firstClickLatLng, str_popup);
       }else{
-        alert("Please, add at least 3 vertices")
+        var str_popup = '';
+        str_popup += '<p>Please, add at least <br />';
+        str_popup += '<b>3 vertices</b>';
+        openInfoPopUp(mymap.getCenter(), str_popup);
       }
     }
     function removeLastVertex(){
@@ -914,20 +927,16 @@ if (isset($_SESSION['user_id'])) {
         restartDraw();
       }
     };//END removeLastVertex()
-    function finishCreation() {
-      /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
-      document.workingLayer._map.pm.Draw["Poly"]._finishShape();
-    }
     function cancelCreation() {
       /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
       document.workingLayer._triggerClick();
     }
-    function showInfoBoxCreation(){
+    function showInfoBox(){
       /* DESCRIPTION: Shows a Information Box to the user in order to know how to use the CreationToolbar*/
-      $('.easy_button_label').css('visibility','visible');
+      $('.infobox_for_toolbar').css('visibility','visible');
       //hide after 4 seconds
       setTimeout(function() {
-        $('.easy_button_label').css('visibility','hidden');
+        $('.infobox_for_toolbar').css('visibility','hidden');
       }, 10000);
     }
     function restartDraw(lyrDraw){
@@ -945,7 +954,7 @@ if (isset($_SESSION['user_id'])) {
       var button_drawArea_id = place_id+"_drawArea";
       document.getElementById(button_drawArea_id).click();
     }
-    function openInfoPopUp(popup_position, popup_content, duration_open){
+    function openInfoPopUp(popup_position, popup_content, duration_open=5000){
       var popup_options = {
         // 'autoClose':	false,
         'closeOnClick':	false,
@@ -954,7 +963,6 @@ if (isset($_SESSION['user_id'])) {
       //close any popup if open
       mymap.closePopup();
       var infoPopUp = L.popup(popup_options)
-      // .setLatLng([e.latlng.lat, e.latlng.lng])
       .setLatLng(popup_position)
       .setContent(popup_content)
       .openOn(mymap);
@@ -969,8 +977,6 @@ if (isset($_SESSION['user_id'])) {
       cnt_test++;
       // get the active Tab the sidebar founds itself. if 'e'=="closing", clickedTab == null
       var clickedTab = getActiveTabId(true);
-      //close all popup in the map if any is open
-      mymap.closePopup();
 
       //Always refresh the Temp Tab when occurs a sidebar Change
       if( (clickedTab!='#temp_tab') && ((cnt_LikedPlaces + cnt_DislikedPlaces) < 6) ){
