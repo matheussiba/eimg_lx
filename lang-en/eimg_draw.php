@@ -88,7 +88,10 @@ if (isset($_SESSION['user_id'])) {
           Information<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
         </h1>
 
-        <div class="sidebarContentParent">
+        <div>
+          Informações serão adicionadas no domingo: 01/12/2018
+        </div>
+        <!-- <div class="sidebarContentParent">
           <div class="sidebarContentChild">
               <span> Elem 1 </span>
           </div>
@@ -106,10 +109,10 @@ if (isset($_SESSION['user_id'])) {
           <div class="sidebarContentChild">
             <span>
               video
-              <!-- <iframe width="448" height="252" src="http://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+              <iframe width="448" height="252" src="http://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </span>
           </div>
-        </div>
+        </div> -->
 
 
 
@@ -1365,7 +1368,9 @@ if (isset($_SESSION['user_id'])) {
     //  # jQuery Functions
     $( "#btn_Finish" ).click(function(){
       if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
-        if ( (cnt_LikedPlaces >= 1) && (cnt_DislikedPlaces >= 1) ){
+        // NEED TO: come back to previous situation
+        // if ( (cnt_LikedPlaces >= 1) && (cnt_DislikedPlaces >= 1) ){
+        if ( (cnt_LikedPlaces >= 4) && (cnt_DislikedPlaces >= 4) ){
           var cnt = 0;
           var cnt_feat = fgpDrawnItems.getLayers().length;
           fgpDrawnItems.eachLayer(function(layer){
@@ -1460,6 +1465,8 @@ if (isset($_SESSION['user_id'])) {
 
           //Shows the modal
           $("#dlgUsabilityQuest").show();
+        }else if ((cnt_LikedPlaces + cnt_DislikedPlaces) >= 3) {
+          alert("PARABÉNS!! Muito Obrigado por me ajudar a testar o site! Você é maravilhos@!!! :) Mas mexa mais um pouco nele. Tente encontrar algum 'bug' ou qualquer DEFEITO ou qualquer coisa que vc não gostou. Anote para depois me dizer! :)");
         }else if ((cnt_LikedPlaces >= 1) && (cnt_DislikedPlaces == 0)){
           alert("A DISLIKED place is missing. Please, draw it to proceed!");
         }else if ((cnt_LikedPlaces == 0) && (cnt_DislikedPlaces >= 1)){
