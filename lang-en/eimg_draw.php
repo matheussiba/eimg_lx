@@ -307,6 +307,14 @@ if (isset($_SESSION['user_id'])) {
         maxBoundsViscosity: 1.0
       });
 
+      // Adding the Historical Center of Lisbon
+      LyrHistCenter = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
+      LyrHistCenter.on('data:loaded', function() {
+        console.log(LyrHistCenter.getBounds());
+        mymap.fitBounds(LyrHistCenter.getBounds());
+        openInfoPopUp(LyrHistCenter.getBounds().getCenter(), "  <h4>This is the<br />historical center<br />of Lisbon :)   </h4>");
+      });
+
       //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
       ctlSidebar = L.control.sidebar({
         container:'sidebar_div',
@@ -318,13 +326,6 @@ if (isset($_SESSION['user_id'])) {
       fgpDrawnItems = new L.FeatureGroup();
       mymap.addLayer(fgpDrawnItems);
       fgpDrawnItems.addTo(mymap);
-
-      // Adding the Historical Center of Lisbon
-      LyrHistCenter = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
-      LyrHistCenter.on('data:loaded', function() {
-        console.log(LyrHistCenter.getBounds());
-        openInfoPopUp(LyrHistCenter.getBounds().getCenter(), "  <h4>This is the historical center of Lisbon :)   </h4>");
-      });
 
       //Global variable, in order to other functions also be able to add the "Temp tab"
       // Create elements to populate the tab and add it to the sidebar
@@ -386,8 +387,9 @@ if (isset($_SESSION['user_id'])) {
       container.onmouseover = function(){ container.style.visibility = 'hidden';}
 
       // Add Zoom if not in the
-      var ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
-
+      if (!mobileDevice){
+        var ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
+      }
 
       // Add a custom Control
       // mymap.addControl(new finishCreationControl());
@@ -522,7 +524,9 @@ if (isset($_SESSION['user_id'])) {
         //toggle visibility of toolbar, overview map
         ctlCreationToolbar.remove();
         mymapOverview.addTo(mymap);
-        ctlZoom.addTo(mymap);
+        if (!mobileDevice){
+          ctlZoom.addTo(mymap);
+        }
         mymap.closePopup();
 
         //When the user is drawing it means that the 'place_id' should exist and it's the id of the area being drawn
@@ -538,7 +542,9 @@ if (isset($_SESSION['user_id'])) {
         //toggle visibility of controls when start the drawing mode
         ctlCreationToolbar.addTo(mymap);
         mymapOverview.remove();
-        ctlZoom.remove();
+        if (!mobileDevice){
+          ctlZoom.remove();
+        }
         if ((cnt_DislikedPlaces+cnt_LikedPlaces)<=1){
           showInfoBox();
         }
@@ -656,12 +662,22 @@ if (isset($_SESSION['user_id'])) {
       if (createMode==false){
         place_id = ((button_clicked_properties.id).split("_"))[0];
         if (log_functions){console.log('drawArea', place_id);}
+
+        document.getElementById(place_id+"_str_startdrawing").innerHTML ="";
         document.getElementById(place_id+"_removeArea").style.display="block";
+        document.getElementById(place_id+"_createNewArea").style.display="block";
+        if((cnt_LikedPlaces+cnt_DislikedPlaces)==6){
+          console.log("######## here");
+          var elementsOfClass= document.getElementsByClassName('createNewAreaClass');
+          for (var i = 0; i < elementsOfClass.length; i++) {
+            elementsOfClass[i].style.display = "none";
+          }
+        }
 
-        document.getElementById(place_id+"_str_startdrawing").innerHTML ="<h4>And now, what do you want to do? </h4>";
-        console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
-
+        // console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
         ctlSidebar.close();
+
+
         if (place_id.split("-")[0] == "liked") {
           color_line_place = "forestgreen";
           color_fill_place = "#0F0";
@@ -679,7 +695,6 @@ if (isset($_SESSION['user_id'])) {
           allowSelfIntersection: false
         };
         mymap.pm.enableDraw('Poly', drawingOptions);
-
       }
     }//END drawArea()
     function saveArea(button_clicked_properties){
@@ -875,6 +890,14 @@ if (isset($_SESSION['user_id'])) {
             }
           });
         }
+
+        //Once an area is removed a new place could be added again
+        // Showing the 'Create New Area' button
+        var elementsOfClass= document.getElementsByClassName('createNewAreaClass');
+        for (var i = 0; i < elementsOfClass.length; i++) {
+          elementsOfClass[i].style.display = "block";
+        }
+
         editMode = false;
         createMode = false;
         deleteTabByHref('#'+place_id, close_sidebar);
@@ -1084,7 +1107,7 @@ if (isset($_SESSION['user_id'])) {
       // alert(tab_id);
       var str_newtab = "";
       str_newtab += '<div class="col-xs-12">';
-      str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:10px;">';
+      str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:2px;">';
       str_newtab +=     '<h4>Choose an attribute for the area:*</h4>';
       str_newtab +=     '<p>*Mark at least 1 attribute</p>';
       str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>'; //NEEDTO: say to user to click save button
@@ -1124,13 +1147,25 @@ if (isset($_SESSION['user_id'])) {
       str_newtab +=     '</span>';
       str_newtab +=   '</div>';
 
+      str_newtab +=   '<div id="'+tab_id+'_createNewArea" class="sidebarContentChild createNewAreaClass" style="display:none;">';
+      str_newtab +=     '<span>';
+      str_newtab +=       '<h5>';
+      str_newtab +=         'or: ';
+      str_newtab +=       '</h5>';
+      str_newtab +=     '</span>';
+      str_newtab +=     '<span>';
+      str_newtab +=       '<button id="btn_goInfoTab" class="btn btn-default btn-block" onclick="ctlSidebar.open(\'temp_tab\')"><i class="fa fa-plus"></i> Create New Area</button>';
+      str_newtab +=     '</span>';
+      str_newtab +=   '</div>';
+      // <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
+
       str_newtab += '</div>';
 
 
       var newtab_content = {
         id:   tab_id,
         tab:  '<i class="fa fa-'+icon+'"></i>',
-        title: title+
+        title: '<input class="sidebarTitle" type="text" maxlength="32" name='+title+' value='+title+'>'+
         '<span class="leaflet-sidebar-close" onclick="(function(){ctlSidebar.close()})">'+
         '<i class="fa fa-chevron-circle-left"></i>'+
         '</span>',
@@ -1186,12 +1221,12 @@ if (isset($_SESSION['user_id'])) {
       str_temptab +=    '<div class="sidebarContentChild">';
       str_temptab +=     '<span>';
       str_temptab +=        '<button class="btn btn-success" onclick="create_placeTab(\'liked\')" '+statusAddLikeButton+'>';
-      str_temptab +=          '<i class="fa fa-thumbs-up"></i>Liked Place';
+      str_temptab +=          '<i class="fa fa-thumbs-up"></i> Liked Place';
       str_temptab +=        '</button>';
       str_temptab +=     '</span>';
       str_temptab +=    '<span>';
       str_temptab +=        '<button class="btn btn-danger" onclick="create_placeTab(\'disliked\')" '+statusAddDislikeButton+'>';
-      str_temptab +=          '<i class="fa fa-thumbs-down"></i>Disliked Place';
+      str_temptab +=          '<i class="fa fa-thumbs-down"></i> Disliked Place';
       str_temptab +=       '</button>';
       str_temptab +=    '</span>';
       str_temptab +=   '</div>';

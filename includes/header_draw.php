@@ -107,9 +107,18 @@ crossorigin=""></script>
   text-align: left !important;
 }
 
+/* ### CSS for the sidebar */
 /* Sidebar content, elements equally spaced. To see better what's going one, comment it out the part of "border: 1px solid gray;" */
 div.sidebarContentParent{
   padding-top: 5px;
+}
+
+input[type="text"].sidebarTitle
+{
+    background: transparent;
+    border: none;
+    height: 30px;
+    width: 280px;
 }
 
 div.sidebarContentChild{
@@ -126,7 +135,6 @@ div.sidebarContentChild span {
   /* border: 1px solid gray; */
 }
 
-/* ### CSS for the sidebar */
 .leaflet-sidebar-content{
   background-color: rgba(256, 256, 256, 0.7);
 }
