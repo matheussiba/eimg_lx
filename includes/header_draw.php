@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <title>eimg Lisbon - Demo Version</title>
-
+  <link rel="icon" href="../resources/images/favicon.png">
   <!-- Adding CSS files -->
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/bootstrap-3.3.7.min.css"/>

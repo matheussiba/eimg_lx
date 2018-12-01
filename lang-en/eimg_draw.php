@@ -48,7 +48,7 @@ if (isset($_SESSION['user_id'])) {
         <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
           Home<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
         </h1>
-
+        <h3 style="text-align: center;"><b>Welcome!</b></h3>
         <div id="text_sidebar_home_1" style="text-align: justify;text-justify: inter-word; padding-top: 5px;">
           <h4 style="padding-bottom: 5px;">
             After you create at least 2 areas (1 liked and 1 disliked) come here again and press:
@@ -208,8 +208,10 @@ if (isset($_SESSION['user_id'])) {
     var cnt_SidebarChangeTab = 0;
     var cnt_LikedPlaces = 0;
     var cnt_DislikedPlaces = 0;
-    var num_mapClick;
-
+    var cnt_zoomInExceeded = 0;
+    var cnt_zoomOutExceeded = 0;
+    var cnt_clickPerCreatedPolygon;
+    var cnt_movechange = 0;
     var log_functions = true;
     // # To Delete
     var cnt_test = 0;
@@ -300,20 +302,16 @@ if (isset($_SESSION['user_id'])) {
         layers: basemap_mapbox,
         zoom:14,
         maxZoom: 18,
-        minZoom: 14,
+        minZoom: 13,
         attributionControl:false,
         zoomControl:false,
         maxBounds: mybounds,
         maxBoundsViscosity: 1.0
       });
 
+
       // Adding the Historical Center of Lisbon
       LyrHistCenter = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
-      LyrHistCenter.on('data:loaded', function() {
-        console.log(LyrHistCenter.getBounds());
-        mymap.fitBounds(LyrHistCenter.getBounds());
-        openInfoPopUp(LyrHistCenter.getBounds().getCenter(), "  <h4>This is the<br />historical center<br />of Lisbon :)   </h4>");
-      });
 
       //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
       ctlSidebar = L.control.sidebar({
@@ -395,6 +393,19 @@ if (isset($_SESSION['user_id'])) {
       // mymap.addControl(new finishCreationControl());
 
       //  ********* Events on Map *********
+      // # GeoJSON events
+      LyrHistCenter.on('data:loaded', function() {
+        console.log(LyrHistCenter.getBounds());
+        mymap.fitBounds(LyrHistCenter.getBounds());
+        openInfoPopUp(LyrHistCenter.getBounds().getCenter(), "  <h4>This is the<br />historical center<br />of Lisbon :)   </h4>");
+      });
+      LyrHistCenter.on('click', function(e) {
+        if(!createMode || !editMode ){
+          var clickLatLng = [e.latlng.lat, e.latlng.lng];
+          openInfoPopUp(clickLatLng, "  <h5>This is the<br />historical center<br />of Lisbon :)   </h5>", 1000);
+        }
+      });
+
       // # Sidebar events
       ctlSidebar.on('closing',function(){
         previousTab = activeTab; //When the sidebar opens, it was closed before. So there was no active tab
@@ -476,11 +487,37 @@ if (isset($_SESSION['user_id'])) {
       // # Map events
       mymap.on("moveend", function () {
         // console.log(mymap.getCenter().toString());
-        // alert("moveend");
+        // if(cnt_movechange>1){
+        //   alert("STOP "+ cnt_movechange.toString());
+        //   cnt_movechange = 0;
+        // }else{
+        //   cnt_movechange = 0;
+        // }
+
       });
-      mymap.on("movestart", function () {
+      mymap.on("movestart", function (e) {
         // console.log(mymap.getCenter().toString());
-        // alert("movestar");
+        console.log(e);
+        // var mapClickedPositon = [e.latlng.lat, e.latlng.lng];
+
+        var cntMousePosition = 0;
+
+        // cnt_movechange++;
+        // console.log("MoveStart:",cnt_movechange);
+      });
+      mymap.on("zoomend", function () {
+        // console.log(mymap.getCenter().toString());
+        if(mymap.getZoom()==13){
+          cnt_zoomOutExceeded++;
+          if( cnt_zoomOutExceeded<5)  openInfoPopUp(mymap.getCenter(), "<h5>Minimum zoom exceeded!</h5>",1000 );
+          setTimeout(function(){
+            mymap.setZoom(14);
+          }, 400);
+        }
+        if(mymap.getZoom()==18 && cnt_zoomInExceeded<1){
+          cnt_zoomInExceeded++;
+          openInfoPopUp(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
+        }
       });
       mymap.on('baselayerchange', function(e){
         // alert("LAYER HAS BEEN CHANGED.");
@@ -536,7 +573,7 @@ if (isset($_SESSION['user_id'])) {
       mymap.on('pm:drawstart', function(e) {
         //A new layer has started to be drawn.
         createMode = true; //the createMode will receive 'false' when the save button is clicked
-        num_mapClick = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
+        cnt_clickPerCreatedPolygon = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
         this.workingLayer = e.workingLayer;
 
         //toggle visibility of controls when start the drawing mode
@@ -553,8 +590,8 @@ if (isset($_SESSION['user_id'])) {
         layer.on('pm:vertexadded', function(e) {
           // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
           // console.log('vertexadded', e);
-          num_mapClick++;
-          if(num_mapClick==1){
+          cnt_clickPerCreatedPolygon++;
+          if(cnt_clickPerCreatedPolygon==1){
             firstClickLatLng = [e.latlng.lat, e.latlng.lng];
 
             //Adding Instructions popup when the user is creating the first area on the map
@@ -667,7 +704,7 @@ if (isset($_SESSION['user_id'])) {
         document.getElementById(place_id+"_removeArea").style.display="block";
         document.getElementById(place_id+"_createNewArea").style.display="block";
         if((cnt_LikedPlaces+cnt_DislikedPlaces)==6){
-          console.log("######## here");
+          // Number of added places reached. Block the option to create new area
           var elementsOfClass= document.getElementsByClassName('createNewAreaClass');
           for (var i = 0; i < elementsOfClass.length; i++) {
             elementsOfClass[i].style.display = "none";
@@ -676,7 +713,6 @@ if (isset($_SESSION['user_id'])) {
 
         // console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
         ctlSidebar.close();
-
 
         if (place_id.split("-")[0] == "liked") {
           color_line_place = "forestgreen";
