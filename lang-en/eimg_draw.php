@@ -50,23 +50,26 @@
             <span class="language-pt">Início</span>
             <span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
           </h1>
-          <h3 style="text-align: center;"><b>Welcome!</b></h3>
-          <br />
-          <!-- Button trigger modal -->
-          <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-          Launch demo modal
-        </button> -->
-        <button type="button" class="btn btn-primary" onclick="openModal()">
-          Open Modal
-        </button>
-        <br />
-        <div id="text_sidebar_home_1" style="text-align: justify;text-justify: inter-word; padding-top: 5px;">
-          <h4 style="padding-bottom: 5px;">
-            After you create at least 2 areas (1 liked and 1 disliked) come here again and press:
-          </h4>
+
+          <div style="padding-top:10px;text-align:center;">
+            <span style="font-size:24px; padding-top:-20px;margin-top:-20px;vertical-align: middle;"><b>Welcome to </b></span>
+            <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" style="width:30%;margin-top:-5px">
+          </div>
+
+        <div id="text_sidebar_home_1" style="text-align: justify;text-justify: inter-word; padding-top: 15px;">
+          <p style="font-size:14px; padding-bottom: 0px;margin-top:0px;">
+            Please, draw in the map at least 2 areas:
+          </p>
+          <ul>
+            <li style="font-size:14px;">1 liked area (max: 3)</li>
+            <li style="font-size:14px;">1 disliked area (max: 3)</li>
+          </ul>
+          <p style="font-size:14px;">
+            Whenever you're done, come back here and click the 'Finish' button in order to see the result of all participants.
+          </p>
           <button id='btn_Finish' class='btn btn-info btn-block'>Finish...</button>
         </div>
-
+        <hr />
         <div class="sidebarContentParent">
           <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
             <span>
@@ -100,6 +103,9 @@
         </h1>
 
         <div>
+          <div style="text-align:center;padding: 0; margin: 0; margin-top:5px">
+            <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: auto; margin-right: auto; width: 50%;">
+          </div>
           Informações serão adicionadas no domingo: 01/12/2018
         </div>
         <!-- <div class="sidebarContentParent">

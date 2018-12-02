@@ -117,7 +117,8 @@ if (isset($_SESSION['user_id'])) {
                 <td><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
                 <td><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
               </tr>
-              <!-- input: -->
+              <!-- input: would people like this way to send  -->
+              <!-- input: would people like this way to send Would you like this evaluative approach to send feedback to your city council? -->
             </tbody>
           </table>
         </div>

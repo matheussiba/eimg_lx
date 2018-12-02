@@ -10,6 +10,9 @@ html,body {
   margin: 0px;
   padding: 0px
 }
+p{
+  font-size: 14px;
+}
 #header {
   /* height: 75px; */
   height:4vh;
@@ -92,7 +95,7 @@ input[type="checkbox"].cbxsidebar{
 }
 
 .survey_sus{
-  
+
 }
 
 
