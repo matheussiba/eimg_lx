@@ -164,13 +164,22 @@
 	  display: none;
 	}
 
-	/* ### CSS for the Modal DIV  */
-	/* ### CSS for the Modal DIV  */
+	/* ### CSS for changing bootstrap classes  */
+
+	.btn {
+		border-radius: 24px;
+	}
+
+	.btn-light, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+	    border: 1px solid black !important;
+	}
+
+	.btn-light{
+		background-color: white;
+	}
+
 	.modal {
 		z-index: 10001;
-	  /* width: 100%;
-	  height: 100%;
-	  display: none; */
 	  background-color: rgba(0,0,0,0.4);
 	}
 	.modal-content {

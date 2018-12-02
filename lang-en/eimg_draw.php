@@ -64,7 +64,7 @@ if (isset($_SESSION['user_id'])) {
               </p>
             </span>
               <span>
-              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('temp_tab')"><i class="fa fa-plus"></i> Draw Area</button>
+              <button id='btn_goInfoTab' class='btn btn-light btn-block' onclick="ctlSidebar.open('temp_tab')"><i class="fa fa-plus"></i> Draw Area</button>
             </span>
           </div>
           <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
@@ -74,7 +74,7 @@ if (isset($_SESSION['user_id'])) {
               </p>
             </span>
               <span>
-              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('info')"><i class="fa fa-info-circle"></i> Information </button>
+              <button id='btn_goInfoTab' class='btn btn-light btn-block' onclick="ctlSidebar.open('info')"><i class="fa fa-info-circle"></i> Information </button>
             </span>
           </div>
         </div>
@@ -1180,7 +1180,7 @@ if (isset($_SESSION['user_id'])) {
       str_newtab +=       '</h5>';
       str_newtab +=     '</span>';
       str_newtab +=     '<span>';
-      str_newtab +=       '<button id="btn_goInfoTab" class="btn btn-default btn-block" onclick="ctlSidebar.open(\'temp_tab\')"><i class="fa fa-plus"></i> Create New Area</button>';
+      str_newtab +=       '<button id="btn_goInfoTab" class="btn btn-light btn-block" onclick="ctlSidebar.open(\'temp_tab\')"><i class="fa fa-plus"></i> Create New Area</button>';
       str_newtab +=     '</span>';
       str_newtab +=   '</div>';
       // <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
