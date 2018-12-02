@@ -64,7 +64,7 @@ if (isset($_SESSION['user_id'])) {
               </p>
             </span>
               <span>
-              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('temp_tab')"><i class="fa fa-plus"></i> Create New Tab</button>
+              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('temp_tab')"><i class="fa fa-plus"></i> Draw Area</button>
             </span>
           </div>
           <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
@@ -74,7 +74,7 @@ if (isset($_SESSION['user_id'])) {
               </p>
             </span>
               <span>
-              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('info')"><i class="fa fa-info-circle"></i> Info Tab</button>
+              <button id='btn_goInfoTab' class='btn btn-default btn-block' onclick="ctlSidebar.open('info')"><i class="fa fa-info-circle"></i> Information </button>
             </span>
           </div>
         </div>
@@ -89,6 +89,12 @@ if (isset($_SESSION['user_id'])) {
         </h1>
 
         <div>
+          <br />
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Launch demo modal
+          </button>
+          <br />
           Informações serão adicionadas no domingo: 01/12/2018
         </div>
         <!-- <div class="sidebarContentParent">
@@ -123,43 +129,27 @@ if (isset($_SESSION['user_id'])) {
     <!-- <button id="btn_test">TEST</button> -->
 
     <!-- ###############  Div that contains the Modal ############### -->
-    <div id="dlgUsabilityQuest" class="modal">
-      <div id='form' class="modal-content col-md-7 col-md-offset-4">
-        <div class="form-group row">
-          <div class="col-sm-2">
-            <span id="idDisplay" class="pull-right btnClose">x</span>
+    <div id="dlgUsabilityQuest" style="display:none;">
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          <div class="col-sm-8">
-            <h4>Usability Questionary</h4>
+          <div class="modal-body">
+            ...
           </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-6">
-            <input type="text" class="form-control" id="latitude" placeholder="Latitude">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" id="longitude" placeholder="Longitude">
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-6">
-            <select id="category" class="form-control">
-              <option value="Park">Park</option>
-              <option value="Museum">Museum</option>
-              <option value="Place">Place</option>
-              <option value="Neighborhood">Neighborhood</option>
-              <option value="Pueblo Magico">Pueblo Magico</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-12">
-            <input type="text" class="form-control" id="website" placeholder="Web URL">
-          </div>
-        </div>
-        <div id="editButtons">
-          <button id="btnUpdate" class="btn btn-primary">Submit</button>
-          <button class="btn btn-danger pull-right btnClose">Close</button>
         </div>
       </div>
     </div>
@@ -185,10 +175,10 @@ if (isset($_SESSION['user_id'])) {
     var statusAddLikeButton = "";
     var statusAddDislikeButton = "";
     var temp_tab_content;
-    var color_line_place;
-    var color_fill_place;
+    var color_line_area;
+    var color_fill_area;
     var fgpDrawnItems;
-    var place_id;
+    var area_id;
     var previousTab;
     var activeTab;
     var sidebarOpened;
@@ -206,8 +196,8 @@ if (isset($_SESSION['user_id'])) {
     // # Logging variables
     var cnt_SidebarOpens = 0;
     var cnt_SidebarChangeTab = 0;
-    var cnt_LikedPlaces = 0;
-    var cnt_DislikedPlaces = 0;
+    var cnt_LikedAreas = 0;
+    var cnt_DislikedAreas = 0;
     var cnt_zoomInExceeded = 0;
     var cnt_zoomOutExceeded = 0;
     var cnt_clickPerCreatedPolygon;
@@ -332,7 +322,7 @@ if (isset($_SESSION['user_id'])) {
       // When the li element containing the "a" element of "href=={id}" is clicked. The "div" of "id=={id}" will be opened.
       ctlSidebar.addPanel(returnTempTabContent());
       // Creates the title, to appear when the "li" element is hovered.
-      createTitleLiByHref( "#temp_tab" , "Add a new Place" );
+      createTitleLiByHref( "#temp_tab" , "Add a new Area" );
       createTitleLiByHref( "#home" , "Click to see the Home" );
       createTitleLiByHref( "#info" , "Click to see information" );
 
@@ -371,7 +361,7 @@ if (isset($_SESSION['user_id'])) {
       // Adds a control using the easy button plugin
       ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
       ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
-      ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(place_id, true);}, 'Click to cancel the drawing');
+      ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(area_id, true);}, 'Click to cancel the drawing');
       var ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'});
 
       var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
@@ -421,7 +411,7 @@ if (isset($_SESSION['user_id'])) {
         //When closing the sidebar it's in the editMode and createMode==false, force the user to give an attribute to the area
         if(editMode){
           // if(createMode==false){
-            //count the number of checkbox checked for the place_id
+            //count the number of checkbox checked for the area_id
             countCheckCbx();
             if(cntCheckedCbx == 0){
               // No attribute was selected
@@ -436,7 +426,7 @@ if (isset($_SESSION['user_id'])) {
         console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM",
          createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
 
-        if(cnt_LikedPlaces+cnt_DislikedPlaces<6){
+        if(cnt_LikedAreas+cnt_DislikedAreas<6){
           document.getElementById('dynamic-icon-tab').className = 'fa fa-plus';
         }
 
@@ -445,7 +435,7 @@ if (isset($_SESSION['user_id'])) {
         cnt_SidebarOpens++;
         //because the context event fires the opening event (if sidebar is closed), the following variable is to know the status of the sidebar, in order to organize the previous and active tab in the 'content' event.
         sidebarOpened = true;
-        //Mimics a sidebar click, to change the background of the icon to blue, if the tab opened is a liked or disliked place
+        //Mimics a sidebar click, to change the background of the icon to blue, if the tab opened is a liked or disliked area
         sidebarChange('opening');
         if (createMode){
           warnFinishCreation();
@@ -465,7 +455,7 @@ if (isset($_SESSION['user_id'])) {
 
         if(editMode){
           // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
-          if (activeTab != place_id){ saveArea(); }
+          if (activeTab != area_id){ saveArea(); }
         }
 
         //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
@@ -475,7 +465,7 @@ if (isset($_SESSION['user_id'])) {
           // Set style of layer based on the sidebar status
           toggleLyrStyle(activeTab, setStyle_edit);
           // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
-          if (activeTab != place_id) saveArea();
+          if (activeTab != area_id) saveArea();
         }else{
           toggleLyrStyle(activeTab, setStyle_clicked);
         }
@@ -533,7 +523,7 @@ if (isset($_SESSION['user_id'])) {
         /* DESCRIPTION: listener when a click is given on the map  */
         // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
         if(editMode){
-          //if in editMode or createMode the place_id is already set to be accessed in the function
+          //if in editMode or createMode the area_id is already set to be accessed in the function
           saveArea();
         }
       });
@@ -566,7 +556,7 @@ if (isset($_SESSION['user_id'])) {
         }
         mymap.closePopup();
 
-        //When the user is drawing it means that the 'place_id' should exist and it's the id of the area being drawn
+        //When the user is drawing it means that the 'area_id' should exist and it's the id of the area being drawn
         //A creation of a new area is only finished when the user clicks the save button
         createMode = false;
       });
@@ -582,7 +572,7 @@ if (isset($_SESSION['user_id'])) {
         if (!mobileDevice){
           ctlZoom.remove();
         }
-        if ((cnt_DislikedPlaces+cnt_LikedPlaces)<=1){
+        if ((cnt_DislikedAreas+cnt_LikedAreas)<=1){
           showInfoBox();
         }
 
@@ -595,7 +585,7 @@ if (isset($_SESSION['user_id'])) {
             firstClickLatLng = [e.latlng.lat, e.latlng.lng];
 
             //Adding Instructions popup when the user is creating the first area on the map
-            if( (cnt_LikedPlaces+cnt_DislikedPlaces)==1){
+            if( (cnt_LikedAreas+cnt_DislikedAreas)==1){
               var str_popup = '';
               str_popup += '<p>Click in this node again<br />';
               str_popup += '<b>to finish drawing</b>';
@@ -629,9 +619,9 @@ if (isset($_SESSION['user_id'])) {
         var feature = lyrDraw.feature = lyrDraw.feature || {};
         feature.type = feature.type || "Feature"; //Could be the name we want
         var props = feature.properties = feature.properties || {};
-        props.id = place_id;
+        props.id = area_id;
         //General style
-        lyrDraw.setStyle({"color": color_line_place, "opacity": 0.75, 'fillColor': color_fill_place });
+        lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
 
         jsn_draw=lyrDraw.toGeoJSON().geometry;
         //Count the number of coordinates inside the JSON geometry.
@@ -649,7 +639,7 @@ if (isset($_SESSION['user_id'])) {
           alert("The area drawn is too small\nPlease draw it again!");
           // Start a new draw again
           mymap.removeLayer(lyrDraw);
-          var button_drawArea_id = place_id+"_drawArea";
+          var button_drawArea_id = area_id+"_drawArea";
           document.getElementById(button_drawArea_id).click();
           return;
         }
@@ -663,15 +653,15 @@ if (isset($_SESSION['user_id'])) {
         fgpDrawnItems.addLayer(lyrDraw);
         // console.log("length ftGroup: ",fgpDrawnItems.getLayers().length  );
 
-        document.getElementById(place_id+"_drawArea").style.display="none";
-        document.getElementById(place_id+"_saveArea").style.display="block";
+        document.getElementById(area_id+"_drawArea").style.display="none";
+        document.getElementById(area_id+"_saveArea").style.display="block";
         //Show attributes div
-        document.getElementById(place_id+"_divChosenAttr").style.display = "block";
+        document.getElementById(area_id+"_divChosenAttr").style.display = "block";
 
         // Enabling edit to the layer
         fgpDrawnItems.eachLayer(function(layer){
           var layer_id = layer.feature.properties.id;
-          if(layer_id == place_id){
+          if(layer_id == area_id){
             //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user clicks save
             editMode = true;
             layer.setStyle(setStyle_edit);
@@ -681,7 +671,7 @@ if (isset($_SESSION['user_id'])) {
         });
 
         //Open the sidebar
-        if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
+        if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
 
       });//pm:create
 
@@ -697,50 +687,50 @@ if (isset($_SESSION['user_id'])) {
       /* DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
       // Passing the ID gotten from the id of the button clicked to the global variable in order to be accesed in the anonymous functions
       if (createMode==false){
-        place_id = ((button_clicked_properties.id).split("_"))[0];
-        if (log_functions){console.log('drawArea', place_id);}
+        area_id = ((button_clicked_properties.id).split("_"))[0];
+        if (log_functions){console.log('drawArea', area_id);}
 
-        document.getElementById(place_id+"_str_startdrawing").innerHTML ="";
-        document.getElementById(place_id+"_removeArea").style.display="block";
-        document.getElementById(place_id+"_createNewArea").style.display="block";
-        if((cnt_LikedPlaces+cnt_DislikedPlaces)==6){
-          // Number of added places reached. Block the option to create new area
+        document.getElementById(area_id+"_str_startdrawing").innerHTML ="";
+        document.getElementById(area_id+"_removeArea").style.display="block";
+        document.getElementById(area_id+"_createNewArea").style.display="block";
+        if((cnt_LikedAreas+cnt_DislikedAreas)==6){
+          // Number of added areas reached. Block the option to create new area
           var elementsOfClass= document.getElementsByClassName('createNewAreaClass');
           for (var i = 0; i < elementsOfClass.length; i++) {
             elementsOfClass[i].style.display = "none";
           }
         }
 
-        // console.log(document.getElementById(place_id+"_str_startdrawing").innerHTML );
+        // console.log(document.getElementById(area_id+"_str_startdrawing").innerHTML );
         ctlSidebar.close();
 
-        if (place_id.split("-")[0] == "liked") {
-          color_line_place = "forestgreen";
-          color_fill_place = "#0F0";
+        if (area_id.split("-")[0] == "liked") {
+          color_line_area = "forestgreen";
+          color_fill_area = "#0F0";
         }else{
-          color_line_place = "#F00";
-          color_fill_place = "#F00";
+          color_line_area = "#F00";
+          color_fill_area = "#F00";
         }
         var drawingOptions = {
           // snapping
           snappable: true,
           snapDistance: 15,
           finishOn: 'contextmenu', // example events: 'mouseout', 'dblclick', 'contextmenu'
-          templineStyle: {color: color_line_place, weight: 2} ,
-          hintlineStyle: { color: color_line_place, weight: 2, dashArray: [5, 5] },
+          templineStyle: {color: color_line_area, weight: 2} ,
+          hintlineStyle: { color: color_line_area, weight: 2, dashArray: [5, 5] },
           allowSelfIntersection: false
         };
         mymap.pm.enableDraw('Poly', drawingOptions);
       }
     }//END drawArea()
     function saveArea(button_clicked_properties){
-      /* DESCRIPTION: Function fired up when the user clicks on the 'Save Place' button of the sidebar tab */
+      /* DESCRIPTION: Function fired up when the user clicks on the 'Save Area' button of the sidebar tab */
       //if no 'button_clicked_properties', it means that this function was called by some behaviour of the user
       // it only has 1 possibilities to call this function. createMode == true
-      if (button_clicked_properties) {place_id = ((button_clicked_properties.id).split("_"))[0];}
-      if (log_functions) console.log('saveArea', place_id, createMode, editMode);
+      if (button_clicked_properties) {area_id = ((button_clicked_properties.id).split("_"))[0];}
+      if (log_functions) console.log('saveArea', area_id, createMode, editMode);
 
-      //count the number of checkbox checked for the place_id
+      //count the number of checkbox checked for the area_id
       countCheckCbx();
 
       if(cntCheckedCbx == 0){
@@ -748,7 +738,7 @@ if (isset($_SESSION['user_id'])) {
         warnCheckAtt();
 
         //Open the sidebar
-        if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
+        if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
         return null;
       }else{
         //At least one attribute was selected, can proceed with saving...
@@ -756,116 +746,116 @@ if (isset($_SESSION['user_id'])) {
         // Disable edit mode and setStyle for layer
         fgpDrawnItems.eachLayer(function(layer){
           var layer_id = layer.feature.properties.id;
-          if(layer_id == place_id){
+          if(layer_id == area_id){
             editMode = false;
             layer.pm.disable();
             mymap.pm.disableDraw('Poly');
 
-            if(getActiveTabId()==place_id){
-              //If the tab is opened in the place_id tab the style must receive the setStyle_clicked
+            if(getActiveTabId()==area_id){
+              //If the tab is opened in the area_id tab the style must receive the setStyle_clicked
               layer.setStyle(setStyle_clicked);
             }else{
-              //If the tab is not opened in the place_id tab the style must receive the setStyle_normal
+              //If the tab is not opened in the area_id tab the style must receive the setStyle_normal
               layer.setStyle(setStyle_normal);
             }
             return;
           }
         });
 
-        var att_nat = document.getElementById(place_id+"_cbxAtt-nat").checked;
-        var att_open = document.getElementById(place_id+"_cbxAtt-open").checked;
-        var att_ord = document.getElementById(place_id+"_cbxAtt-order").checked;
-        var att_up = document.getElementById(place_id+"_cbxAtt-upkeep").checked;
-        var att_hist = document.getElementById(place_id+"_cbxAtt-hist").checked;
+        var att_nat = document.getElementById(area_id+"_cbxAtt-nat").checked;
+        var att_open = document.getElementById(area_id+"_cbxAtt-open").checked;
+        var att_ord = document.getElementById(area_id+"_cbxAtt-order").checked;
+        var att_up = document.getElementById(area_id+"_cbxAtt-upkeep").checked;
+        var att_hist = document.getElementById(area_id+"_cbxAtt-hist").checked;
 
         //change style of checkboxes
         if( att_nat ){
-          document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "none";
-          document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
+          document.getElementById(area_id+"_lblAtt-nat").style.textDecoration = "none";
+          document.getElementById(area_id+"_lblAtt-nat").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-nat").disabled = true;
         } else {
-          document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "line-through";
-          document.getElementById(place_id+"_lblAtt-nat").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-nat").disabled = true;
+          document.getElementById(area_id+"_lblAtt-nat").style.textDecoration = "line-through";
+          document.getElementById(area_id+"_lblAtt-nat").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-nat").disabled = true;
         }
         if( att_open ){
-          document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "none";
-          document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-open").disabled = true;
+          document.getElementById(area_id+"_lblAtt-open").style.textDecoration = "none";
+          document.getElementById(area_id+"_lblAtt-open").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-open").disabled = true;
         } else {
-          document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "line-through";
-          document.getElementById(place_id+"_lblAtt-open").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-open").disabled = true;
+          document.getElementById(area_id+"_lblAtt-open").style.textDecoration = "line-through";
+          document.getElementById(area_id+"_lblAtt-open").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-open").disabled = true;
         }
         if( att_ord ){
-          document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "none";
-          document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-order").disabled = true;
+          document.getElementById(area_id+"_lblAtt-order").style.textDecoration = "none";
+          document.getElementById(area_id+"_lblAtt-order").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-order").disabled = true;
         } else {
-          document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "line-through";
-          document.getElementById(place_id+"_lblAtt-order").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-order").disabled = true;
+          document.getElementById(area_id+"_lblAtt-order").style.textDecoration = "line-through";
+          document.getElementById(area_id+"_lblAtt-order").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-order").disabled = true;
         }
         if( att_up ){
-          document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "none";
-          document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
+          document.getElementById(area_id+"_lblAtt-upkeep").style.textDecoration = "none";
+          document.getElementById(area_id+"_lblAtt-upkeep").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-upkeep").disabled = true;
         } else {
-          document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "line-through";
-          document.getElementById(place_id+"_lblAtt-upkeep").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-upkeep").disabled = true;
+          document.getElementById(area_id+"_lblAtt-upkeep").style.textDecoration = "line-through";
+          document.getElementById(area_id+"_lblAtt-upkeep").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-upkeep").disabled = true;
         }
         if( att_hist ){
-          document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "none";
-          document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
+          document.getElementById(area_id+"_lblAtt-hist").style.textDecoration = "none";
+          document.getElementById(area_id+"_lblAtt-hist").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-hist").disabled = true;
         } else {
-          document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "line-through";
-          document.getElementById(place_id+"_lblAtt-hist").style.color = "grey";
-          document.getElementById(place_id+"_cbxAtt-hist").disabled = true;
+          document.getElementById(area_id+"_lblAtt-hist").style.textDecoration = "line-through";
+          document.getElementById(area_id+"_lblAtt-hist").style.color = "grey";
+          document.getElementById(area_id+"_cbxAtt-hist").disabled = true;
         }
 
         // Show 'edit' button, hide 'save' button
-        document.getElementById(place_id+"_saveArea").style.display="none";
-        document.getElementById(place_id+"_editArea").style.display="block";
+        document.getElementById(area_id+"_saveArea").style.display="none";
+        document.getElementById(area_id+"_editArea").style.display="block";
       }
     };//END saveArea()
     function editArea(button_clicked_properties){
       /* DESCRIPTION: It's run when the user clicks in the edit button of the sidebar*/
-      //To use place_id inside an anonymous function (mymap.on('contextmenu', function(){}), it must be global
-      place_id = ((button_clicked_properties.id).split("_"))[0];
-      if (log_functions){console.log('editArea', place_id);}
+      //To use area_id inside an anonymous function (mymap.on('contextmenu', function(){}), it must be global
+      area_id = ((button_clicked_properties.id).split("_"))[0];
+      if (log_functions){console.log('editArea', area_id);}
 
-      var att_nat = document.getElementById(place_id+"_cbxAtt-nat");
-      var att_open = document.getElementById(place_id+"_cbxAtt-open");
-      var att_ord = document.getElementById(place_id+"_cbxAtt-order");
-      var att_up = document.getElementById(place_id+"_cbxAtt-upkeep");
-      var att_hist = document.getElementById(place_id+"_cbxAtt-hist");
+      var att_nat = document.getElementById(area_id+"_cbxAtt-nat");
+      var att_open = document.getElementById(area_id+"_cbxAtt-open");
+      var att_ord = document.getElementById(area_id+"_cbxAtt-order");
+      var att_up = document.getElementById(area_id+"_cbxAtt-upkeep");
+      var att_hist = document.getElementById(area_id+"_cbxAtt-hist");
 
       if( att_nat ){
-        document.getElementById(place_id+"_lblAtt-nat").style.textDecoration = "none";
-        document.getElementById(place_id+"_lblAtt-nat").style.color = "black";
-        document.getElementById(place_id+"_cbxAtt-nat").disabled = false;
+        document.getElementById(area_id+"_lblAtt-nat").style.textDecoration = "none";
+        document.getElementById(area_id+"_lblAtt-nat").style.color = "black";
+        document.getElementById(area_id+"_cbxAtt-nat").disabled = false;
       }
       if( att_open ){
-        document.getElementById(place_id+"_lblAtt-open").style.textDecoration = "none";
-        document.getElementById(place_id+"_lblAtt-open").style.color = "black";
-        document.getElementById(place_id+"_cbxAtt-open").disabled = false;
+        document.getElementById(area_id+"_lblAtt-open").style.textDecoration = "none";
+        document.getElementById(area_id+"_lblAtt-open").style.color = "black";
+        document.getElementById(area_id+"_cbxAtt-open").disabled = false;
       }
       if( att_ord ){
-        document.getElementById(place_id+"_lblAtt-order").style.textDecoration = "none";
-        document.getElementById(place_id+"_lblAtt-order").style.color = "black";
-        document.getElementById(place_id+"_cbxAtt-order").disabled = false;
+        document.getElementById(area_id+"_lblAtt-order").style.textDecoration = "none";
+        document.getElementById(area_id+"_lblAtt-order").style.color = "black";
+        document.getElementById(area_id+"_cbxAtt-order").disabled = false;
       }
       if( att_up ){
-        document.getElementById(place_id+"_lblAtt-upkeep").style.textDecoration = "none";
-        document.getElementById(place_id+"_lblAtt-upkeep").style.color = "black";
-        document.getElementById(place_id+"_cbxAtt-upkeep").disabled = false;
+        document.getElementById(area_id+"_lblAtt-upkeep").style.textDecoration = "none";
+        document.getElementById(area_id+"_lblAtt-upkeep").style.color = "black";
+        document.getElementById(area_id+"_cbxAtt-upkeep").disabled = false;
       }
       if( att_hist ){
-        document.getElementById(place_id+"_lblAtt-hist").style.textDecoration = "none";
-        document.getElementById(place_id+"_lblAtt-hist").style.color = "black";
-        document.getElementById(place_id+"_cbxAtt-hist").disabled = false;
+        document.getElementById(area_id+"_lblAtt-hist").style.textDecoration = "none";
+        document.getElementById(area_id+"_lblAtt-hist").style.color = "black";
+        document.getElementById(area_id+"_cbxAtt-hist").disabled = false;
       }
 
       //Style options
@@ -873,7 +863,7 @@ if (isset($_SESSION['user_id'])) {
         fgpDrawnItems.eachLayer(function(layer){
           var layer_id = layer.feature.properties.id;
           // console.log(layer_id);
-          if(layer_id == place_id){
+          if(layer_id == area_id){
             //The layer was found so start the editing process...
             editMode = true;
             // Set the style for all the layers to normal
@@ -889,8 +879,8 @@ if (isset($_SESSION['user_id'])) {
       }//END if(mymap.hasLayer(fgpDrawnItems))
 
       // Show 'save' button, hide 'edit' button
-      document.getElementById(place_id+"_editArea").style.display="none";
-      document.getElementById(place_id+"_saveArea").style.display="block";
+      document.getElementById(area_id+"_editArea").style.display="none";
+      document.getElementById(area_id+"_saveArea").style.display="block";
 
     };//END editArea()
     function removeArea(button_clicked_properties, no_button){
@@ -904,10 +894,10 @@ if (isset($_SESSION['user_id'])) {
       }
       if( retVal ){
         if (no_button){
-          place_id = button_clicked_properties;
+          area_id = button_clicked_properties;
           var close_sidebar = false;
         }else{
-          place_id = (button_clicked_properties.id).split("_")[0];
+          area_id = (button_clicked_properties.id).split("_")[0];
           var close_sidebar = true;
         }
         mymap.pm.disableDraw('Poly');
@@ -916,7 +906,7 @@ if (isset($_SESSION['user_id'])) {
           fgpDrawnItems.eachLayer(function(layer){
             var layer_id = layer.feature.properties.id;
             // console.log(layer_id);
-            if(layer_id == place_id){
+            if(layer_id == area_id){
               // layer.getPopup()._content = "";
               // layer.getPopup().update();
               fgpDrawnItems.removeLayer(layer);
@@ -927,7 +917,7 @@ if (isset($_SESSION['user_id'])) {
           });
         }
 
-        //Once an area is removed a new place could be added again
+        //Once an area is removed a new area could be added again
         // Showing the 'Create New Area' button
         var elementsOfClass= document.getElementsByClassName('createNewAreaClass');
         for (var i = 0; i < elementsOfClass.length; i++) {
@@ -936,7 +926,7 @@ if (isset($_SESSION['user_id'])) {
 
         editMode = false;
         createMode = false;
-        deleteTabByHref('#'+place_id, close_sidebar);
+        deleteTabByHref('#'+area_id, close_sidebar);
       }
     };//END removeArea()
     function setStyleNormal(){
@@ -1013,7 +1003,7 @@ if (isset($_SESSION['user_id'])) {
       //restart variables
       editMode=false;
       createMode=false;
-      var button_drawArea_id = place_id+"_drawArea";
+      var button_drawArea_id = area_id+"_drawArea";
       document.getElementById(button_drawArea_id).click();
     }
     function openInfoPopUp(popup_position, popup_content, duration_open=5000){
@@ -1041,11 +1031,11 @@ if (isset($_SESSION['user_id'])) {
       var clickedTab = getActiveTabId(true);
 
       //Always refresh the Temp Tab when occurs a sidebar Change
-      if( (clickedTab!='#temp_tab') && ((cnt_LikedPlaces + cnt_DislikedPlaces) < 6) ){
+      if( (clickedTab!='#temp_tab') && ((cnt_LikedAreas + cnt_DislikedAreas) < 6) ){
         // ctlSidebar.removePanel('temp_tab'); //It just hide the Panel
         deleteTabByHref('#temp_tab');
         ctlSidebar.addPanel(returnTempTabContent());
-        createTitleLiByHref( "#temp_tab" , "Add a new Place" );
+        createTitleLiByHref( "#temp_tab" , "Add a new Area" );
       }
 
       //Change the background color for the icons, when they're clicked -> receives blue, otherwise receive "green" for liked and "red" for disliked
@@ -1073,8 +1063,8 @@ if (isset($_SESSION['user_id'])) {
       }
 
       // console.log(cnt_test, "Previous Tab:", previousTab, "Active Tab:", clickedTab);
-      // When the user clicks to create a new place but nothing's drawn for that place.
-      // When the status of the sidebar changes, this new place is deleted
+      // When the user clicks to create a new area but nothing's drawn for that area.
+      // When the status of the sidebar changes, this new area is deleted
       if(previousTab!=null){
         if (createMode==false){
           var array_tabs = existentTabs();
@@ -1084,7 +1074,7 @@ if (isset($_SESSION['user_id'])) {
             for (var i = 0; i < array_tabs.length; i++) {
               var tab_id = array_tabs[i];
               var tabprefix = tab_id.split("-")[0];
-              //checking if exist a liked or disliked place
+              //checking if exist a liked or disliked area
               if ((tabprefix == "liked") || (tabprefix == "disliked")){
                 // The removeArea button is only visible if the user starts to draw in the map.
                 // that's why it's being used to verify if the user already draw an area for the created tab.
@@ -1101,11 +1091,11 @@ if (isset($_SESSION['user_id'])) {
         }//end (createMode==false)
       }//end if(previousTab!=null)
 
-      // update the status of the button for creating a new 'liked' or 'disliked' place
-      if ( cnt_LikedPlaces < 3){
+      // update the status of the button for creating a new 'liked' or 'disliked' area
+      if ( cnt_LikedAreas < 3){
         statusAddLikeButton = "";
       }
-      if ( cnt_DislikedPlaces < 3){
+      if ( cnt_DislikedAreas < 3){
         statusAddDislikeButton = "";
       }
 
@@ -1115,30 +1105,30 @@ if (isset($_SESSION['user_id'])) {
       }
 
     }//END function sidebarChange()
-    function create_placeTab(typeOfPlace){
+    function create_areaTab(typeOfArea){
       /* DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
-      if(typeOfPlace=="liked"){
+      if(typeOfArea=="liked"){
         var icon = "thumbs-up";
-        cnt_LikedPlaces++;
+        cnt_LikedAreas++;
         for (cnt = 1; cnt <= 3; cnt++) {
-          if( !(searchTagIfExistsByHref("#"+typeOfPlace+'-'+cnt.toString())) ){
+          if( !(searchTagIfExistsByHref("#"+typeOfArea+'-'+cnt.toString())) ){
             break;
           }
         }
-        var tab_id = typeOfPlace+'-'+cnt.toString();
-        var title = typeOfPlace.charAt(0).toUpperCase()+typeOfPlace.slice(1) +' Place '+cnt;
+        var tab_id = typeOfArea+'-'+cnt.toString();
+        var title = typeOfArea.charAt(0).toUpperCase()+typeOfArea.slice(1) +' Area '+cnt;
 
-      }else if(typeOfPlace=="disliked"){
+      }else if(typeOfArea=="disliked"){
         var icon = "thumbs-down";
-        cnt_DislikedPlaces++;
-        var cnt = cnt_DislikedPlaces;
+        cnt_DislikedAreas++;
+        var cnt = cnt_DislikedAreas;
         for (cnt = 1; cnt <= 3; cnt++) {
-          if( !(searchTagIfExistsByHref("#"+typeOfPlace+'-'+cnt.toString())) ){
+          if( !(searchTagIfExistsByHref("#"+typeOfArea+'-'+cnt.toString())) ){
             break;
           }
         }
-        var tab_id = typeOfPlace+'-'+cnt.toString();
-        var title = typeOfPlace.charAt(0).toUpperCase()+typeOfPlace.slice(1) +' Place '+cnt;
+        var tab_id = typeOfArea+'-'+cnt.toString();
+        var title = typeOfArea.charAt(0).toUpperCase()+typeOfArea.slice(1) +' Area '+cnt;
       }
       // alert(tab_id);
       var str_newtab = "";
@@ -1161,7 +1151,7 @@ if (isset($_SESSION['user_id'])) {
 
       str_newtab +=   '<div class="sidebarContentChild">';
       str_newtab +=     '<span id="'+tab_id+'_str_startdrawing" >';
-      str_newtab +=       '<h4>Click on the button to start drawing the area you '+typeOfPlace.slice(0, typeOfPlace.length-1)+'</h4>';
+      str_newtab +=       '<h4>Click on the button to start drawing the area you '+typeOfArea.slice(0, typeOfArea.length-1)+'</h4>';
       str_newtab +=     '</span>';
       str_newtab +=   '</div>';
       str_newtab +=   '<div class="sidebarContentChild">';
@@ -1212,16 +1202,16 @@ if (isset($_SESSION['user_id'])) {
       ctlSidebar.addPanel(newtab_content);
       createTitleLiByHref( "#"+tab_id , "See "+title );
 
-      if ( cnt_LikedPlaces == 3){
+      if ( cnt_LikedAreas == 3){
         statusAddLikeButton = "disabled";
       }
-      if ( cnt_DislikedPlaces == 3){
+      if ( cnt_DislikedAreas == 3){
         statusAddDislikeButton = "disabled";
       }
-      if ( (cnt_LikedPlaces + cnt_DislikedPlaces) < 6 ){
+      if ( (cnt_LikedAreas + cnt_DislikedAreas) < 6 ){
         // If num=6 doesn't add the tab
         ctlSidebar.addPanel(returnTempTabContent());
-        createTitleLiByHref( "#temp_tab" , "Add a new Place" );
+        createTitleLiByHref( "#temp_tab" , "Add a new Area" );
       }
 
       //Add class to the icon of the new created tab. Liked:"green", Disliked:"red"
@@ -1240,10 +1230,10 @@ if (isset($_SESSION['user_id'])) {
       //Open sidebar tab if it's not open already
       if (getActiveTabId()!=tab_id){ctlSidebar.open(tab_id);}
 
-      //variable for verifying when a 'liked' or 'disliked' place was created. It should be after the sidebar is opened
+      //variable for verifying when a 'liked' or 'disliked' area was created. It should be after the sidebar is opened
       newTabCreated = true;
 
-    };//END create_placeTab()
+    };//END create_areaTab()
     function returnTempTabContent(){
       /* DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called */
       var str_temptab= "";
@@ -1256,13 +1246,13 @@ if (isset($_SESSION['user_id'])) {
       str_temptab +=    '</div>';
       str_temptab +=    '<div class="sidebarContentChild">';
       str_temptab +=     '<span>';
-      str_temptab +=        '<button class="btn btn-success" onclick="create_placeTab(\'liked\')" '+statusAddLikeButton+'>';
-      str_temptab +=          '<i class="fa fa-thumbs-up"></i> Liked Place';
+      str_temptab +=        '<button class="btn btn-success" onclick="create_areaTab(\'liked\')" '+statusAddLikeButton+'>';
+      str_temptab +=          '<i class="fa fa-thumbs-up"></i> Liked Area';
       str_temptab +=        '</button>';
       str_temptab +=     '</span>';
       str_temptab +=    '<span>';
-      str_temptab +=        '<button class="btn btn-danger" onclick="create_placeTab(\'disliked\')" '+statusAddDislikeButton+'>';
-      str_temptab +=          '<i class="fa fa-thumbs-down"></i> Disliked Place';
+      str_temptab +=        '<button class="btn btn-danger" onclick="create_areaTab(\'disliked\')" '+statusAddDislikeButton+'>';
+      str_temptab +=          '<i class="fa fa-thumbs-down"></i> Disliked Area';
       str_temptab +=       '</button>';
       str_temptab +=    '</span>';
       str_temptab +=   '</div>';
@@ -1272,7 +1262,7 @@ if (isset($_SESSION['user_id'])) {
       temp_tab_content = {
         id:   'temp_tab',
         tab:  '<i id="dynamic-icon-tab" class="fa fa-plus"></i>',
-        title: 'Add new Place\
+        title: 'Add new Area\
         <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()">'+
         '<i class="fa fa-chevron-circle-left"></i>'+
         '</span>',
@@ -1286,10 +1276,10 @@ if (isset($_SESSION['user_id'])) {
       ### If no href was passed it means that  a 'Remove Area' button inside a 'liked' or 'disliked' tab was clicked.
       ### Therefore this tab will be deleted tab was clicked. Therefore, this tab will be removed*/
       if ( href.split("-")[0] == "#liked"){
-        cnt_LikedPlaces--;
+        cnt_LikedAreas--;
         statusAddLikeButton = "";
       }else if ( href.split("-")[0] == "#disliked"){
-        cnt_DislikedPlaces--;
+        cnt_DislikedAreas--;
         statusAddDislikeButton = "";
       }
       //If the tab being deleted is a liked or disliked palce, update the "#temp_tab" status of the buttons
@@ -1297,7 +1287,7 @@ if (isset($_SESSION['user_id'])) {
         // Update the temp_tab
         deleteTabByHref('#temp_tab');
         ctlSidebar.addPanel(returnTempTabContent());
-        createTitleLiByHref( "#temp_tab" , "Add a new Place" );
+        createTitleLiByHref( "#temp_tab" , "Add a new Area" );
       }
 
       //If after the deletion the sidebar needs to be closed: close_sidebar==true
@@ -1368,7 +1358,7 @@ if (isset($_SESSION['user_id'])) {
     function createTitleLiByHref(href, newtitle){
       /* DESCRIPTION: Updates the title of the tab "li" element when it's hovered
       ### When a new tab is added using the API, the title receives a HTML, f.e:
-      ### temp_tab_content = { title: 'Add new Place<span class="leaflet-sidebar-close"><i class="fa fa-times-circle"></i></span>'}
+      ### temp_tab_content = { title: 'Add new Area<span class="leaflet-sidebar-close"><i class="fa fa-times-circle"></i></span>'}
       ### All this element is shown when the user hover the button icon.
       ### Therefore, this function changes the title component of the "li" element to the text passed in the 'newtitle' variable
       */
@@ -1383,14 +1373,14 @@ if (isset($_SESSION['user_id'])) {
       }
     };//END createTitleLiByHref()
     function countCheckCbx(){
-      /* DESCRIPTION: Count the number of checkbox checked for the place_id that's being edited. Only works for editMode==true*/
+      /* DESCRIPTION: Count the number of checkbox checked for the area_id that's being edited. Only works for editMode==true*/
       if(editMode){
         cntCheckedCbx = 0;
-        var att_nat = document.getElementById(place_id+"_cbxAtt-nat").checked;
-        var att_open = document.getElementById(place_id+"_cbxAtt-open").checked;
-        var att_ord = document.getElementById(place_id+"_cbxAtt-order").checked;
-        var att_up = document.getElementById(place_id+"_cbxAtt-upkeep").checked;
-        var att_hist = document.getElementById(place_id+"_cbxAtt-hist").checked;
+        var att_nat = document.getElementById(area_id+"_cbxAtt-nat").checked;
+        var att_open = document.getElementById(area_id+"_cbxAtt-open").checked;
+        var att_ord = document.getElementById(area_id+"_cbxAtt-order").checked;
+        var att_up = document.getElementById(area_id+"_cbxAtt-upkeep").checked;
+        var att_hist = document.getElementById(area_id+"_cbxAtt-hist").checked;
 
         if(att_nat)   cntCheckedCbx++;
         if(att_open)  cntCheckedCbx++;
@@ -1405,7 +1395,7 @@ if (isset($_SESSION['user_id'])) {
       /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
       alert("Check at least one attribute for the area");
       //Open the sidebar
-      if (getActiveTabId()!=place_id){ctlSidebar.open(place_id);}
+      if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
     }
     function warnDeleteArea(){
       /* DESCRIPTION: Warn the user if tries to delete an area */
@@ -1440,8 +1430,8 @@ if (isset($_SESSION['user_id'])) {
     $( "#btn_Finish" ).click(function(){
       if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
         // NEED TO: come back to previous situation
-        // if ( (cnt_LikedPlaces >= 1) && (cnt_DislikedPlaces >= 1) ){
-        if ( (cnt_LikedPlaces >= 4) && (cnt_DislikedPlaces >= 4) ){
+        // if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
+        if ( (cnt_LikedAreas >= 4) && (cnt_DislikedAreas >= 4) ){
           var cnt = 0;
           var cnt_feat = fgpDrawnItems.getLayers().length;
           fgpDrawnItems.eachLayer(function(layer){
@@ -1482,11 +1472,11 @@ if (isset($_SESSION['user_id'])) {
               cntChecks++;
             } else { att_hist = 0; }
 
-            //Converts Polygon to MultiPolygon, rounding the number of decimal places of coordinates to 6.
+            //Converts Polygon to MultiPolygon, rounding the number of decimal areas of coordinates to 6.
             var array_coordinate_rounded  = [];
             for (i=0; i<(layer.toGeoJSON().geometry.coordinates[0]).length; i++){
-              var Longitude = Math.round(layer.toGeoJSON().geometry.coordinates[0][i][0] * 1000000) / 1000000; //rounded to 6 decimal places
-              var Latitude = Math.round(layer.toGeoJSON().geometry.coordinates[0][i][1] * 1000000) / 1000000; //rounded to 6 decimal places
+              var Longitude = Math.round(layer.toGeoJSON().geometry.coordinates[0][i][0] * 1000000) / 1000000; //rounded to 6 decimal areas
+              var Latitude = Math.round(layer.toGeoJSON().geometry.coordinates[0][i][1] * 1000000) / 1000000; //rounded to 6 decimal areas
               array_coordinate_rounded.push([Longitude, Latitude]);
             }
             geojsn_layer = {type:'MultiPolygon',coordinates:[[array_coordinate_rounded]]};
@@ -1536,12 +1526,12 @@ if (isset($_SESSION['user_id'])) {
 
           //Shows the modal
           $("#dlgUsabilityQuest").show();
-        }else if ((cnt_LikedPlaces + cnt_DislikedPlaces) >= 3) {
+        }else if ((cnt_LikedAreas + cnt_DislikedAreas) >= 3) {
           alert("PARABÉNS!! Muito Obrigado por me ajudar a testar o site! Você é maravilhos@!!! :) Mas mexa mais um pouco nele. Tente encontrar algum 'bug' ou qualquer DEFEITO ou qualquer coisa que vc não gostou. Anote para depois me dizer! :)");
-        }else if ((cnt_LikedPlaces >= 1) && (cnt_DislikedPlaces == 0)){
-          alert("A DISLIKED place is missing. Please, draw it to proceed!");
-        }else if ((cnt_LikedPlaces == 0) && (cnt_DislikedPlaces >= 1)){
-          alert("A LIKED place is missing. Please, draw it to proceed!");
+        }else if ((cnt_LikedAreas >= 1) && (cnt_DislikedAreas == 0)){
+          alert("A DISLIKED area is missing. Please, draw it to proceed!");
+        }else if ((cnt_LikedAreas == 0) && (cnt_DislikedAreas >= 1)){
+          alert("A LIKED area is missing. Please, draw it to proceed!");
         }
       }else{
         alert("Please, draw at least one liked and disliked area");

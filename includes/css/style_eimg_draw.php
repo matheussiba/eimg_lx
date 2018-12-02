@@ -163,25 +163,23 @@
 	.leaflet-popup-tip {
 	  display: none;
 	}
+
 	/* ### CSS for the Modal DIV  */
-	/* The Modal (background) */
+	/* ### CSS for the Modal DIV  */
 	.modal {
-	  /* This is what makes everything greyed out when the modal content is displayed */
-	  /* Makes the modal on top of the sidebar */
-	  z-index: 2001; /* Sit on top */
-	  width: 100%; /* Full width */
-	  height: 100%; /* Full height */
-	  display: none; /* Hidden by default */
-	  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		z-index: 10001;
+	  /* width: 100%;
+	  height: 100%;
+	  display: none; */
+	  background-color: rgba(0,0,0,0.4);
 	}
-	/* Modal Content */
 	.modal-content {
+		z-index: 10001;
 	  color: saddlebrown;
 	  padding: 20px;
 	  margin-top: 5%;
-	  background-color:#e6f2f5;
 	  height:80%;
-	  /* When the text displayed in the modal content is greater than 80% of the height it will add a scroll bar in the y position */
 	  overflow-y:auto;
 	}
+
 </style>
