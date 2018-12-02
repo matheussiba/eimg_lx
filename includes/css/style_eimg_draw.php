@@ -5,7 +5,7 @@
 		background: url("<?php  echo $root_directory?>resources/images/eimg_logo_1.png");
 		background-size: auto 30%;
 		background-repeat: no-repeat;
-	    background-position: center;
+	  background-position: center;
 		height: 100%;
 		margin: 0px;
 		padding: 0px
@@ -65,6 +65,10 @@
 	  height: 0;
 	}
 
+	.language-pt{
+		display: none;
+	}
+
 	.leaflet-control-layers-expanded {
 	  padding: 0 5px 0 5px;
 	  background-color: rgba(255,255,255,0.9);
@@ -99,13 +103,19 @@
 	  padding-top: 5px;
 	}
 
+
 	input[type="text"].sidebarTitle
 	{
-	    background: transparent;
-	    border: none;
-	    height: 30px;
-	    width: 280px;
+		color: white;
+		padding-left: 5px;
+		border-radius: 10px;
+		/* border: none; */
+		border: 1px solid white;
+    background: rgba(255,255,255,0.2);
+    height: 30px;
+    width: 90%;
 	}
+
 
 	div.sidebarContentChild{
 	  /*EXTRACTED FROM:  http://jsfiddle.net/kqHWM/ */
@@ -170,7 +180,7 @@
 		border-radius: 24px;
 	}
 
-	.btn-light, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+	.btn-light{
 	    border: 1px solid black !important;
 	}
 
@@ -182,13 +192,77 @@
 		z-index: 10001;
 	  background-color: rgba(0,0,0,0.4);
 	}
+
 	.modal-content {
 		z-index: 10001;
-	  color: saddlebrown;
-	  padding: 20px;
-	  margin-top: 5%;
-	  height:80%;
-	  overflow-y:auto;
+	  /* color: saddlebrown; */
+	  /* padding: 20px; */
+
+	  /* margin-top: 5%; */
+	  /* height:80vh !important; */
+	  overflow-y:auto !important;
 	}
+
+	div.modal-header-removeclose .close {
+	  display:none;
+	}
+
+
+	/* Images & logos */
+#image_draw{
+	width: auto;
+	height: 200px;
+}
+#image_finish{
+	width: auto;
+	height: 70px;
+}
+#image_slider{
+	width: auto;
+	height: 100px;
+}
+#logo_place{
+	width: 80px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+#logo_camara{
+	width: 70px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+
+#logo_geoc{
+	width: 100px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+#logo_marie{
+	width: 200px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+#logo_nova{
+	width: 60px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+#logo_munster{
+	width: 200px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+#logo_uji{
+	width: 60px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
 
 </style>

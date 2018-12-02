@@ -22,215 +22,338 @@ if (isset($_SESSION['user_id'])) {
 <html lang="en-US">
 <!-- Adding the HEADER file -->
 <?php include "includes/header.php" ?>
+<?php include "includes/css/style_eimg_draw.php" ?>
 <?php include "includes/css/style_eimg_index.php" ?>
+
+<style>
+
+
+</style>
+
 
 <body>
 
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-    Launch demo modal
-  </button>
+  <button onclick="openModal('exampleModalCenter')"> MODAL INDEX </button>
+  <button onclick="openModal('exampleQuest')"> MODAL Questionairre </button>
+
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <div class="modal fade" id="exampleQuest" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+
+    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+
+        <div class="modal-header modal-header-removeclose" style="padding:5px">
+          <h5 class="modal-title" id="exampleModalLabel">Welcome to Evaluative Image of the City</h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+        <div class="pull-right">
+          <label class="radio-inline" >
+            <input type="radio" name="language_switch" value="pt" checked>
+            <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="language_switch" value="en">
+            <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
+          </label>
         </div>
       </div>
-    </div>
-  </div>
-  
-  <!-- ###############  Div that contains the header ############### -->
-  <div id="header" class="col-md-12">
-    <p class="text-center"><?php echo $header ?> </p>
-  </div>
 
-  <!-- ###############  Div that contains the sidebar ############### -->
-  <div id="sidebar_div" class="leaflet-sidebar collapsed">
-    <!-- Nav tabs -->
-    <div id="sidebarTab_div" class="leaflet-sidebar-tabs">
-      <ul id="sidebarTab_top" class="sidebarTab_ul" role="tablist">
-        <li><a href="#home" role="tab"><i class="fa fa-home"></i></a></li>
-      </ul>
-      <ul id="sidebarTab_bottom" class="sidebarTab_ul" role="tablist">
-        <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
-      </ul>
-    </div> <!-- close DIV class="sidebar-tabs"> -->
+      <div class="modal-body">
 
-    <!-- Tab panes -->
-    <div class="leaflet-sidebar-content">
-      <!-- #### Start the content for each one of the tabs #### -->
-      <!-- sidebar_tab: HOME -->
-      <div class="leaflet-sidebar-pane" id="home">
-        <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
-          Home<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
-        </h1>
-        <div style="padding-top: 1vh;">
-          <div id="div_Info" style="text-align: justify;text-justify: inter-word;">
-          </div>
-          <button id='btn_Finish' class='btn btn-info btn-block'>Finish...</button>
+
+
+        <div class="container">
+          <h2>Survey</h2>
+          <p>Please complete the survey</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>Strongly disagree</th>
+                <th>Disagree</th>
+                <th>Neutral</th>
+                <th>Agree</th>
+                <th>Strongly agree</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1.</td>
+                <td>I think that I would like to use this website frequently</td>
+                <td><input type="radio" name="quest1" class="survey_sus" value="strong_disagree"></td>
+                <td><input type="radio" name="quest1" class="survey_sus" value="disagree"></td>
+                <td><input type="radio" name="quest1" class="survey_sus" value="neutral"></td>
+                <td><input type="radio" name="quest1" class="survey_sus" value="agree"></td>
+                <td><input type="radio" name="quest1" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td>2.</td>
+                <td>I would imagine that most people would learn to use this website very quickly</td>
+                <td><input type="radio" name="quest2" class="survey_sus" value="strong_disagree"></td>
+                <td><input type="radio" name="quest2" class="survey_sus" value="disagree"></td>
+                <td><input type="radio" name="quest2" class="survey_sus" value="neutral"></td>
+                <td><input type="radio" name="quest2" class="survey_sus" value="agree"></td>
+                <td><input type="radio" name="quest2" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td>3.</td>
+                <td>I needed to learn a lot of things before I could get going with this website.</td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td>12.</td>
+                <td>I needed to learn a lot of things before I could get going with this website.</td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
+                <td><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <!-- input: -->
+            </tbody>
+          </table>
         </div>
-      </div> <!-- close DIV id="home"> -->
-
-      <!-- sidebar_tab: SETTINGS -->
-      <div class="leaflet-sidebar-pane" id="settings">
-        <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
-          Settings<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
-        </h1>
-        <!-- <div id="google_translate_element"></div> -->
-        <!-- SOURCE for design the translate box  https://jsfiddle.net/solodev/0stLrpqg/ -->
-
-        </div> <!-- close DIV id="settings"> -->
-
-      </div> <!-- close DIV class="sidebar-content"> -->
-    </div><!-- close DIV id="sidebar"> -->
-    <!-- <button id="btn_test">TEST</button> -->
 
 
 
-    <!-- ###############  Div that contains the map application ############### -->
-    <div id="mapdiv" class="col-md-12"></div>
+        </div> <!--/.modal-body -->
+        <div class="modal-footer" style="border:none;">
+          <div class="float-left" style="color: #A9A9A9; padding-top: 8px">
+            1/4
+          </div>
+          <div class="float-right">
+            <button type="button" class="btn btn-primary btn-next" data-dismiss="modal" aria-label="Close"
+            langkey="index9" id="home_button">Próximo
+          </button>
+        </div>
+      </div>
+      <!--  Logos  -->
+      <div class="sidebarContentChild">
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/mundus.png" id="logo_mundus" alt="Nova IMS"></span>
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/novaims.png" id="logo_nova" alt="Nova IMS"></span>
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/wwu.png" id="logo_munster" alt="Münster"></span>
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/uji.png" id="logo_uji" alt="UJI"></span>
+      </div>
 
-    <script>
-    //  ********* Global Variables Definition *********
-    var mymap;
-    var backgroundLayer;
-    var ctlEasybutton;
-    var mobileDevice = false;
-    var ctlSidebar;
-    var fgpDrawnItems;
-
-    // # Logging variables
-
-    // # To Delete
+    </div> <!--/.modal-content -->
+  </div>
+</div>
 
 
-    //  ********* Mobile Device parameters and Function *********
-    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-      /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
-      mobileDevice = true;
-    };
-    if(mobileDevice){
-      /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
-      if("orientation" in screen) {
-        var orientation_str = screen.orientation.type;
-        var orientation_array = orientation_str.split("-");
-        if( orientation_array[0] == "portrait"){
-          // NEEDTO: Show this message in a modal div
-          alert("Change the orientation of the device to: landscape");
-        }
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+
+    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header modal-header-removeclose" style="padding:5px">
+          <h5 class="modal-title" id="exampleModalLabel">Welcome to Evaluative Image of the City</h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+        <div class="pull-right">
+          <label class="radio-inline" >
+            <input type="radio" name="language_switch" value="pt" checked>
+            <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="language_switch" value="en">
+            <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+
+
+
+        <div class="container">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <div class="card ">
+                    <div class="card-header">Personal Info</div>
+                    <div class="card-block">
+                        Gender:
+                        <br />
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-secondary">
+                                <input type="radio" autocomplete="off" /> Male
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" autocomplete="off" /> Female
+                            </label>
+                        </div>
+                        <br />
+                        <br />
+
+                        Age Group:
+                        <br />
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-secondary">
+                                <input type="radio" autocomplete="off" />Under 18
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" autocomplete="off" />18-25
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" autocomplete="off" />25-50
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" autocomplete="off" />Over 50
+                            </label>
+                        </div>
+                        <br />
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: 5px">
+        <!--  Project's explanation  -->
+        <p>
+          <span>Este questionário é parte integrante de um projeto de investigação da Nova Information Management School (NOVA IMS) da Universidade Nova de Lisboa. O objetivo principal é perceber a forma como a perceção do local e as relações sociais do cidadão influenciam a sua participação numa dada área urbana.</span>
+        </p>
+        <p>
+          <span>O preenchimento do questionário demora cerca de 5 minutos e a atividade de mapeamento cerca de 15 minutos, dependendo do número de áreas que se pretenderem assinalar.</span>
+        </p>
+        <p>
+          <b langkey="index2a"></b><b> nº <strike>10</strike>, nº <strike>50</strike>, nº <strike>100</strike>,</b><b langkey="index2b"></b>
+        </p>
+        <p>
+          <span langkey="index3">A sua contribuição apoia os processos participativos da cidade de Lisboa.</span>
+        </p>
+        <p style="text-align: center; margin-top: 30px; font-weight: bold" langkey="index4">
+          Reside em Lisboa?
+        </p>
+        <div style="text-align: center; margin-bottom: 40px">
+          <label class="radio-inline">
+            <input type="radio" name="lisbon_home" value="true" checked="checked"> <span langkey="index5"> Sim </span>
+          </label>
+          <label class=" radio-inline">
+            <input type="radio" name="lisbon_home"  value="false"> <span langkey="index6"> Não</span>
+          </label>
+        </div>
+
+        <p style="font-size: 12px; margin-top: 30px">
+          <span langkey="index7 "> Notas:</span>
+          <br>
+          <span langkey="index8">1.Todos os dados recolhidos neste questionário serão tratados de forma anónima e confidencial e não serão utilizados para fins comerciais ou cedidos a terceiros.</span>
+          <br>
+          <span langkey="index8a">2. Se pretender esclarecer alguma dúvida ou pedir alguma informação sobre este estudo, queira por favor contactar-nos através do seguinte endereço de email: acedo@novaims.unl.pt (Albert Acedo Sánchez)</span> <span langkey="index8b"> ou visite o nosso</span><span> <a
+            class="link-secondary" href="http://www.engagingeographies.com/blog">blog</a>.</span>
+            <br>
+          </p>
+
+        </div> <!--/.modal-body -->
+        <div class="modal-footer" style="border:none;">
+          <div class="float-left" style="color: #A9A9A9; padding-top: 8px">
+            1/4
+          </div>
+          <div class="float-right">
+            <button type="button" class="btn btn-primary btn-next" data-dismiss="modal" aria-label="Close"
+            langkey="index9" id="home_button">Próximo
+          </button>
+        </div>
+      </div>
+      <!--  Logos  -->
+      <div class="sidebarContentChild">
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/mundus.png" id="logo_mundus" alt="Nova IMS"></span>
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/novaims.png" id="logo_nova" alt="Nova IMS"></span>
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/wwu.png" id="logo_munster" alt="Münster"></span>
+        <span><img src="<?php  echo $root_directory?>resources/images/uni/uji.png" id="logo_uji" alt="UJI"></span>
+      </div>
+
+    </div> <!--/.modal-content -->
+  </div>
+</div>
+
+<!-- ###############  Div that contains the header ############### -->
+<div id="header" class="col-md-12">
+  <p class="text-center"><?php echo $header ?> </p>
+</div>
+
+
+<script>
+//  ********* Mobile Device parameters and Function *********
+var mobileDevice = false;
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
+  mobileDevice = true;
+};
+if(mobileDevice){
+  /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
+  if("orientation" in screen) {
+    var orientation_str = screen.orientation.type;
+    var orientation_array = orientation_str.split("-");
+    if( orientation_array[0] == "portrait"){
+      // NEEDTO: Show this message in a modal div
+      alert("Change the orientation of the device to: landscape");
+    }
+  }
+}
+$( window ).on( "orientationchange", function( event ) {
+  /* ### FUNCTION DESCRIPTION: ADDDESCRIPTION  */
+  //Do things based on the orientation of the mobile device
+  if(mobileDevice){
+    if("orientation" in screen) {
+      var orientation_array = (screen.orientation.type).split("-");
+      if( orientation_array[0] == "portrait"){
+        // NEEDTO: Show this message in a modal div
+        alert("Change the orientation of the device to: landscape");
+      }else{  //landscape mode
+        //Reloads the page
+        //location.reload();
+        console.log( orientation_array[0] );
       }
     }
-    $( window ).on( "orientationchange", function( event ) {
-      /* ### FUNCTION DESCRIPTION: ADDDESCRIPTION  */
-      //Do things based on the orientation of the mobile device
-      if(mobileDevice){
-        if("orientation" in screen) {
-          var orientation_array = (screen.orientation.type).split("-");
-          if( orientation_array[0] == "portrait"){
-            // NEEDTO: Show this message in a modal div
-            alert("Change the orientation of the device to: landscape");
-          }else{  //landscape mode
-            //Reloads the page
-            //location.reload();
-            console.log( orientation_array[0] );
-          }
-        }
-      }
-    });//END $( window ).on( "orientationchange", ())
+  }
+});//END $( window ).on( "orientationchange", ())
 
-    //  ********* Create Map *********
-    $(document).ready(function(){
-      /*### FUNCTION DESCRIPTION: Only run it here when all the DOM elements are already added   */
-      //  ********* Map Initialization *********
-      var southWest = L.latLng(38.702, -9.160),
-          northEast = L.latLng(38.732, -9.118),
-          mybounds = L.latLngBounds(southWest, northEast);
+function openModal(id){
+  $('#'+id).modal('show');
+}
+//  ********* Create Map *********
+$(document).ready(function(){
+  // $('#exampleModalCenter').modal('show');
 
-      mymap = L.map('mapdiv', {
-        center:[38.715, -9.140],
-        zoom:14,
-        maxZoom: 18,
-        minZoom: 13,
-        attributionControl:false,
-        zoomControl:false,
-        maxBounds: mybounds,
-        maxBoundsViscosity: 1.0
-      });
+  $("#btnRedirectPage").on("click", function () {
+    //var text = $(this).attr("text");
+    //alert("Clicked");
+    window.location.href = 'eimg_draw.php';
+  });
+});
 
-      // mymap.on('dragend', function onDragEnd(){
-      //   console.log(mymap.getBounds(),  mymap.getZoom());
-      // });
+</script>
 
+<style>
+ .slider {
 
-      //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
-      ctlSidebar = L.control.sidebar({
-        container:'sidebar_div',
-        autopan: false,
-        closeButton: false,
-      }).addTo(mymap);
+width: 100%;
+ }
+</style>
 
-      //Initializing the feature group where all the drawn Objects will be stored
-      fgpDrawnItems = new L.FeatureGroup();
-      mymap.addLayer(fgpDrawnItems);
-      fgpDrawnItems.addTo(mymap);
-
-      // Adding the Historical Center of Lisbon
-      var LyrHistCenter = new L.GeoJSON.AJAX("data/historical_center_lx.geojson").addTo(mymap);
-
-      //Global variable, in order to other functions also be able to add the "Temp tab"
-      // Create elements to populate the tab and add it to the sidebar
-      // It creates an "li" element that only contains an "a" element of href="#"+{id}, in this case: "#temp_tab"
-      // It also creates a "div" element where received the id={id}, in this case: id="temp_tab".
-      // When the li element containing the "a" element of "href=={id}" is clicked. The "div" of "id=={id}" will be opened.
-
-
-      // ********* Add Controls to the map *********
-      //Add attribution to the map
-      ctlAttribute = L.control.attribution({position:'bottomright'}).addTo(mymap);
-      ctlAttribute.addAttribution('OSM');
-      ctlAttribute.addAttribution('&copy; <a href="http://mastergeotech.info">Master in Geospatial Technologies</a>');
-      //Control scale
-      ctlScale = L.control.scale({position:'bottomright', metric:true, imperial:false, maxWidth:200}).addTo(mymap);
-      //Control Latitude and Longitude
-      if (!mobileDevice){
-        ctlMouseposition = L.control.mousePosition({position:'bottomright'}).addTo(mymap);
-      }
-      // Adds a control using the easy button plugin
-      ctlEasybutton = L.easyButton('fa-circle', function(){
-        finishEditArea(true);
-      }, 'NEEDTO: add a title here', {position:'topright'}).addTo(mymap);
-
-      //Adds the basemap
-      backgroundLayer = new L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png").addTo(mymap);
-
-      // Add the Zoom control
-      var ctlZoom = L.control.zoom({position:'bottomright'}).addTo(mymap);
-
-
-    });//end btnFinish click event
-
-        //  ********* JS Functions *********
-
-        //  ********* jQuery Functions *********
-        $("#btnRedirectPage").on("click", function () {
-          //var text = $(this).attr("text");
-          //alert("Clicked");
-          window.location.href = 'eimg_draw.php';
-        });
-
-        </script>
-      </body>
-      </html>
+</body>
+</html>
