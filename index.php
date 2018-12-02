@@ -21,9 +21,12 @@ if (isset($_SESSION['user_id'])) {
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- Adding the HEADER file -->
-<?php include "includes/header_draw.php" ?>
+<?php include "includes/header.php" ?>
+<?php include "includes/css/style_eimg_index.php" ?>
 
 <body>
+
+
   <!-- ###############  Div that contains the header ############### -->
   <div id="header" class="col-md-12">
     <p class="text-center"><?php echo $header ?> </p>
@@ -70,47 +73,7 @@ if (isset($_SESSION['user_id'])) {
     </div><!-- close DIV id="sidebar"> -->
     <!-- <button id="btn_test">TEST</button> -->
 
-    <!-- ###############  Div that contains the Modal ############### -->
-    <div id="indexfile" class="modal" style="display:block">
-      <div id='indexfile_content' class="modal-content col-md-8 col-md-offset-2">
-        <div class="form-group row">
-          <div class="col-sm-2">
-            <span id="idDisplay" class="pull-right btnClose">x</span>
-          </div>
-          <div class="col-sm-8">
-            <h4>Usability Questionary</h4>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-6">
-            <input type="text" class="form-control" id="latitude" placeholder="Latitude">
-          </div>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" id="longitude" placeholder="Longitude">
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-6">
-            <select id="category" class="form-control">
-              <option value="Park">Park</option>
-              <option value="Museum">Museum</option>
-              <option value="Place">Place</option>
-              <option value="Neighborhood">Neighborhood</option>
-              <option value="Pueblo Magico">Pueblo Magico</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-12">
-            <input type="text" class="form-control" id="website" placeholder="Web URL">
-          </div>
-        </div>
-        <div id="editButtons">
-          <button id="btnUpdate" class="btn btn-primary">Submit</button>
-          <button class="btn btn-danger pull-right btnClose">Close</button>
-        </div>
-      </div>
-    </div>
+
 
     <!-- ###############  Div that contains the map application ############### -->
     <div id="mapdiv" class="col-md-12"></div>

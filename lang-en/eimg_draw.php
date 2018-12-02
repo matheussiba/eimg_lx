@@ -20,8 +20,8 @@ if (isset($_SESSION['user_id'])) {
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- Adding the HEADER file -->
-<?php include "../includes/header_draw.php" ?>
-
+<?php include "../includes/header.php" ?>
+<?php include "../includes/css/style_eimg_draw.php" ?>
 <body>
   <!-- ###############  Div that contains the header ############### -->
   <div id="header" class="col-md-12">
