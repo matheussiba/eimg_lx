@@ -89,8 +89,8 @@
 	  padding: 1px 5px 1px 5px; /*Top right botton left*/
 	  transition: visibility 0.5s linear;
 	  margin-top: 0!important;
-	  margin-left: -135px;
-	  width: 130px;
+	  margin-left: -145px;
+	  width: 140px;
 	  height: 90px;
 	}
 	.leaflet-bar.easy-button-container.leaflet-control {

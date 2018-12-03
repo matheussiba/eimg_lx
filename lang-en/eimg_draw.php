@@ -103,10 +103,119 @@
         </h1>
 
         <div>
-          <div style="text-align:center;padding: 0; margin: 0; margin-top:5px">
-            <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: auto; margin-right: auto; width: 50%;">
+          <div style="text-align:center;padding: 0; margin: 0; margin-top:5px;">
+            <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: auto; margin-right: auto; width: auto;max-height: 70px;">
           </div>
-          Informações serão adicionadas no domingo: 01/12/2018
+          <div style="text-align:justify;margin-right:10px;">
+            <div style="border:1px solid orange; width:100%;height:auto;">
+              <div class="div_info_header" style="border:1px solid blue;width:100%;text-align:center;">
+                Header
+              </div>
+              <div class="div_info_left" style="border:1px solid blue;width:20%;float:left;">
+                <div class="mapbuttons leaflet-bar leaflet-control" style="padding: 2px 5px 2px 0px;">
+                  <label >
+                    <input type="radio" name="layer_switch" value="vector" checked>
+                    <i class="fas fa-map-marked"></i>
+                  </label><br />
+                  <label >
+                    <input type="radio" name="layer_switch" value="terrain" checked>
+                    <i class="fas fa-mountain"></i>
+                  </label><br />
+                  <label >
+                    <input type="radio" name="layer_switch" value="imagery" checked>
+                    <i class="fas fa-globe-americas"></i>
+                  </label>
+                </div>
+              </div>
+              <div class="div_info_right" style="border:1px solid blue;width:80%;float:right;">
+                TexttttttTexttttttTexttttttTexttttttTextttttt
+              </div>
+            </div>
+
+
+            <div style="border:1px solid orange; width:100%;height:auto;">
+              <div class="div_info_header" style="border:1px solid blue;width:100%;text-align:center;">
+                Header
+              </div>
+              <div class="div_info_left" style="border:1px solid blue;width:20%;float:left;">
+                Header
+              </div>
+              <div class="div_info_right" style="border:1px solid blue;width:80%;float:right;">
+                HeaderHea derHeaderH eaderHeaderH aderHe aderHeaderHeader
+              </div>
+            </div>
+
+            <div style="border:1px solid orange; width:100%;height:auto;">
+              <div class="div_info_header" style="border:1px solid blue;width:100%;text-align:center;">
+                Header
+              </div>
+              <div class="div_info_left" style="border:1px solid blue;width:20%;float:left;">
+                Header
+              </div>
+              <div class="div_info_right" style="border:1px solid blue;width:80%;float:right;">
+                HeaderHea derHeaderH eaderHeaderH aderHe aderHeaderHeader
+              </div>
+            </div>
+
+
+            <p>
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+            </p>
+            <p>
+            <div class="sidebarContentChild">
+              <span>
+
+              </span>
+              <span> Layer Control:</span>
+            </div>
+            <label class="radio-inline" >
+              <input type="radio" name="language_switch" value="pt" checked>
+              <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="language_switch" value="en">
+              <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
+            </label>
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+            </p>
+            <p>
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+            </p>
+            <p>
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+            </p>
+            <p>
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+            </p>
+            <p>
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+              Informações serão adicionadas no domingo: 01/12/2018
+            </p>
+          </div>
+
         </div>
         <!-- <div class="sidebarContentParent">
         <div class="sidebarContentChild">
@@ -237,7 +346,8 @@
   var backgroundLayer;
   var mapbox_overview;
   var jsn_draw;
-  var LyrHistCenter;
+  var LyrStudyArea;
+  var coord_poly;
   var ctlFinishArea;
   var ctlRemoveLastVertex;
   var ctlCancelArea;
@@ -263,6 +373,7 @@
   var setStyle_clicked = {"weight": 3.5, "fillOpacity": 0.20};
   var cntCheckedCbx;
   var firstClickLatLng;
+  var minimumZoom = 11;
 
   // # Logging variables
   var log_functions = true;
@@ -343,26 +454,70 @@
       name: 'overlay',
     });
 
-    // defining the max bounds for panning around the map
-    var southWest = L.latLng(38.690, -9.180);
-    var northEast = L.latLng(38.740, -9.100);
-    var mybounds =  L.latLngBounds(southWest, northEast);
     var center =    L.latLng(38.716, -9.150);
+    minimumZoom = 11;
     //Create the Leaflet map elemetn
     mymap = L.map('mapdiv', {
       center: center,
       layers: basemap_mapbox,
       zoom:14,
       maxZoom: 18,
-      minZoom: 13,
+      minZoom: 11,
       attributionControl:false,
       zoomControl:false,
-      maxBounds: mybounds,
+      // maxBounds: mybounds,
       maxBoundsViscosity: 1.0
     });
 
+
     // Adding the Historical Center of Lisbon
-    LyrHistCenter = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
+    // LyrStudyArea = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
+    $.ajax({
+      url:'eimg_viewer-echo_eimg_result.php',
+      data: {
+        type_op: "data",
+        tbl: "study_area_4326",
+        select:"*"
+      },
+      type:'POST',
+      success:function(response){
+        // console.log(response);
+        var layer = JSON.parse(response);
+
+        // console.log(layer);
+        coord_poly = layer.features[0].geometry.coordinates;
+        LyrStudyArea=L.geoJSON(layer
+        ,{
+          // style:{fillColor:'rgba(0,0,0,0)'},
+          // onEachFeature: function(att){
+          //     console.log(att.features[0].geometry.coordinates.);
+          // }
+        }
+        );
+        var lyr_bounds = LyrStudyArea.getBounds();
+        var value = 0.03;
+        LyrStudyArea.addTo(mymap);
+        var slt = (lyr_bounds._southWest.lat)-value;
+        var sln = (lyr_bounds._southWest.lng)-value*2;
+        var nlt = (lyr_bounds._northEast.lat)+value;
+        var nln = (lyr_bounds._northEast.lng)+value*2;
+        // defining the max bounds for panning around the map
+        var southWest = L.latLng(slt,sln);
+        var northEast = L.latLng(nlt,nln);
+        var mybounds =  L.latLngBounds(southWest, northEast);
+        mymap.fitBounds(mybounds);
+        mymap.setMaxBounds(mybounds);
+
+        // var polygon1 = L.polygon([
+        //     [slt, sln],
+        //     [slt, nln],
+        //     [nlt, nln],
+        //     [nlt, sln]
+        // ]).addTo(mymap);
+
+      },
+      error: function(xhr, status, error){ alert("ERROR: "+error); }
+    }); // End ajax
 
     //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
     ctlSidebar = L.control.sidebar({
@@ -428,9 +583,9 @@
     var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
     container.title="Toolbar Instructions";
     container.innerHTML = '\
-    <p>Finish drawing</p> \
-    <p style="padding-top:0;">Remove last vertex</p> \
-    <p style="padding-top:0;">Cancel Drawing</p>';
+    <p>Finish drawing (Enter)</p> \
+    <p style="padding-top:0;">Remove vertex (Ctrl+z)</p> \
+    <p style="padding-top:0;">Cancel Drawing (Esc)</p>';
     // styles: .infobox_for_toolbar
     // events
     container.onmouseover = function(){ container.style.visibility = 'hidden';}
@@ -441,19 +596,6 @@
     }
 
     //  ********* Events on Map *********
-    // # GeoJSON events
-    LyrHistCenter.on('data:loaded', function() {
-      console.log(LyrHistCenter.getBounds());
-      mymap.fitBounds(LyrHistCenter.getBounds());
-      openInfoPopUp(LyrHistCenter.getBounds().getCenter(), "  <h4>This is the<br />historical center<br />of Lisbon :)   </h4>");
-    });
-    LyrHistCenter.on('click', function(e) {
-      if(!createMode || !editMode ){
-        var clickLatLng = [e.latlng.lat, e.latlng.lng];
-        openInfoPopUp(clickLatLng, "  <h5>This is the<br />historical center<br />of Lisbon :)   </h5>", 1000);
-      }
-    });
-
     // # Sidebar events
     ctlSidebar.on('closing',function(){
       previousTab = activeTab; //When the sidebar opens, it was closed before. So there was no active tab
@@ -535,37 +677,39 @@
     // # Map events
     mymap.on("moveend", function () {
       // console.log(mymap.getCenter().toString());
-      // if(cnt_movechange>1){
-      //   alert("STOP "+ cnt_movechange.toString());
-      //   cnt_movechange = 0;
-      // }else{
-      //   cnt_movechange = 0;
-      // }
+
+      if(cnt_movechange>1){
+        alert("STOP "+ cnt_movechange.toString());
+        cnt_movechange = 0;
+      }else{
+        cnt_movechange = 0;
+      }
 
     });
     mymap.on("movestart", function (e) {
       // console.log(mymap.getCenter().toString());
-      console.log(e);
+      // console.log(e);
       // var mapClickedPositon = [e.latlng.lat, e.latlng.lng];
 
-      var cntMousePosition = 0;
+      // var cntMousePosition = 0;
 
-      // cnt_movechange++;
-      // console.log("MoveStart:",cnt_movechange);
+      cnt_movechange++;
+      console.log("MoveStart:",cnt_movechange);
     });
     mymap.on("zoomend", function () {
       // console.log(mymap.getCenter().toString());
-      if(mymap.getZoom()==13){
+      var zoomNotAllowed = minimumZoom;
+      if(mymap.getZoom()==zoomNotAllowed){
         cnt_zoomOutExceeded++;
         if( cnt_zoomOutExceeded<5)  openInfoPopUp(mymap.getCenter(), "<h6>Minimum zoom exceeded!</h6>",1000 );
         setTimeout(function(){
-          mymap.setZoom(14);
+          mymap.setZoom(zoomNotAllowed+1);
         }, 400);
       }
-      if(mymap.getZoom()==18 && cnt_zoomInExceeded<1){
-        cnt_zoomInExceeded++;
-        openInfoPopUp(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
-      }
+      // if(mymap.getZoom()==18 && cnt_zoomInExceeded<1){
+      //   cnt_zoomInExceeded++;
+      //   openInfoPopUp(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
+      // }
     });
     mymap.on('baselayerchange', function(e){
       // alert("LAYER HAS BEEN CHANGED.");
@@ -592,6 +736,24 @@
     mymap.on('click', function(e){
       /* DESCRIPTION: listener when a click is given on the map  */
       // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
+      var clickPosition = [e.latlng.lng, e.latlng.lat];
+      // console.log(LyrStudyArea.getBounds().contains(clickPosition));
+
+      var polyPoints = coord_poly;
+
+      var x = clickPosition[1], y = clickPosition[0];
+      var inside = false;
+      for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+         var xi = polyPoints[i][1], yi = polyPoints[i][0];
+         var xj = polyPoints[j][1], yj = polyPoints[j][0];
+
+         var intersect = ((yi > y) != (yj > y))
+             && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+         if (intersect) inside = !inside;
+      }
+      console.log(inside);
+
+
       if(clickedLayerId != null){
         //if getActiveTabId() != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
         if ((getActiveTabId()!=clickedLayerId) && (createMode==false)){
@@ -1037,17 +1199,13 @@
       restartDraw();
     }
   };//END removeLastVertex()
-  function cancelCreation() {
-    /* DESCRIPTION: Finishes a drawing when in a editMode or createMode */
-    document.workingLayer._triggerClick();
-  }
   function showInfoBox(){
     /* DESCRIPTION: Shows a Information Box to the user in order to know how to use the CreationToolbar*/
     $('.infobox_for_toolbar').css('visibility','visible');
     //hide after 4 seconds
     setTimeout(function() {
       $('.infobox_for_toolbar').css('visibility','hidden');
-    }, 10000);
+    }, 15000);
   }
   function restartDraw(lyrDraw){
     /* DESCRIPTION: Start a new draw again*/
@@ -1484,22 +1642,25 @@
       }
     }
     if (evtobj.keyCode == 13) {
-      // if the user press Enter and a new layer is being created, the area is finished
-      if(createMode){
-        cnt_enterKeyPressed++;
-        finishCreation();
-      }
       // if the user press Enter and a layer is being edited, the area is saved
       if(editMode){
         cnt_enterKeyPressed++;
         saveArea();
+      }
+      // if the user press Enter and a new layer is being created, the area is finished
+      if(createMode){
+        cnt_enterKeyPressed++;
+        finishCreation();
       }
     }
     if (evtobj.keyCode == 27) {
       // if the user press Esc and a new layer is being created, the area is canceled
       if(createMode) {
         cnt_escapeKeyPressed++;
-        cancelCreation();
+        var str='<span class="language-en"><h7>You canceled the drawing</h7></span>\
+        <span class="language-pt">Você cancelou o desenho</span>';
+        removeArea(area_id, true, 2000);
+        openInfoPopUp(mymap.getCenter(), str);
       }
     }
   }

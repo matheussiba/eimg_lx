@@ -218,6 +218,8 @@
         closeButton: false,
       }).addTo(mymap);
 
+
+
       createTitleLiByHref( "#home" , "Click to see the Home" );
       createTitleLiByHref( "#settings" , "Click to change settings" );
 
