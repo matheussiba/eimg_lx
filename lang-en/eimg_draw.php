@@ -417,6 +417,51 @@
     addSidebarEvents();
     addMapEvents();
 
+    //Keep 'pm:drawstart' event here in order to 'this' == 'document'. Inside another function the "this" element change
+    mymap.on('pm:drawstart', function(e) {
+      //A new layer has started to be drawn.
+      createMode = true; //the createMode will receive 'false' when the save button is clicked
+      cnt_numVertices = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
+      this.workingLayer = e.workingLayer;
+      console.log(this);
+      //toggle visibility of controls when start the drawing mode
+      ctlCreationToolbar.addTo(mymap);
+      ctlMapOverview.remove();
+      if (!IsMobileDevice){
+        ctlZoom.remove();
+      }
+      if ((cnt_DislikedAreas+cnt_LikedAreas)<=1){
+        showInfoBox();
+      }
+      var layer = e.workingLayer;
+      layer.on('pm:vertexadded', function(e) {
+        // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
+        console.log('vertexadded', e);
+        cnt_numVertices++;
+
+        if(cnt_numVertices==1){
+          //Adding Instructions popup when the user is creating the first area on the map
+          if( (cnt_LikedAreas+cnt_DislikedAreas)==1){
+            var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b>';
+            openAlertPopup(firstVertex, str_popup);
+          }
+        }
+
+        // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
+        if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
+          var str_popup = '<p>Please, only draw inside the<br /><b>study area</b>';
+          openAlertPopup(pntClicked, str_popup);
+          removeLastVertex();
+        }
+
+      });
+      // also fired on the markers of the polygon
+      layer.on('pm:snap', function(e) {
+        // e includes marker, snap coordinates segment, the working layer and the distance
+        // console.log('snap', e);
+      });
+    },this);
+
     ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
     document.onkeydown = KeyPress; // Capture the pressed key in the document
   }); //END $(document).ready()
@@ -599,7 +644,6 @@
     /* DESCRIPTION: Add all the events related to the leaflet map element */
     mymap.on("moveend", function () {
       // console.log(mymap.getCenter().toString());
-
       if(cnt_movechange>1){
         alert("STOP "+ cnt_movechange.toString());
         cnt_movechange = 0;
@@ -612,9 +656,7 @@
       // console.log(mymap.getCenter().toString());
       // console.log(e);
       // var mapClickedPositon = [e.latlng.lat, e.latlng.lng];
-
       // var cntMousePosition = 0;
-
       cnt_movechange++;
       console.log("MoveStart:",cnt_movechange);
     });
@@ -645,7 +687,6 @@
     })
     mymap.on('contextmenu', function(e){
       /* DESCRIPTION: listener when a click is given on the map  */
-      // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
       if(editMode){
         //if in editMode or createMode the area_id is already set to be accessed in the function
         saveArea();
@@ -688,51 +729,7 @@
       //A creation of a new area is only finished when the user clicks the save button
       createMode = false;
     });
-    mymap.on('pm:drawstart', function(e) {
-      //A new layer has started to be drawn.
-      createMode = true; //the createMode will receive 'false' when the save button is clicked
-      cnt_numVertices = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
-      this.workingLayer = e.workingLayer;
 
-      //toggle visibility of controls when start the drawing mode
-      ctlCreationToolbar.addTo(mymap);
-      ctlMapOverview.remove();
-      if (!IsMobileDevice){
-        ctlZoom.remove();
-      }
-      if ((cnt_DislikedAreas+cnt_LikedAreas)<=1){
-        showInfoBox();
-      }
-
-      var layer = e.workingLayer;
-      layer.on('pm:vertexadded', function(e) {
-        // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
-        console.log('vertexadded', e);
-        cnt_numVertices++;
-
-        if(cnt_numVertices==1){
-          //Adding Instructions popup when the user is creating the first area on the map
-          if( (cnt_LikedAreas+cnt_DislikedAreas)==1){
-            var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b>';
-            openAlertPopup(firstVertex, str_popup);
-          }
-        }
-
-        // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
-        if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
-          var str_popup = '<p>Please, only draw inside the<br /><b>study area</b>';
-          openAlertPopup(pntClicked, str_popup);
-          removeLastVertex();
-        }
-
-      });
-      // also fired on the markers of the polygon
-      layer.on('pm:snap', function(e) {
-        // e includes marker, snap coordinates segment, the working layer and the distance
-        // console.log('snap', e);
-      });
-
-    },this);
     mymap.on('pm:create', function(e) {
       // console.log(e);
       var lyrDraw = e.layer;
