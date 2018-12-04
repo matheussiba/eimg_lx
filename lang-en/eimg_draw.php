@@ -342,41 +342,30 @@
   <script>
   //  ********* Global Variables Definition *********
   var mymap;
-  var mymapOverview;
-  var backgroundLayer;
-  var mapbox_overview;
-  var jsn_draw;
-  var LyrStudyArea;
-  var coord_poly;
-  var ctlFinishArea;
-  var ctlRemoveLastVertex;
-  var ctlCancelArea;
-  var layerControls;
-  var ctlSidebar;
-  var userpanel;
-  var statusAddLikeButton = "";
-  var statusAddDislikeButton = "";
+  var basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery,
+      basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
+  var LyrAOI, LyrAOI_coords;
+  var ctlLayers, ctlCreationToolbar, ctlSidebar, ctlZoom, ctlMapOverview,
+      ctlScale, ctlMouseposition, ctlAttribute;
+  var statusAddLikeButton = "", statusAddDislikeButton = "";
   var temp_tab_content;
-  var color_line_area;
-  var color_fill_area;
+  var color_line_area, color_fill_area;
   var fgpDrawnItems;
   var area_id;
-  var previousTab;
-  var activeTab;
+  var previousTab, activeTab;
   var sidebarOpened;
   var clickedLayerId=null;
-  var editMode = false;
-  var createMode = false;
+  var editMode = false, createMode = false;
   var newTabCreated = false;
   var setStyle_normal = {"weight": 2, "fillOpacity": 0.20 };
   var setStyle_edit = {"weight": 5, "fillOpacity": 0.1};
   var setStyle_clicked = {"weight": 3.5, "fillOpacity": 0.20};
   var cntCheckedCbx;
-  var firstClickLatLng;
+  var firstVertex, pntClicked;
   var minimumZoom = 11;
 
   // # Logging variables
-  var log_functions = true;
+  var log_functions = false;
   var IsMobileDevice = false;
   var cnt_SidebarOpens = 0;
   var cnt_SidebarChangeTab = 0;
@@ -384,7 +373,7 @@
   var cnt_DislikedAreas = 0;
   var cnt_zoomInExceeded = 0;
   var cnt_zoomOutExceeded = 0;
-  var cnt_clickPerCreatedPolygon = 0;
+  var cnt_numVertices = 0;
   var cnt_movechange = 0;
   var cnt_CtrlZPressed = 0;
   var cnt_enterKeyPressed = 0;
@@ -393,87 +382,88 @@
   var cnt_test = 0;
 
   //  ********* Mobile Device parameters and Function *********
-  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-    /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
-    IsMobileDevice = true;
-  };
-  if(IsMobileDevice){
-    /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
-    if("orientation" in screen) {
-      var orientation_str = screen.orientation.type;
-      var orientation_array = orientation_str.split("-");
-      if( orientation_array[0] == "portrait"){
-        // NEEDTO: Show this message in a modal div
-        alert("This application is better seen if you change the orientation of your device to: landscape");
-      }
-    }
-  }
-  $( window ).on( "orientationchange", function( event ){
-    /* DESCRIPTION: ADDDESCRIPTION  */
-    //Do things based on the orientation of the mobile device
-    if(IsMobileDevice){
-      if("orientation" in screen) {
-        var orientation_array = (screen.orientation.type).split("-");
-        if( orientation_array[0] == "portrait"){
-          // NEEDTO: Show this message in a modal div
-          alert("Change the orientation of the device to: landscape");
-        }else{  //landscape mode
-          //Reloads the page
-          //location.reload();
-          console.log( orientation_array[0] );
-        }
-      }
-    }
-  });//END $( window ).on( "orientationchange", ())
+  loadMobileFunction();
 
   //  ********* Create Map *********
-
   $(document).ready(function(){
     /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
     //  ********* Map Initialization *********
-    //Adds the basemap
-    var basemap_osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy;<a href="http://osm.org/copyright">OSM</a>'
-    });
-    var basemap_mapbox = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
-      attribution: '&copy;<a href="https://www.mapbox.com/feedback/">Mapbox</a>'
-    });
-    var basemap_Gterrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
-      subdomains:['mt0','mt1','mt2','mt3']
-    });
-    var basemap_Gimagery = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-      subdomains:['mt0','mt1','mt2','mt3']
-    });
-    var basemap_GimageHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-      subdomains:['mt0','mt1','mt2','mt3']
-    });
-    var basemap_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
-    });
-    var Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
-      name: 'overlay',
-    });
-
-    var center =    L.latLng(38.716, -9.150);
-    minimumZoom = 11;
+    loadBasemaps();
+    minimumZoom = IsMobileDevice ? 10 : 11;
     //Create the Leaflet map elemetn
     mymap = L.map('mapdiv', {
-      center: center,
+      center: L.latLng(38.716, -9.150),
       layers: basemap_mapbox,
       zoom:14,
       maxZoom: 18,
-      minZoom: 11,
+      minZoom: minimumZoom,
       attributionControl:false,
       zoomControl:false,
       // maxBounds: mybounds,
       maxBoundsViscosity: 1.0
     });
 
+    loadStudyArea();
 
-    // Adding the Historical Center of Lisbon
-    // LyrStudyArea = new L.GeoJSON.AJAX("<?php  echo $root_directory?>data/historical_center_lx.geojson").addTo(mymap);
+    //Initializing the feature group where all the drawn Objects will be stored
+    fgpDrawnItems = new L.FeatureGroup();
+    mymap.addLayer(fgpDrawnItems);
+    fgpDrawnItems.addTo(mymap);
+
+    loadControls(); //Load leaflet controls
+    ctlSidebar.addPanel(returnTempTabContent()); //Add Temp Tab to the sidebar
+    createTitleLiByHref( "#temp_tab" , "Add a new Area" ); // Creates the title, to appear when the tab icon is hovered.
+    // Add Events
+    addSidebarEvents();
+    addMapEvents();
+
+    ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
+    document.onkeydown = KeyPress; // Capture the pressed key in the document
+  }); //END $(document).ready()
+
+  //  ********* JS Functions *********
+  //  # Map functions
+  function loadMobileFunction() {
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+      /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
+      IsMobileDevice = true;
+    };
+    if(IsMobileDevice){
+      /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
+      if("orientation" in screen) {
+        var orientation_str = screen.orientation.type;
+        var orientation_array = orientation_str.split("-");
+        if( orientation_array[0] == "portrait"){
+          // NEEDTO: Show this message in a modal div
+          alert("This application is better seen if you change the orientation of your device to: landscape");
+        }
+      }
+    }
+    $( window ).on( "orientationchange", function( event ){
+      /* DESCRIPTION: ADDDESCRIPTION  */
+      //Do things based on the orientation of the mobile device
+      if(IsMobileDevice){
+        if("orientation" in screen) {
+          var orientation_array = (screen.orientation.type).split("-");
+          if( orientation_array[0] == "portrait"){
+            // NEEDTO: Show this message in a modal div
+            alert("Change the orientation of the device to: landscape");
+          }else{  //landscape mode
+            //Reloads the page
+            //location.reload();
+            console.log( orientation_array[0] );
+          }
+        }
+      }
+    });//END $( window ).on( "orientationchange", ())
+  }
+  function loadStudyArea(){
+    /* DESCRIPTION: Adds the Study area, comprises of 12 freguesias:
+     * Estrela, Misericórdia, Santa Maria Maior, São Vicente, Penha de França, Beato,
+     * Arroios, Santo António, Campo de Ourique, Campolide, Avenidas Novas, Areeiro  */
+
     $.ajax({
-      url:'eimg_viewer-echo_eimg_result.php',
+      url:'eimg_get_dbtable.php',
       data: {
         type_op: "data",
         tbl: "study_area_4326",
@@ -483,10 +473,9 @@
       success:function(response){
         // console.log(response);
         var layer = JSON.parse(response);
-
-        // console.log(layer);
-        coord_poly = layer.features[0].geometry.coordinates;
-        LyrStudyArea=L.geoJSON(layer
+        console.log(layer);
+        LyrAOI_coords = layer.features[0].geometry.coordinates;
+        LyrAOI=L.geoJSON(layer
         ,{
           // style:{fillColor:'rgba(0,0,0,0)'},
           // onEachFeature: function(att){
@@ -494,9 +483,9 @@
           // }
         }
         );
-        var lyr_bounds = LyrStudyArea.getBounds();
+        var lyr_bounds = LyrAOI.getBounds();
         var value = 0.03;
-        LyrStudyArea.addTo(mymap);
+        LyrAOI.addTo(mymap);
         var slt = (lyr_bounds._southWest.lat)-value;
         var sln = (lyr_bounds._southWest.lng)-value*2;
         var nlt = (lyr_bounds._northEast.lat)+value;
@@ -505,7 +494,7 @@
         var southWest = L.latLng(slt,sln);
         var northEast = L.latLng(nlt,nln);
         var mybounds =  L.latLngBounds(southWest, northEast);
-        mymap.fitBounds(mybounds);
+        mymap.fitBounds(LyrAOI.getBounds());
         mymap.setMaxBounds(mybounds);
 
         // var polygon1 = L.polygon([
@@ -518,7 +507,33 @@
       },
       error: function(xhr, status, error){ alert("ERROR: "+error); }
     }); // End ajax
-
+  }
+  function loadBasemaps() {
+    /* DESCRIPTION: Add basemaps to the map*/
+    basemap_osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy;<a href="http://osm.org/copyright">OSM</a>'
+    });
+    basemap_mapbox = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
+      attribution: '&copy;<a href="https://www.mapbox.com/feedback/">Mapbox</a>'
+    });
+    basemap_Gterrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+      subdomains:['mt0','mt1','mt2','mt3']
+    });
+    basemap_Gimagery = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+      subdomains:['mt0','mt1','mt2','mt3']
+    });
+    basemap_GimageHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+      subdomains:['mt0','mt1','mt2','mt3']
+    });
+    basemap_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
+    });
+    Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
+      name: 'overlay',
+    });
+  }
+  function loadControls() {
+    /* Add leaflet controls to the map */
     //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
     ctlSidebar = L.control.sidebar({
       container:'sidebar_div',
@@ -526,23 +541,9 @@
       closeButton: false,
     }).addTo(mymap);
 
-    //Initializing the feature group where all the drawn Objects will be stored
-    fgpDrawnItems = new L.FeatureGroup();
-    mymap.addLayer(fgpDrawnItems);
-    fgpDrawnItems.addTo(mymap);
-
-    //Global variable, in order to other functions also be able to add the "Temp tab"
-    // Create elements to populate the tab and add it to the sidebar
-    // It creates an "li" element that only contains an "a" element of href="#"+{id}, in this case: "#temp_tab"
-    // It also creates a "div" element where received the id={id}, in this case: id="temp_tab".
-    // When the li element containing the "a" element of "href=={id}" is clicked. The "div" of "id=={id}" will be opened.
-    ctlSidebar.addPanel(returnTempTabContent());
-    // Creates the title, to appear when the "li" element is hovered.
-    createTitleLiByHref( "#temp_tab" , "Add a new Area" );
     createTitleLiByHref( "#home" , "Click to see the Home" );
     createTitleLiByHref( "#info" , "Click to see information" );
 
-    // ********* Add Controls to the map *********
     //Add attribution to the map
     ctlAttribute = L.control.attribution({position:'bottomright'}).addTo(mymap);
     ctlAttribute.addAttribution('OSM');
@@ -551,21 +552,20 @@
 
     //Control scale
     ctlScale = L.control.scale({position:'bottomright', metric:true, imperial:false, maxWidth:200, }).addTo(mymap);
+
     //Control Latitude and Longitude
     if (!IsMobileDevice){
       ctlMouseposition = L.control.mousePosition({position:'bottomright'}).addTo(mymap);
     }
 
     // Add the overview control to the map
-    // mymapOverview = L.control.overview([mapbox_overview]).addTo(mymap);
-    mymapOverview = L.control.overview({
+    ctlMapOverview = L.control.overview({
       position: 'bottomright',
       onAfterInitLayout: function (overview) {
-        console.log(overview);
       }
     }).addTo(mymap);
 
-    layerControls = L.control.layers(
+    ctlLayers = L.control.layers(
       {
         '<i class="fas fa-map-marked"></i>': basemap_mapbox,
         '<i class="fas fa-mountain"></i>': basemap_Gterrain,
@@ -575,10 +575,10 @@
     ).addTo(mymap);
 
     // Adds a control using the easy button plugin
-    ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
-    ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
-    ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(area_id, true);}, 'Click to cancel the drawing');
-    var ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'});
+    var ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
+    var ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
+    var ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(area_id, true);}, 'Click to cancel the drawing');
+    ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'});
 
     var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
     container.title="Toolbar Instructions";
@@ -592,89 +592,11 @@
 
     // Add Zoom if not in the
     if (!IsMobileDevice){
-      var ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
+      ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
     }
-
-    //  ********* Events on Map *********
-    // # Sidebar events
-    ctlSidebar.on('closing',function(){
-      previousTab = activeTab; //When the sidebar opens, it was closed before. So there was no active tab
-      activeTab = null;
-      sidebarOpened = false;
-
-      // mymap.removeLayer(basemap_WorldImagery);
-      // mymap.addLayer(basemap_mapbox);
-
-      //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
-      sidebarChange('closing');
-
-      //When closing the sidebar it's in the editMode and createMode==false, force the user to give an attribute to the area
-      if(editMode){
-        // if(createMode==false){
-        //count the number of checkbox checked for the area_id
-        countCheckCbx();
-        if(cntCheckedCbx == 0){
-          // No attribute was selected
-          warnCheckAtt();
-          return null;
-        }
-        // }
-      }else{
-        //to not overide the edit mode style
-        setStyleNormal();
-      }
-      console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM",
-      createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
-
-      if(cnt_LikedAreas+cnt_DislikedAreas<6){
-        document.getElementById('dynamic-icon-tab').className = 'fa fa-plus';
-      }
-
-    });
-    ctlSidebar.on('opening', function() {
-      cnt_SidebarOpens++;
-      //because the context event fires the opening event (if sidebar is closed), the following variable is to know the status of the sidebar, in order to organize the previous and active tab in the 'content' event.
-      sidebarOpened = true;
-      //Mimics a sidebar click, to change the background of the icon to blue, if the tab opened is a liked or disliked area
-      sidebarChange('opening');
-      if (createMode){
-        warnFinishCreation();
-      }
-    });
-    ctlSidebar.on('content', function(e) {
-      //When the sidebar opens the 'content' and 'opening' are fired up together, consecutively
-      // When sidebarOpened==true, it means the sidebar is being opened, otherwise, the user is just changing tabs
-      if(sidebarOpened){
-        previousTab = activeTab;
-        cnt_SidebarChangeTab++;
-      }else //sidebarOpened == false, the sidebar is being opened, the opening event will start after this one and set sidebarOpened to true
-      {
-        previousTab = null;
-      }
-      activeTab = e.id; //Returns the ID of the clicked tab
-
-      if(editMode){
-        // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
-        if (activeTab != area_id){ saveArea(); }
-      }
-
-      //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
-      sidebarChange('content');
-
-      if(editMode){
-        // Set style of layer based on the sidebar status
-        toggleLyrStyle(activeTab, setStyle_edit);
-        // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
-        if (activeTab != area_id) saveArea();
-      }else{
-        toggleLyrStyle(activeTab, setStyle_clicked);
-      }
-
-      console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
-
-    });//END content
-
-    // # Map events
+  }
+  function addMapEvents() {
+    /* DESCRIPTION: Add all the events related to the leaflet map element */
     mymap.on("moveend", function () {
       // console.log(mymap.getCenter().toString());
 
@@ -701,24 +623,24 @@
       var zoomNotAllowed = minimumZoom;
       if(mymap.getZoom()==zoomNotAllowed){
         cnt_zoomOutExceeded++;
-        if( cnt_zoomOutExceeded<5)  openInfoPopUp(mymap.getCenter(), "<h6>Minimum zoom exceeded!</h6>",1000 );
+        if( cnt_zoomOutExceeded<5)  openAlertPopup(mymap.getCenter(), "<h6>Minimum zoom exceeded!</h6>",1000 );
         setTimeout(function(){
           mymap.setZoom(zoomNotAllowed+1);
         }, 400);
       }
       // if(mymap.getZoom()==18 && cnt_zoomInExceeded<1){
       //   cnt_zoomInExceeded++;
-      //   openInfoPopUp(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
+      //   openAlertPopup(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
       // }
     });
     mymap.on('baselayerchange', function(e){
       // alert("LAYER HAS BEEN CHANGED.");
       // console.log(e);
       if (e.name == '<i class="fas fa-image"></i>'){
-        layerControls.addOverlay(Hydda_RoadsAndLabels, 'streets');
+        ctlLayers.addOverlay(Hydda_RoadsAndLabels, 'streets');
       }else{
         mymap.removeLayer(Hydda_RoadsAndLabels);
-        layerControls.removeLayer(Hydda_RoadsAndLabels);
+        ctlLayers.removeLayer(Hydda_RoadsAndLabels);
       }
     })
     mymap.on('contextmenu', function(e){
@@ -735,25 +657,11 @@
     });
     mymap.on('click', function(e){
       /* DESCRIPTION: listener when a click is given on the map  */
+      pntClicked = e.latlng; // FORMAT: {lat: 38.72452, lng: -9.11160}
+      // openAlertPopup(e.latlng, "<h6>test!</h6>",1000 )
+      if(createMode && cnt_numVertices==0) firstVertex =  pntClicked;
+
       // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
-      var clickPosition = [e.latlng.lng, e.latlng.lat];
-      // console.log(LyrStudyArea.getBounds().contains(clickPosition));
-
-      var polyPoints = coord_poly;
-
-      var x = clickPosition[1], y = clickPosition[0];
-      var inside = false;
-      for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
-         var xi = polyPoints[i][1], yi = polyPoints[i][0];
-         var xj = polyPoints[j][1], yj = polyPoints[j][0];
-
-         var intersect = ((yi > y) != (yj > y))
-             && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-         if (intersect) inside = !inside;
-      }
-      console.log(inside);
-
-
       if(clickedLayerId != null){
         //if getActiveTabId() != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
         if ((getActiveTabId()!=clickedLayerId) && (createMode==false)){
@@ -770,7 +678,7 @@
     mymap.on('pm:drawend', function(e) {
       //toggle visibility of toolbar, overview map
       ctlCreationToolbar.remove();
-      mymapOverview.addTo(mymap);
+      ctlMapOverview.addTo(mymap);
       if (!IsMobileDevice){
         ctlZoom.addTo(mymap);
       }
@@ -783,12 +691,12 @@
     mymap.on('pm:drawstart', function(e) {
       //A new layer has started to be drawn.
       createMode = true; //the createMode will receive 'false' when the save button is clicked
-      cnt_clickPerCreatedPolygon = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
+      cnt_numVertices = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
       this.workingLayer = e.workingLayer;
 
       //toggle visibility of controls when start the drawing mode
       ctlCreationToolbar.addTo(mymap);
-      mymapOverview.remove();
+      ctlMapOverview.remove();
       if (!IsMobileDevice){
         ctlZoom.remove();
       }
@@ -799,19 +707,22 @@
       var layer = e.workingLayer;
       layer.on('pm:vertexadded', function(e) {
         // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
-        // console.log('vertexadded', e);
-        cnt_clickPerCreatedPolygon++;
-        if(cnt_clickPerCreatedPolygon==1){
-          firstClickLatLng = [e.latlng.lat, e.latlng.lng];
+        console.log('vertexadded', e);
+        cnt_numVertices++;
 
+        if(cnt_numVertices==1){
           //Adding Instructions popup when the user is creating the first area on the map
           if( (cnt_LikedAreas+cnt_DislikedAreas)==1){
-            var str_popup = '';
-            str_popup += '<p>Click in this node again<br />';
-            str_popup += '<b>to finish drawing</b>';
-            openInfoPopUp(firstClickLatLng, str_popup);
+            var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b>';
+            openAlertPopup(firstVertex, str_popup);
           }
+        }
 
+        // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
+        if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
+          var str_popup = '<p>Please, only draw inside the<br /><b>study area</b>';
+          openAlertPopup(pntClicked, str_popup);
+          removeLastVertex();
         }
 
       });
@@ -843,7 +754,7 @@
       //General style
       lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
 
-      jsn_draw=lyrDraw.toGeoJSON().geometry;
+      var jsn_draw=lyrDraw.toGeoJSON().geometry;
       //Count the number of coordinates inside the JSON geometry.
       //In the case of polygon. The last element is equal to the first in order close the polygon.
       //So the subtraction of 1 gives us the exactly number of vertices of the drawn polygon
@@ -894,14 +805,26 @@
       if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
 
     });//pm:create
+  }
+  function isMarkerInsidePolygon(marker, poly_coords) {
+    /* DESCRIPTION: Check if the point is inside a polygon
+     * marker format == {lat: 38.744, lng: -9.111}
+     * polygon format == [lng, lat]
+     * source: https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon*/
+    var x = marker.lng, y = marker.lat;
+    var inside = false;
+    for (var i = 0, j = poly_coords.length - 1; i < poly_coords.length; j = i++) {
+        var xi = poly_coords[i][0], yi = poly_coords[i][1];
+        var xj = poly_coords[j][0], yj = poly_coords[j][1];
 
-    // opening the sidebar to show the basic info to the user
-    ctlSidebar.open('home');
-    // Capture the pressed key in the document
-    document.onkeydown = KeyPress;
-  }); //END $(document).ready()
+        var intersect = ((xi > x) != (xj > x))
+            && (y < (yj - yi) * (x - xi) / (xj - xi) + yi);
+        if (intersect) inside = !inside;
+    }
+    // console.log(inside);
+    return inside;
+  };
 
-  //  ********* JS Functions *********
   //  # Drawing Functions
   function drawArea(button_clicked_properties){
     /* DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
@@ -1178,16 +1101,16 @@
     if (num_vertices>=3){
       document.workingLayer._map.pm.Draw["Poly"]._finishShape();
     }else if(num_vertices>=1){
-      //At least one click was given, so firstClickLatLng exists
+      //At least one click was given, so firstVertex exists
       var str_popup = '';
       str_popup += '<p>Please, add at least <br />';
       str_popup += '<b>3 vertices</b>';
-      openInfoPopUp(firstClickLatLng, str_popup);
+      openAlertPopup(firstVertex, str_popup);
     }else{
       var str_popup = '';
       str_popup += '<p>Please, add at least <br />';
       str_popup += '<b>3 vertices</b>';
-      openInfoPopUp(mymap.getCenter(), str_popup);
+      openAlertPopup(mymap.getCenter(), str_popup);
     }
   }
   function removeLastVertex(){
@@ -1222,21 +1145,22 @@
     var button_drawArea_id = area_id+"_drawArea";
     document.getElementById(button_drawArea_id).click();
   }
-  function openInfoPopUp(popup_position, popup_content, duration_open=5000){
+  function openAlertPopup(popup_position, popup_content, duration_open=5000){
+    /* DESCRIPTION: Shows the user a message in a Popup instead of using alert*/
     var popup_options = {
       // 'autoClose':	false,
       'closeOnClick':	false,
       'className' : 'popupInfo'
     }
+
     //close any popup if open
     mymap.closePopup();
     var infoPopUp = L.popup(popup_options)
-    .setLatLng(popup_position)
+    .setLatLng(popup_position) // FORMAT == {lat: 38.7345, lng: -9.1111}
     .setContent(popup_content)
     .openOn(mymap);
     setTimeout(function(){ mymap.closePopup(infoPopUp);}, duration_open);
   }
-
 
   //  # Sidebar Functions
   function sidebarChange(e){
@@ -1451,7 +1375,10 @@
 
   };//END create_areaTab()
   function returnTempTabContent(){
-    /* DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called */
+    /* DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called
+     * It creates an "li" element that only contains an "a" element of href="#"+{id}, in this case: "#temp_tab"
+     * It also creates a "div" element where received the id={id}, in this case: id="temp_tab".
+     * When the li element containing the "a" element of "href=={id}" is clicked. The "div" of "id=={id}" will be opened.*/
     var str_temptab= "";
     str_temptab += '<div id="col-xs-12">';
     str_temptab +=  '<div class="sidebarContentParent">';
@@ -1605,15 +1532,92 @@
       if(att_hist)  cntCheckedCbx++;
     }
   };//END countCheckCbx()
+  function addSidebarEvents() {
+    // # Sidebar events
+    ctlSidebar.on('closing',function(){
+      previousTab = activeTab; //When the sidebar opens, it was closed before. So there was no active tab
+      activeTab = null;
+      sidebarOpened = false;
 
-  //  # Warnings Functions
+      // mymap.removeLayer(basemap_WorldImagery);
+      // mymap.addLayer(basemap_mapbox);
+
+      //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
+      sidebarChange('closing');
+
+      //When closing the sidebar it's in the editMode and createMode==false, force the user to give an attribute to the area
+      if(editMode){
+        // if(createMode==false){
+        //count the number of checkbox checked for the area_id
+        countCheckCbx();
+        if(cntCheckedCbx == 0){
+          // No attribute was selected
+          warnCheckAtt();
+          return null;
+        }
+        // }
+      }else{
+        //to not overide the edit mode style
+        setStyleNormal();
+      }
+      // console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
+
+      if(cnt_LikedAreas+cnt_DislikedAreas<6){
+        document.getElementById('dynamic-icon-tab').className = 'fa fa-plus';
+      }
+
+    });
+    ctlSidebar.on('opening', function() {
+      cnt_SidebarOpens++;
+      //because the context event fires the opening event (if sidebar is closed), the following variable is to know the status of the sidebar, in order to organize the previous and active tab in the 'content' event.
+      sidebarOpened = true;
+      //Mimics a sidebar click, to change the background of the icon to blue, if the tab opened is a liked or disliked area
+      sidebarChange('opening');
+      if (createMode){
+        warnFinishCreation();
+      }
+    });
+    ctlSidebar.on('content', function(e) {
+      //When the sidebar opens the 'content' and 'opening' are fired up together, consecutively
+      // When sidebarOpened==true, it means the sidebar is being opened, otherwise, the user is just changing tabs
+      if(sidebarOpened){
+        previousTab = activeTab;
+        cnt_SidebarChangeTab++;
+      }else //sidebarOpened == false, the sidebar is being opened, the opening event will start after this one and set sidebarOpened to true
+      {
+        previousTab = null;
+      }
+      activeTab = e.id; //Returns the ID of the clicked tab
+
+      if(editMode){
+        // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
+        if (activeTab != area_id){ saveArea(); }
+      }
+
+      //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
+      sidebarChange('content');
+
+      if(editMode){
+        // Set style of layer based on the sidebar status
+        toggleLyrStyle(activeTab, setStyle_edit);
+        // finish edit area if the Sidebar is opened in another tab diferent from the one being edited
+        if (activeTab != area_id) saveArea();
+      }else{
+        toggleLyrStyle(activeTab, setStyle_clicked);
+      }
+
+      // console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
+
+    });//END content
+  }
+
+  //  # Message Functions
   function openModal(){
     /* DESCRIPTION: Open the warning modal */
     // data-toggle="modal" data-target="#exampleModal";
     // $('.modal').css("display", "block");
     $('#exampleModalCenter').modal('show');
   }
-
   function warnCheckAtt(){
     /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
     alert("Check at least one attribute for the area");
@@ -1629,6 +1633,7 @@
     alert("Please, finish the draw first. By right clicking or cliking in the first node.");
     ctlSidebar.close();
   }
+
   //  # Document Functions
   function KeyPress(e) {
     /* DESCRIPTION: call functions based on the combination of keys the users is pressing */
@@ -1660,10 +1665,13 @@
         var str='<span class="language-en"><h7>You canceled the drawing</h7></span>\
         <span class="language-pt">Você cancelou o desenho</span>';
         removeArea(area_id, true, 2000);
-        openInfoPopUp(mymap.getCenter(), str);
+        openAlertPopup(mymap.getCenter(), str);
       }
     }
   }
+
+
+
 
   //  # jQuery Functions
   $('input[type=radio][name=language_switch]').change(function() {

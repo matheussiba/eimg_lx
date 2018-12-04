@@ -318,7 +318,7 @@
       // Calculating Stats for styling the opacity of each polygon based on the count of liked and disliked place
       //stats for the data
       $.ajax({
-        url:'eimg_viewer-echo_eimg_result.php',
+        url:'eimg_get_dbtable.php',
         data: {
           type_op: "info",
           tbl: "eimg_result",
@@ -333,7 +333,7 @@
       }); // End ajax
 
       $.ajax({
-        url:'eimg_viewer-echo_eimg_result.php',
+        url:'eimg_get_dbtable.php',
         data: {
           type_op: "data",
           tbl: "eimg_result",
