@@ -10,6 +10,7 @@
 		margin: 0px;
 		padding: 0px
 	}
+
 	#header {
 	  /* height: 75px; */
 	  height:4vh;
@@ -178,6 +179,10 @@
 
 	.btn {
 		border-radius: 24px;
+	}
+
+	.btn.disabled {
+	  cursor: not-allowed;
 	}
 
 	.btn-light{

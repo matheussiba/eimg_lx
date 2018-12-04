@@ -363,6 +363,7 @@
   var cntCheckedCbx;
   var firstVertex, pntClicked;
   var minimumZoom = 11;
+  var closeAlertPopUpWhenDrawIsFinished;
 
   // # Logging variables
   var log_functions = false;
@@ -372,7 +373,7 @@
   var cnt_LikedAreas = 0;
   var cnt_DislikedAreas = 0;
   var cnt_zoomInExceeded = 0;
-  var cnt_zoomOutExceeded = 0;
+  var cnt_zoomOutExceeded = 0, cnt_doNotPan = 0;
   var cnt_numVertices = 0;
   var cnt_movechange = 0;
   var cnt_CtrlZPressed = 0;
@@ -422,6 +423,7 @@
       //A new layer has started to be drawn.
       createMode = true; //the createMode will receive 'false' when the save button is clicked
       cnt_numVertices = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
+      closeAlertPopUpWhenDrawIsFinished = true;
       this.workingLayer = e.workingLayer;
       console.log(this);
       //toggle visibility of controls when start the drawing mode
@@ -436,7 +438,7 @@
       var layer = e.workingLayer;
       layer.on('pm:vertexadded', function(e) {
         // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
-        console.log('vertexadded', e);
+        // console.log('vertexadded', e);
         cnt_numVertices++;
 
         if(cnt_numVertices==1){
@@ -449,7 +451,9 @@
 
         // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
         if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
-          var str_popup = '<p>Please, only draw inside the<br /><b>study area</b>';
+          var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
+          //If the first click the user gives is outside the study area, it will restart the draw and do not close the AlertPopup
+          if (cnt_numVertices==1) closeAlertPopUpWhenDrawIsFinished = false;
           openAlertPopup(pntClicked, str_popup);
           removeLastVertex();
         }
@@ -496,7 +500,7 @@
           }else{  //landscape mode
             //Reloads the page
             //location.reload();
-            console.log( orientation_array[0] );
+            // console.log( orientation_array[0] );
           }
         }
       }
@@ -506,7 +510,6 @@
     /* DESCRIPTION: Adds the Study area, comprises of 12 freguesias:
      * Estrela, Misericórdia, Santa Maria Maior, São Vicente, Penha de França, Beato,
      * Arroios, Santo António, Campo de Ourique, Campolide, Avenidas Novas, Areeiro  */
-
     $.ajax({
       url:'eimg_get_dbtable.php',
       data: {
@@ -518,37 +521,28 @@
       success:function(response){
         // console.log(response);
         var layer = JSON.parse(response);
-        console.log(layer);
+        // console.log(layer);
         LyrAOI_coords = layer.features[0].geometry.coordinates;
-        LyrAOI=L.geoJSON(layer
-        ,{
-          // style:{fillColor:'rgba(0,0,0,0)'},
-          // onEachFeature: function(att){
-          //     console.log(att.features[0].geometry.coordinates.);
-          // }
-        }
-        );
+        LyrAOI=L.geoJSON(layer);
         var lyr_bounds = LyrAOI.getBounds();
         var value = 0.03;
         LyrAOI.addTo(mymap);
-        var slt = (lyr_bounds._southWest.lat)-value;
-        var sln = (lyr_bounds._southWest.lng)-value*2;
-        var nlt = (lyr_bounds._northEast.lat)+value;
-        var nln = (lyr_bounds._northEast.lng)+value*2;
+        //Creating a boundary for the map based on the bounds of the layer added
+        //Increasing lat and long in the same proportion
+        var slt = (lyr_bounds._southWest.lat)-value; //south latitude
+        var sln = (lyr_bounds._southWest.lng)-value*2; //south longitude
+        var nlt = (lyr_bounds._northEast.lat)+value; //north latitude
+        var nln = (lyr_bounds._northEast.lng)+value*2; //north longitude
         // defining the max bounds for panning around the map
         var southWest = L.latLng(slt,sln);
         var northEast = L.latLng(nlt,nln);
         var mybounds =  L.latLngBounds(southWest, northEast);
+        //Zoom the map to the bounds of the added layer
         mymap.fitBounds(LyrAOI.getBounds());
+        //Set the maximum boundaries in which the map can be panned
         mymap.setMaxBounds(mybounds);
-
-        // var polygon1 = L.polygon([
-        //     [slt, sln],
-        //     [slt, nln],
-        //     [nlt, nln],
-        //     [nlt, sln]
-        // ]).addTo(mymap);
-
+        //Create a test polygon to see the area of the maxBounds
+        // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
       },
       error: function(xhr, status, error){ alert("ERROR: "+error); }
     }); // End ajax
@@ -644,21 +638,18 @@
     /* DESCRIPTION: Add all the events related to the leaflet map element */
     mymap.on("moveend", function () {
       // console.log(mymap.getCenter().toString());
-      if(cnt_movechange>1){
-        alert("STOP "+ cnt_movechange.toString());
-        cnt_movechange = 0;
-      }else{
-        cnt_movechange = 0;
+      if(mymap.getZoom()==minimumZoom+1){
+        cnt_doNotPan++;
+        if( cnt_doNotPan<3) openAlertPopup(mymap.getCenter(), "<h6>Please stay in this area only!</h6>",1000 );
       }
-
     });
     mymap.on("movestart", function (e) {
       // console.log(mymap.getCenter().toString());
       // console.log(e);
       // var mapClickedPositon = [e.latlng.lat, e.latlng.lng];
       // var cntMousePosition = 0;
-      cnt_movechange++;
-      console.log("MoveStart:",cnt_movechange);
+      // cnt_movechange++;
+      // console.log("MoveStart:",cnt_movechange);
     });
     mymap.on("zoomend", function () {
       // console.log(mymap.getCenter().toString());
@@ -687,6 +678,7 @@
     })
     mymap.on('contextmenu', function(e){
       /* DESCRIPTION: listener when a click is given on the map  */
+      // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
       if(editMode){
         //if in editMode or createMode the area_id is already set to be accessed in the function
         saveArea();
@@ -700,6 +692,7 @@
       /* DESCRIPTION: listener when a click is given on the map  */
       pntClicked = e.latlng; // FORMAT: {lat: 38.72452, lng: -9.11160}
       // openAlertPopup(e.latlng, "<h6>test!</h6>",1000 )
+
       if(createMode && cnt_numVertices==0) firstVertex =  pntClicked;
 
       // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
@@ -723,7 +716,7 @@
       if (!IsMobileDevice){
         ctlZoom.addTo(mymap);
       }
-      mymap.closePopup();
+      if(closeAlertPopUpWhenDrawIsFinished) mymap.closePopup();
 
       //When the user is drawing it means that the 'area_id' should exist and it's the id of the area being drawn
       //A creation of a new area is only finished when the user clicks the save button
@@ -832,7 +825,6 @@
 
       document.getElementById(area_id+"_str_startdrawing").innerHTML ="";
       document.getElementById(area_id+"_removeArea").style.display="block";
-      document.getElementById(area_id+"_createNewArea").style.display="block";
       if((cnt_LikedAreas+cnt_DislikedAreas)==6){
         // Number of added areas reached. Block the option to create new area
         var elementsOfClass= document.getElementsByClassName('createNewAreaClass');
@@ -956,8 +948,11 @@
       }
 
       // Show 'edit' button, hide 'save' button
+      document.getElementById(area_id+"_createNewArea").style.display="block";
       document.getElementById(area_id+"_saveArea").style.display="none";
       document.getElementById(area_id+"_editArea").style.display="block";
+
+      // if(getActiveTabId()!="temp_tab") ctlSidebar.open("temp_tab");
     }
   };//END saveArea()
   function editArea(button_clicked_properties){
@@ -1187,6 +1182,7 @@
         });
       }
     }
+
     //Remove the background color (blue) for the previous clicked tab and returning it to the original color (red or green)
     if(previousTab!=null){
       var previousTabPrefix = previousTab.split("-")[0]; //the split() only for string. If it's null, this operation will break. That's why should check if the variable is !=null, previously
@@ -1313,11 +1309,11 @@
     str_newtab +=   '<div id="'+tab_id+'_createNewArea" class="sidebarContentChild createNewAreaClass" style="display:none;">';
     str_newtab +=     '<span>';
     str_newtab +=       '<h5>';
-    str_newtab +=         'or: ';
+    str_newtab +=         'And now: ';
     str_newtab +=       '</h5>';
     str_newtab +=     '</span>';
     str_newtab +=     '<span>';
-    str_newtab +=       '<button id="btn_goInfoTab" class="btn btn-light btn-block" onclick="ctlSidebar.open(\'temp_tab\')"><i class="fa fa-plus"></i> Create New Area</button>';
+    str_newtab +=       '<button class="btn btn-light btn-block" onclick="ctlSidebar.open(\'temp_tab\')"><i class="fa fa-plus"></i> Create New Area</button>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
     // <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
@@ -1536,9 +1532,6 @@
       activeTab = null;
       sidebarOpened = false;
 
-      // mymap.removeLayer(basemap_WorldImagery);
-      // mymap.addLayer(basemap_mapbox);
-
       //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
       sidebarChange('closing');
 
@@ -1557,7 +1550,7 @@
         //to not overide the edit mode style
         setStyleNormal();
       }
-      // console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
+      console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
 
       if(cnt_LikedAreas+cnt_DislikedAreas<6){
         document.getElementById('dynamic-icon-tab').className = 'fa fa-plus';
@@ -1573,6 +1566,8 @@
       if (createMode){
         warnFinishCreation();
       }
+      console.log(cnt_test,"OPEN Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
+
     });
     ctlSidebar.on('content', function(e) {
       //When the sidebar opens the 'content' and 'opening' are fired up together, consecutively
@@ -1603,7 +1598,7 @@
         toggleLyrStyle(activeTab, setStyle_clicked);
       }
 
-      // console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
+      console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
 
     });//END content
   }
@@ -1666,9 +1661,6 @@
       }
     }
   }
-
-
-
 
   //  # jQuery Functions
   $('input[type=radio][name=language_switch]').change(function() {
