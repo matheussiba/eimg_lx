@@ -25,7 +25,15 @@
   <body>
     <!-- ###############  Div that contains the header ############### -->
     <div id="header" class="col-md-12">
-      <p class="text-center"><?php echo $header ?> </p>
+      <span class="text-center"><?php echo $header ?> </span>
+      <label class="radio-inline" >
+        <input type="radio" name="language_switch" value="pt">
+        <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="language_switch" value="en" checked>
+        <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
+      </label>
     </div>
 
     <!-- ###############  Div that contains the sidebar ############### -->
@@ -52,43 +60,67 @@
           </h1>
 
           <div style="padding-top:10px;text-align:center;">
-            <span style="font-size:24px; padding-top:-20px;margin-top:-20px;vertical-align: middle;"><b>Welcome to </b></span>
+            <span style="font-size:24px; padding-top:-20px;margin-top:-20px;vertical-align: middle;">
+              <b>
+                <span class="language-en">Welcome to</span>
+                <span class="language-pt">Bem-vindo ao</span>
+              </b>
+            </span>
             <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" style="width:30%;margin-top:-5px">
           </div>
 
         <div id="text_sidebar_home_1" style="text-align: justify;text-justify: inter-word; padding-top: 15px;">
           <p style="font-size:14px; padding-bottom: 0px;margin-top:0px;">
-            Please, draw in the map at least 2 areas:
+            <span class="language-en">Please, draw in the map at least 2 areas:</span>
+            <span class="language-pt">Por favor, desenho no mapa no mínimo 2 áreas:</span>
           </p>
           <ul>
-            <li style="font-size:14px;">1 liked area (max: 3)</li>
-            <li style="font-size:14px;">1 disliked area (max: 3)</li>
+            <li style="font-size:14px;">
+              <span class="language-en">1 area you like in Lisbon (max:3)</span>
+              <span class="language-pt">1 área que você gosta em Lisboa (máx:3)</span>
+            </li>
+            <li style="font-size:14px;">
+              <span class="language-en">1 area you dislike in Lisbon (max:3) </span>
+              <span class="language-pt">1 área que você não gosta (ou não gosta tanto) em Lisboa (máx:3)</span>
+            </li>
           </ul>
           <p style="font-size:14px;">
-            Whenever you're done, come back here and click the 'Finish' button in order to see the result of all participants.
+            <span class="language-en">Whenever you're done, come back here and click the 'Finish' button in order to see the result of all participants.</span>
+            <span class="language-pt">Quando você estiver terminar, volte aqui de novo e clique no botão abaixo para finalizar e ver o resultado de todos os participantes que já participaram</span>
           </p>
-          <button id='btn_Finish' class='btn btn-info btn-block'>Finish...</button>
+          <button id='btn_Finish' class='btn btn-info btn-block'>
+            <span class="language-en">Finish and see result</span>
+            <span class="language-pt">Finalizar e ver resultado</span>
+          </button>
         </div>
         <hr />
         <div class="sidebarContentParent">
           <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
-            <span>
+            <span class="contenChildSpan">
               <p>
-                To create a new area go to:
+                <span class="language-en">To create a new area go to:</span>
+                <span class="language-pt">Para criar uma nova área vá em:</span>
               </p>
             </span>
-            <span>
-              <button id='btn_goInfoTab' class='btn btn-light btn-block' onclick="ctlSidebar.open('temp_tab')"><i class="fa fa-plus"></i> Draw Area</button>
+            <span class="contenChildSpan">
+              <button id='btn_goInfoTab' class='btn btn-light btn-block' onclick="ctlSidebar.open('temp_tab')"><i class="fa fa-plus"></i>
+                <span class="language-en">Draw Area</span>
+                <span class="language-pt">Criar área</span>
+              </button>
             </span>
           </div>
           <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
-            <span>
+            <span class="contenChildSpan">
               <p>
-                For more details go to:
+                <span class="language-en">For more details go to:</span>
+                <span class="language-pt">Para mais detalhes clique em:</span>
               </p>
             </span>
-            <span>
-              <button id='btn_goInfoTab' class='btn btn-light btn-block' onclick="ctlSidebar.open('info')"><i class="fa fa-info-circle"></i> Information </button>
+            <span class="contenChildSpan">
+              <button id='btn_goInfoTab' class='btn btn-light btn-block' onclick="ctlSidebar.open('info')"><i class="fa fa-info-circle"></i>
+                <span class="language-en">Information</span>
+                <span class="language-pt">Informações</span>
+              </button>
             </span>
           </div>
         </div>
@@ -167,19 +199,12 @@
             </p>
             <p>
             <div class="sidebarContentChild">
-              <span>
+              <span class="contenChildSpan">
 
               </span>
-              <span> Layer Control:</span>
+              <span class="contenChildSpan"> Layer Control:</span>
             </div>
-            <label class="radio-inline" >
-              <input type="radio" name="language_switch" value="pt" checked>
-              <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="language_switch" value="en">
-              <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
-            </label>
+
               Informações serão adicionadas no domingo: 01/12/2018
               Informações serão adicionadas no domingo: 01/12/2018
               Informações serão adicionadas no domingo: 01/12/2018
@@ -219,21 +244,21 @@
         </div>
         <!-- <div class="sidebarContentParent">
         <div class="sidebarContentChild">
-        <span> Elem 1 </span>
+        <span class="contenChildSpan"> Elem 1 </span>
       </div>
       <div class="sidebarContentChild">
-      <span> Elem 1 </span>
-      <span> Elem 2dsadas </span>
-      <span style="display:none;"> Elem 2dsadas </span>
-      <span style="display:none;"> Elem 2dsadas </span>
-      <span> Elem 2dsadas </span>
+      <span class="contenChildSpan"> Elem 1 </span>
+      <span class="contenChildSpan"> Elem 2dsadas </span>
+      <span class="contenChildSpan" style="display:none;"> Elem 2dsadas </span>
+      <span class="contenChildSpan" style="display:none;"> Elem 2dsadas </span>
+      <span class="contenChildSpan"> Elem 2dsadas </span>
     </div>
   </div>
 
   <div class="sidebarContentParent">
   <p> See the video for helping you in the application</p>
   <div class="sidebarContentChild">
-  <span>
+  <span class="contenChildSpan">
   video
   <iframe width="448" height="252" src="http://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </span>
@@ -264,14 +289,14 @@
             <span aria-hidden="true">&times;</span>
           </button> -->
           <div class="pull-right">
-            <label class="radio-inline" >
+            <!-- <label class="radio-inline" >
               <input type="radio" name="language_switch" value="pt" checked>
               <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
             </label>
             <label class="radio-inline">
               <input type="radio" name="language_switch" value="en">
               <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
-            </label>
+            </label> -->
           </div>
         </div>
 
@@ -326,9 +351,9 @@
         </div>
         <!--  Logos  -->
         <div class="sidebarContentChild">
-          <span><img src="img/nova.png" id="logo_nova" alt="Nova IMS"></span>
-          <span><img src="img/munster.png" id="logo_munster" alt="Münster"></span>
-          <span><img src="img/uji.png" id="logo_uji" alt="UJI"></span>
+          <span class="contenChildSpan"><img src="img/nova.png" id="logo_nova" alt="Nova IMS"></span>
+          <span class="contenChildSpan"><img src="img/munster.png" id="logo_munster" alt="Münster"></span>
+          <span class="contenChildSpan"><img src="img/uji.png" id="logo_uji" alt="UJI"></span>
         </div>
 
       </div> <!--/.modal-content -->
@@ -345,6 +370,7 @@
   var basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery,
       basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
   var LyrAOI, LyrAOI_coords;
+  var siteLang ='en'
   var ctlLayers, ctlCreationToolbar, ctlSidebar, ctlZoom, ctlMapOverview,
       ctlScale, ctlMouseposition, ctlAttribute;
   var statusAddLikeButton = "", statusAddDislikeButton = "";
@@ -390,6 +416,7 @@
     /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
     //  ********* Map Initialization *********
     loadBasemaps();
+
     minimumZoom = IsMobileDevice ? 10 : 11;
     //Create the Leaflet map elemetn
     mymap = L.map('mapdiv', {
@@ -413,7 +440,8 @@
 
     loadControls(); //Load leaflet controls
     ctlSidebar.addPanel(returnTempTabContent()); //Add Temp Tab to the sidebar
-    createTitleLiByHref( "#temp_tab" , "Add a new Area" ); // Creates the title, to appear when the tab icon is hovered.
+    if(siteLang=='en') createTitleLiByHref( "#temp_tab" , "Add a new Area" ); // Creates the title, to appear when the tab icon is hovered.
+    if(siteLang=='pt') createTitleLiByHref( "#temp_tab" , "Adicionar uma nova área" ); // Creates the title, to appear when the tab icon is hovered.
     // Add Events
     addSidebarEvents();
     addMapEvents();
@@ -425,7 +453,7 @@
       cnt_numVertices = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
       closeAlertPopUpWhenDrawIsFinished = true;
       this.workingLayer = e.workingLayer;
-      console.log(this);
+      // console.log(this);
       //toggle visibility of controls when start the drawing mode
       ctlCreationToolbar.addTo(mymap);
       ctlMapOverview.remove();
@@ -444,14 +472,16 @@
         if(cnt_numVertices==1){
           //Adding Instructions popup when the user is creating the first area on the map
           if( (cnt_LikedAreas+cnt_DislikedAreas)==1){
-            var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b>';
+            if(siteLang='en') var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b>';
+            if(siteLang='pt') var str_popup = '<p>Clique aqui de novo<br /><b>para terminar o desenho</b>';
             openAlertPopup(firstVertex, str_popup);
           }
         }
 
         // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
         if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
-          var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
+          if(siteLang='en') var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
+          if(siteLang='pt') var str_popup = '<p>Por favor, apenas clique<br />dentro da <b>área de estudo</b>';
           //If the first click the user gives is outside the study area, it will restart the draw and do not close the AlertPopup
           if (cnt_numVertices==1) closeAlertPopUpWhenDrawIsFinished = false;
           openAlertPopup(pntClicked, str_popup);
@@ -580,8 +610,14 @@
       closeButton: false,
     }).addTo(mymap);
 
-    createTitleLiByHref( "#home" , "Click to see the Home" );
-    createTitleLiByHref( "#info" , "Click to see information" );
+    if(siteLang=='en') {
+      createTitleLiByHref( "#home" , "Click to see the Home" );
+      createTitleLiByHref( "#info" , "Click to see information" );
+    }
+    if(siteLang=='pt') {
+      createTitleLiByHref( "#home" , "Clique para ir ao início" );
+      createTitleLiByHref( "#info" , "Clique para ir para ver as informações" );
+    }
 
     //Add attribution to the map
     ctlAttribute = L.control.attribution({position:'bottomright'}).addTo(mymap);
@@ -621,10 +657,17 @@
 
     var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
     container.title="Toolbar Instructions";
-    container.innerHTML = '\
-    <p>Finish drawing (Enter)</p> \
-    <p style="padding-top:0;">Remove vertex (Ctrl+z)</p> \
-    <p style="padding-top:0;">Cancel Drawing (Esc)</p>';
+
+    if(siteLang=='pt'){
+      container.innerHTML = '<p>Finish drawing (Enter)</p><p style="padding-top:0;">Remove vertex (Ctrl+z)</p><p style="padding-top:0;">Cancel Drawing (Esc)</p>';
+      container.style.marginLeft= '-145px';
+      container.style.width= '140px';
+    }
+    if(siteLang=='en'){
+      container.innerHTML = '<p>Finalizar (Enter)</p><p style="padding-top:0;">Remover vértice (Ctrl+z)</p><p style="padding-top:0;">Cancelar (Esc)</p>';
+      container.style.marginLeft= '-145px';
+      container.style.width= '140px';
+    }
     // styles: .infobox_for_toolbar
     // events
     container.onmouseover = function(){ container.style.visibility = 'hidden';}
@@ -640,7 +683,9 @@
       // console.log(mymap.getCenter().toString());
       if(mymap.getZoom()==minimumZoom+1){
         cnt_doNotPan++;
-        if( cnt_doNotPan<3) openAlertPopup(mymap.getCenter(), "<h6>Please stay in this area only!</h6>",1000 );
+        if(siteLang=='en') var str_popup = "<h6>Please, stay in this area only!</h6>";
+        if(siteLang=='pt') var str_popup = "<h6>Por favor, mantenha nessa área somente!</h6>";
+        if( cnt_doNotPan<3) openAlertPopup(mymap.getCenter(), ,1000 );
       }
     });
     mymap.on("movestart", function (e) {
@@ -656,7 +701,10 @@
       var zoomNotAllowed = minimumZoom;
       if(mymap.getZoom()==zoomNotAllowed){
         cnt_zoomOutExceeded++;
-        if( cnt_zoomOutExceeded<5)  openAlertPopup(mymap.getCenter(), "<h6>Minimum zoom exceeded!</h6>",1000 );
+        if(siteLang=='en') var str_popup = "<h6>Minimum zoom exceeded!</h6>";
+        if(siteLang=='pt') var str_popup = "<h6>Zoom mínimo ultrapassado!</h6>";
+
+        if( cnt_zoomOutExceeded<5)  openAlertPopup(mymap.getCenter(), ,1000 );
         setTimeout(function(){
           mymap.setZoom(zoomNotAllowed+1);
         }, 400);
@@ -667,7 +715,6 @@
       // }
     });
     mymap.on('baselayerchange', function(e){
-      // alert("LAYER HAS BEEN CHANGED.");
       // console.log(e);
       if (e.name == '<i class="fas fa-image"></i>'){
         ctlLayers.addOverlay(Hydda_RoadsAndLabels, 'streets');
@@ -730,11 +777,11 @@
       var width = lyrDraw.getBounds().getEast() - lyrDraw.getBounds().getWest();
       var height = lyrDraw.getBounds().getNorth() - lyrDraw.getBounds().getSouth();
 
-      console.log(
-        'center:' + lyrDraw.getCenter() +'\n'+
-        'width:' + width +'\n'+
-        'height:' + height +'\n'
-      );
+      // console.log(
+      //   'center:' + lyrDraw.getCenter() +'\n'+
+      //   'width:' + width +'\n'+
+      //   'height:' + height +'\n'
+      // );
 
       //Initialize the attributes. We can name it the way we want
       var feature = lyrDraw.feature = lyrDraw.feature || {};
@@ -750,14 +797,16 @@
       //So the subtraction of 1 gives us the exactly number of vertices of the drawn polygon
       var numberOfVertices = ((jsn_draw.coordinates[0]).length)-1;
       if (numberOfVertices < 3){
-        alert("The area drawn is not a polygon. It has only "+numberOfVertices.toString()+" vertices.\nPlease draw it again!");
+        if(siteLang=='en') alert("The area drawn has less than 3 vertices.\nPlease, draw it again!");
+        if(siteLang=='pt') alert("A área desenhada tem menos de 3 vértices.\nPor favor, comece de novo!");
         // Start a new draw again
         restartDraw(lyrDraw);
         return;
       }
 
       if( (width<0.0007) || (height<0.0007) ){
-        alert("The area drawn is too small\nPlease draw it again!");
+        if(siteLang=='en') alert("The area drawn is too small\nPlease, draw it again!");
+        if(siteLang=='pt') alert("A área desenhada é muito pequena\nPor favor, comece de novo!");
         // Start a new draw again
         mymap.removeLayer(lyrDraw);
         var button_drawArea_id = area_id+"_drawArea";
@@ -1094,14 +1143,12 @@
       document.workingLayer._map.pm.Draw["Poly"]._finishShape();
     }else if(num_vertices>=1){
       //At least one click was given, so firstVertex exists
-      var str_popup = '';
-      str_popup += '<p>Please, add at least <br />';
-      str_popup += '<b>3 vertices</b>';
+      if(siteLang=='en') var str_popup = '<p>Please, add at least <br /><b>3 vertices</b>';
+      if(siteLang=='pt') var str_popup = '<p>Por favor, adicione no mínimo <br /><b>3 vértices</b>';
       openAlertPopup(firstVertex, str_popup);
     }else{
-      var str_popup = '';
-      str_popup += '<p>Please, add at least <br />';
-      str_popup += '<b>3 vertices</b>';
+      if(siteLang=='en') var str_popup = '<p>Please, add at least <br /><b>3 vertices</b>';
+      if(siteLang=='pt') var str_popup = '<p>Por favor, adicione no mínimo <br /><b>3 vértices</b>';
       openAlertPopup(mymap.getCenter(), str_popup);
     }
   }
@@ -1167,7 +1214,8 @@
       // ctlSidebar.removePanel('temp_tab'); //It just hide the Panel
       deleteTabByHref('#temp_tab');
       ctlSidebar.addPanel(returnTempTabContent());
-      createTitleLiByHref( "#temp_tab" , "Add a new Area" );
+      if(siteLang=='en') createTitleLiByHref( "#temp_tab" , "Add a new Area" );
+      if(siteLang=='pt') createTitleLiByHref( "#temp_tab" , "Adicionar uma nova área" );
     }
 
     //Change the background color for the icons, when they're clicked -> receives blue, otherwise receive "green" for liked and "red" for disliked
@@ -1241,6 +1289,7 @@
   function create_areaTab(typeOfArea){
     /* DESCRIPTION: Creates a new tab based on the option chosen in the #temp_tab: It will be either Liked or Disliked tab  */
     if(typeOfArea=="liked"){
+      var liked = true;
       var icon = "thumbs-up";
       cnt_LikedAreas++;
       for (cnt = 1; cnt <= 3; cnt++) {
@@ -1252,6 +1301,7 @@
       var title = typeOfArea.charAt(0).toUpperCase()+typeOfArea.slice(1) +' Area '+cnt;
 
     }else if(typeOfArea=="disliked"){
+      var liked = false;
       var icon = "thumbs-down";
       cnt_DislikedAreas++;
       var cnt = cnt_DislikedAreas;
@@ -1261,65 +1311,129 @@
         }
       }
       var tab_id = typeOfArea+'-'+cnt.toString();
-      var title = typeOfArea.charAt(0).toUpperCase()+typeOfArea.slice(1) +' Area '+cnt;
+      if(liked){
+        if(siteLang=='en') var title += 'Liked area '+cnt;
+        if(siteLang=='pt') var title += 'Área curtida '+cnt;
+      }else{
+        if(siteLang=='en') var title += 'Disliked area '+cnt;
+        if(siteLang=='pt') var title += 'Área não curtida '+cnt;
+      }
     }
     // alert(tab_id);
     var str_newtab = "";
     str_newtab += '<div class="col-xs-12">';
     str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:2px;">';
-    str_newtab +=     '<h4>Choose an attribute for the area:*</h4>';
-    str_newtab +=     '<p>*Mark at least 1 attribute</p>';
+
+    if(siteLang =='en') str_newtab += '<h4>Choose the reasons why you like the drawn area*:</h4><p>(*Check at least 1 attribute)</p>';
+    if(siteLang =='pt') str_newtab += '<h4>Escolha os atributos pelo qual você curte a área desenhada*:</h4><p>(*Escolha ao menos 1 atributo)</p>';
+
     str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>'; //NEEDTO: say to user to click save button
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat"" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_nat">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" class="cbxsidebar" for="'+tab_id+'_cbxAtt-nat"> Naturalness</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" class="cbxsidebar" for="'+tab_id+'_cbxAtt-nat"> ';
+    if(liked){
+      if(siteLang=='en') str_newtab += 'Presence of Nature';
+      if(siteLang=='pt') str_newtab += 'Natureza presente';
+    }else{
+      if(siteLang=='en') str_newtab += 'Absence of Nature';
+      if(siteLang=='pt') str_newtab += 'Natureza não presente';
+    }
+    str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_open">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" class="cbxsidebar" for="'+tab_id+'_cbxAtt-open"> Openness</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" class="cbxsidebar" for="'+tab_id+'_cbxAtt-open"> ';
+    if(liked){
+      if(siteLang=='en') str_newtab += '--Openness';
+      if(siteLang=='pt') str_newtab += '--Aberrtura';
+    }else{
+      if(siteLang=='en') str_newtab += '--Closenes';
+      if(siteLang=='pt') str_newtab += '--Não abertura';
+    }
+    str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_order">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" class="cbxsidebar" for="'+tab_id+'_cbxAtt-order"> Order<br></label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" class="cbxsidebar" for="'+tab_id+'_cbxAtt-order"> ';
+    if(liked){
+      if(siteLang=='en') str_newtab += '--Order';
+      if(siteLang=='pt') str_newtab += 'Organização';
+    }else{
+      if(siteLang=='en') str_newtab += '--Disorder';
+      if(siteLang=='pt') str_newtab += '--Desorganização';
+    }
+    str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_upkeep">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> Upkeep</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> ';
+    if(liked){
+      if(siteLang=='en') str_newtab += '--Upkeep';
+      if(siteLang=='pt') str_newtab += '--isdaoisj';
+    }else{
+      if(siteLang=='en') str_newtab += '--See word upkeep';
+      if(siteLang=='pt') str_newtab += '--isdji';
+    }
+    str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
-    str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> Historical Significance</label><br />';
+    str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> ';
+    if(liked){
+      if(siteLang=='en') str_newtab += 'Historical Significance';
+      if(siteLang=='pt') str_newtab += '--dskopkdos';
+    }else{
+      if(siteLang=='en') str_newtab += '--Nor historical signifcance';
+      if(siteLang=='pt') str_newtab += '--dusadasu';
+    }
+    str_newtab +=     '</label><br />';
     str_newtab +=   '</div>';
 
     str_newtab +=   '<div class="sidebarContentChild">';
-    str_newtab +=     '<span id="'+tab_id+'_str_startdrawing" >';
-    str_newtab +=       '<h4>Click on the button to start drawing the area you '+typeOfArea.slice(0, typeOfArea.length-1)+'</h4>';
+    str_newtab +=     '<span class="contenChildSpan" id="'+tab_id+'_str_startdrawing" >';
+    if(liked){
+      if(siteLang=='en') str_newtab += '<h4>Click on the button below to start drawing the area you like';
+      if(siteLang=='pt') str_newtab += '<h4>Clique no botão abaixo para criar a área que você curte';
+    }else{
+      if(siteLang=='en') str_newtab += '<h4>Click on the button below to start drawing the area you dislike';
+      if(siteLang=='pt') str_newtab += '<h4>Clique no botão abaixo para criar a área que você não curte';
+    }
+    str_newtab +=       '</h4>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
     str_newtab +=   '<div class="sidebarContentChild">';
-    str_newtab +=     '<span>';
+    str_newtab +=     '<span class="contenChildSpan">';
     str_newtab +=       '<button id="'+tab_id+'_drawArea" class="btn btn-warning" onclick="drawArea(this)">';
-    str_newtab +=         '<i class="fa fa-edit"></i> Draw Area';
+    str_newtab +=         '<i class="fa fa-edit"></i> ';
+    if(siteLang=='en') str_newtab += 'Draw area';
+    if(siteLang=='pt') str_newtab += 'Criar área';
     str_newtab +=       '</button>';
     str_newtab +=       '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
-    str_newtab +=         '<i class="fa fa-save"></i> Save';
+    str_newtab +=         '<i class="fa fa-save"></i> ';
+    if(siteLang=='en') str_newtab += 'Save';
+    if(siteLang=='pt') str_newtab += 'Salvar';
     str_newtab +=       '</button>';
     str_newtab +=       '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
-    str_newtab +=         '<i class="fa fa-pen"></i> Edit';
+    str_newtab +=         '<i class="fa fa-pen"></i> ';
+    if(siteLang=='en') str_newtab += 'Edit';
+    if(siteLang=='pt') str_newtab += 'Editar';
     str_newtab +=       '</button>';
     str_newtab +=     '</span>';
-    str_newtab +=     '<span>';
+    str_newtab +=     '<span class="contenChildSpan">';
     str_newtab +=       '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
-    str_newtab +=         '<i class="fa fa-trash-alt"></i> Remove Area';
+    str_newtab +=         '<i class="fa fa-trash-alt"></i> ';
+    if(siteLang=='en') str_newtab += 'Remove area';
+    if(siteLang=='pt') str_newtab += 'Remover área';
     str_newtab +=       '</button>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
 
     str_newtab +=   '<div id="'+tab_id+'_createNewArea" class="sidebarContentChild createNewAreaClass" style="display:none;">';
-    str_newtab +=     '<span>';
+    str_newtab +=     '<span class="contenChildSpan">';
     str_newtab +=       '<h5>';
-    str_newtab +=         'And now: ';
+    if(siteLang=='en') str_newtab += 'And now: ';
+    if(siteLang=='pt') str_newtab += 'E agora: ';
     str_newtab +=       '</h5>';
     str_newtab +=     '</span>';
-    str_newtab +=     '<span>';
-    str_newtab +=       '<button class="btn btn-light btn-block" onclick="ctlSidebar.open(\'temp_tab\')"><i class="fa fa-plus"></i> Create New Area</button>';
+    str_newtab +=     '<span class="contenChildSpan">';
+    str_newtab +=       '<button class="btn btn-light btn-block" onclick="ctlSidebar.open(\'temp_tab\')"><i class="fa fa-plus"></i> ';
+    if(siteLang=='en') str_newtab += 'Create new area';
+    if(siteLang=='pt') str_newtab += 'Criar nova área';
+    str_newtab +=       '</button>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
-    // <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
-
     str_newtab += '</div>';
-
 
     var newtab_content = {
       id:   tab_id,
@@ -1333,7 +1447,9 @@
     //Re-organize the sidebar tabs
     deleteTabByHref("#temp_tab", false);
     ctlSidebar.addPanel(newtab_content);
-    createTitleLiByHref( "#"+tab_id , "See "+title );
+
+    if(siteLang=='en') createTitleLiByHref( "#"+tab_id , "See "+title );
+    if(siteLang=='pt') createTitleLiByHref( "#"+tab_id , "Clique para ver a "+title );
 
     if ( cnt_LikedAreas == 3){
       statusAddLikeButton = "disabled";
@@ -1344,7 +1460,8 @@
     if ( (cnt_LikedAreas + cnt_DislikedAreas) < 6 ){
       // If num=6 doesn't add the tab
       ctlSidebar.addPanel(returnTempTabContent());
-      createTitleLiByHref( "#temp_tab" , "Add a new Area" );
+      if(siteLang=='en') createTitleLiByHref( "#temp_tab" , "Add a new Area" );
+      if(siteLang=='pt') createTitleLiByHref( "#temp_tab" , "Adicionar uma nova área" );
     }
 
     //Add class to the icon of the new created tab. Liked:"green", Disliked:"red"
@@ -1376,32 +1493,50 @@
     str_temptab += '<div id="col-xs-12">';
     str_temptab +=  '<div class="sidebarContentParent">';
     str_temptab +=    '<div class="sidebarContentChild">';
-    str_temptab +=      '<span>';
-    str_temptab +=        '<h4>Which type of area do you want to draw?</h4>';
+    str_temptab +=      '<span class="contenChildSpan">';
+
+    if ((cnt_LikedAreas+cnt_DislikedAreas)<1){
+      console.log(siteLang);
+      if (siteLang =='en') str_temptab += '<h4><span>Which type of area you\'d like to draw first? </span></h4>';
+      if (siteLang =='pt') str_temptab += '<h4><span>Qual área você gostaria de criar primeiro? </span></h4>';
+    }else{
+      if (siteLang =='en') str_temptab += '<h4><span>And now, which area do you want to draw?</span></h4>';
+      if (siteLang =='pt') str_temptab += '<h4><span>E agora, qual área você quer criar?</span></h4>';
+    }
+
     str_temptab +=      '</span>';
     str_temptab +=    '</div>';
     str_temptab +=    '<div class="sidebarContentChild">';
-    str_temptab +=     '<span>';
+    str_temptab +=     '<span class="contenChildSpan">';
     str_temptab +=        '<button class="btn btn-success" onclick="create_areaTab(\'liked\')" '+statusAddLikeButton+'>';
-    str_temptab +=          '<i class="fa fa-thumbs-up"></i> Liked Area';
+    if (siteLang =='en') str_temptab += '<i class="fa fa-thumbs-up"></i> Liked Area';
+    if (siteLang =='pt') str_temptab += '<i class="fa fa-thumbs-up"></i> Que curto';
     str_temptab +=        '</button>';
     str_temptab +=     '</span>';
-    str_temptab +=    '<span>';
+    str_temptab +=    '<span class="contenChildSpan">';
     str_temptab +=        '<button class="btn btn-danger" onclick="create_areaTab(\'disliked\')" '+statusAddDislikeButton+'>';
-    str_temptab +=          '<i class="fa fa-thumbs-down"></i> Disliked Area';
+    if (siteLang =='en') str_temptab += '<i class="fa fa-thumbs-down"></i> Disliked Area';
+    if (siteLang =='pt') str_temptab += '<i class="fa fa-thumbs-down"></i> Que não curto';
     str_temptab +=       '</button>';
     str_temptab +=    '</span>';
     str_temptab +=   '</div>';
+
+    if ( (cnt_LikedAreas>=0) && (cnt_DislikedAreas>=1) ){
+
+      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button id="btn_Finish" class="btn btn-info btn-block"><span>Finish and see result</span></button>';
+      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button id="btn_Finish" class="btn btn-info btn-block"><span>Finalizar e ver resultado</span></button>';
+    }
+
     str_temptab +=  '</div>';
     str_temptab += '</div>';
+
+    if(siteLang=='en') var title = 'Add new Area <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()"><i class="fa fa-chevron-circle-left"></i></span>';
+    if(siteLang=='pt') var title = 'Adicionar Nova Área <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()"><i class="fa fa-chevron-circle-left"></i></span>';
 
     temp_tab_content = {
       id:   'temp_tab',
       tab:  '<i id="dynamic-icon-tab" class="fa fa-plus"></i>',
-      title: 'Add new Area\
-      <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()">'+
-      '<i class="fa fa-chevron-circle-left"></i>'+
-      '</span>',
+      title: title,
       pane: str_temptab
     };
 
@@ -1423,7 +1558,8 @@
       // Update the temp_tab
       deleteTabByHref('#temp_tab');
       ctlSidebar.addPanel(returnTempTabContent());
-      createTitleLiByHref( "#temp_tab" , "Add a new Area" );
+      if(siteLang=='en') createTitleLiByHref( "#temp_tab" , "Add a new Area" );
+      if(siteLang=='pt') createTitleLiByHref( "#temp_tab" , "Adicionar uma nova área" );
     }
 
     //If after the deletion the sidebar needs to be closed: close_sidebar==true
@@ -1455,7 +1591,6 @@
     }
     if ( hrefActive ) {
       //console.log( hrefActive );
-      // alert( hrefActive );
       if(with_hash){
         return hrefActive; //returns ex: "#temp_tab"
       }else{
@@ -1550,7 +1685,7 @@
         //to not overide the edit mode style
         setStyleNormal();
       }
-      console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
+      // console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
 
       if(cnt_LikedAreas+cnt_DislikedAreas<6){
         document.getElementById('dynamic-icon-tab').className = 'fa fa-plus';
@@ -1566,7 +1701,7 @@
       if (createMode){
         warnFinishCreation();
       }
-      console.log(cnt_test,"OPEN Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
+      // console.log(cnt_test,"OPEN Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
 
     });
     ctlSidebar.on('content', function(e) {
@@ -1598,7 +1733,7 @@
         toggleLyrStyle(activeTab, setStyle_clicked);
       }
 
-      console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
+      // console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
 
     });//END content
   }
@@ -1612,7 +1747,8 @@
   }
   function warnCheckAtt(){
     /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
-    alert("Check at least one attribute for the area");
+    if(siteLang=='en') alert("Please, check at least one attribute corresponding to the area drawn");
+    if(siteLang=='pt') alert("Por favor, escolha ao menos um atributo correspondente a área desenhada");
     //Open the sidebar
     if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
   }
@@ -1622,7 +1758,10 @@
   }
   function warnFinishCreation(){
     /* DESCRIPTION: Warn the user if tries open the sidebar in a creation mode */
-    alert("Please, finish the draw first. By right clicking or cliking in the first node.");
+    if(siteLang=='en') var str_popup='<span><h6>Please, finish the draw first</h6></span>';
+    if(siteLang=='pt') var str_popup='<span><h6>Por favor, finalize o desenho primeiro</h6></span>';
+    openAlertPopup(mymap.getCenter(), str_popup);
+    showInfoBox();
     ctlSidebar.close();
   }
 
@@ -1654,10 +1793,10 @@
       // if the user press Esc and a new layer is being created, the area is canceled
       if(createMode) {
         cnt_escapeKeyPressed++;
-        var str='<span class="language-en"><h7>You canceled the drawing</h7></span>\
-        <span class="language-pt">Você cancelou o desenho</span>';
+        if(siteLang=='en') var str_popup='<span><h7>The drawing was successfully canceled</h7></span>';
+        if(siteLang=='pt') var str_popup='<span><h7>O desenho foi cancelado com sucesso</h7></span>';
         removeArea(area_id, true, 2000);
-        openAlertPopup(mymap.getCenter(), str);
+        openAlertPopup(mymap.getCenter(), str_popup);
       }
     }
   }
@@ -1665,10 +1804,12 @@
   //  # jQuery Functions
   $('input[type=radio][name=language_switch]').change(function() {
       if (this.value == 'en') {
+        siteLang='en';
         $('.language-pt').hide(); // hides
         $('.language-en').show(); // Shows
       }
       else if (this.value == 'pt') {
+        siteLang='pt';
         $('.language-en').hide(); // hides
         $('.language-pt').show(); // Shows
       }
@@ -1775,12 +1916,15 @@
       }else if ((cnt_LikedAreas + cnt_DislikedAreas) >= 3) {
         alert("PARABÉNS!! Muito Obrigado por me ajudar a testar o site! Você é maravilhos@!!! :) Mas mexa mais um pouco nele. Tente encontrar algum 'bug' ou qualquer DEFEITO ou qualquer coisa que vc não gostou. Anote para depois me dizer! :)");
       }else if ((cnt_LikedAreas >= 1) && (cnt_DislikedAreas == 0)){
-        alert("A DISLIKED area is missing. Please, draw it to proceed!");
+        if(siteLang=='en') alert("A DISLIKED area is missing.\nPlease, draw it to proceed!");
+        if(siteLang=='pt') alert("Por favor, desenhe uma área que você NÃO CURTE, antes de finalizar! :)");
       }else if ((cnt_LikedAreas == 0) && (cnt_DislikedAreas >= 1)){
-        alert("A LIKED area is missing. Please, draw it to proceed!");
+        if(siteLang=='en') alert("A LIKED area is missing.\nPlease, draw it to proceed!");
+        if(siteLang=='pt') alert("Por favor, desenhe uma área que você CURTE, antes de finalizar! :)");
       }
     }else{
-      alert("Please, draw at least one liked and disliked area");
+      if(siteLang=='en') alert("To finize you shoud draw, at least, 1 area you LIKED and 1 area you DISLIKE.\nPlease, draw it to proceed!");
+      if(siteLang=='pt') alert("Para finalizar você precisa criar, no mínimo 1 área que você CURTE e uma área que você NÃO CURTE.\n :)");
     }
   });//end btnFinish click event
   $(".btnClose").click(function(){

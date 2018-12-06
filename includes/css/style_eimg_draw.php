@@ -90,8 +90,8 @@
 	  padding: 1px 5px 1px 5px; /*Top right botton left*/
 	  transition: visibility 0.5s linear;
 	  margin-top: 0!important;
-	  margin-left: -145px;
-	  width: 140px;
+	  /*margin-left: -145px;
+	  width: 140px;*/
 	  height: 90px;
 	}
 	.leaflet-bar.easy-button-container.leaflet-control {
@@ -124,7 +124,7 @@
 	  width:100%;
 	  table-layout: fixed;
 	}
-	div.sidebarContentChild span {
+	div.sidebarContentChild span.contenChildSpan{
 	  /*EXTRACTED FROM:  http://jsfiddle.net/kqHWM/ */
 	  padding: 5px;
 	  display:table-cell;
