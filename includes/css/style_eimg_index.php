@@ -39,59 +39,30 @@ input[type="checkbox"].cbxsidebar{
 	width: auto;
 	height: 70px;
 }
-#image_slider{
-	width: auto;
-	height: 100px;
-}
-#logo_place{
-	width: 80px;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
-}
-#logo_camara{
-	width: 70px;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
-}
-
-#logo_geoc{
-	width: 100px;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
-}
-#logo_marie{
-	width: 200px;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
-}
 #logo_mundus{
 	width: 60px;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	margin-left: 15px;
 }
 #logo_nova{
 	height: 50px;
   width: auto;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	margin-left: 15px;
 }
 #logo_munster{
 	width: 100px;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	margin-left: 15px;
 }
 #logo_uji{
 	width: 50px;
-	margin-bottom: 20px;
-	margin-right: 20px;
-	margin-left: 20px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	margin-left: 15px;
 }
 
 .survey_sus{

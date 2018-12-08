@@ -241,123 +241,8 @@
               </div>
             </div>
           </div>
-          <!-- <div style="text-align:justify;margin-right:10px;">
-            <div style="border:1px solid orange; width:100%;height:auto;">
-              <div class="div_info_header" style="border:1px solid blue;width:100%;text-align:center;">
-                Header
-              </div>
-              <div class="div_info_left" style="border:1px solid blue;width:20%;float:left;">
-                <div class="mapbuttons leaflet-bar leaflet-control" style="padding: 2px 5px 2px 0px;">
-                  <label >
-                    <input type="radio" name="layer_switch" value="vector" checked>
-                    <i class="fas fa-map-marked"></i>
-                  </label><br />
-                  <label >
-                    <input type="radio" name="layer_switch" value="terrain" checked>
-                    <i class="fas fa-mountain"></i>
-                  </label><br />
-                  <label >
-                    <input type="radio" name="layer_switch" value="imagery" checked>
-                    <i class="fas fa-globe-americas"></i>
-                  </label>
-                </div>
-              </div>
-              <div class="div_info_right" style="border:1px solid blue;width:80%;float:right;">
-                TexttttttTexttttttTexttttttTexttttttTextttttt
-              </div>
-            </div>
-
-
-            <div style="border:1px solid orange; width:100%;height:auto;">
-              <div class="div_info_header" style="border:1px solid blue;width:100%;text-align:center;">
-                Header
-              </div>
-              <div class="div_info_left" style="border:1px solid blue;width:20%;float:left;">
-                Header
-              </div>
-              <div class="div_info_right" style="border:1px solid blue;width:80%;float:right;">
-                HeaderHea derHeaderH eaderHeaderH aderHe aderHeaderHeader
-              </div>
-            </div>
-
-            <div style="border:1px solid orange; width:100%;height:auto;">
-              <div class="div_info_header" style="border:1px solid blue;width:100%;text-align:center;">
-                Header
-              </div>
-              <div class="div_info_left" style="border:1px solid blue;width:20%;float:left;">
-                Header
-              </div>
-              <div class="div_info_right" style="border:1px solid blue;width:80%;float:right;">
-                HeaderHea derHeaderH eaderHeaderH aderHe aderHeaderHeader
-              </div>
-            </div>
-
-
-            <p>
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-            </p>
-            <p>
-            <div class="sidebarContentChild">
-              <span class="contenChildSpan">
-
-              </span>
-              <span class="contenChildSpan"> Layer Control:</span>
-            </div>
-
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-            </p>
-            <p>
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-            </p>
-            <p>
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-            </p>
-            <p>
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-            </p>
-            <p>
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-              Informações serão adicionadas no domingo: 01/12/2018
-            </p>
-          </div> -->
-
         </div>
-        <!-- <div class="sidebarContentParent">
-        <div class="sidebarContentChild">
-        <span class="contenChildSpan"> Elem 1 </span>
-      </div>
-      <div class="sidebarContentChild">
-      <span class="contenChildSpan"> Elem 1 </span>
-      <span class="contenChildSpan"> Elem 2dsadas </span>
-      <span class="contenChildSpan" style="display:none;"> Elem 2dsadas </span>
-      <span class="contenChildSpan" style="display:none;"> Elem 2dsadas </span>
-      <span class="contenChildSpan"> Elem 2dsadas </span>
-    </div>
-  </div>
-
+<!--
   <div class="sidebarContentParent">
   <p> See the video for helping you in the application</p>
   <div class="sidebarContentChild">
@@ -366,7 +251,8 @@
   <iframe width="448" height="252" src="http://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </span>
   </div>
-  </div> -->
+</div>
+-->
 
 
 
@@ -900,7 +786,7 @@
       props.id = area_id;
       // Calculate time spent for this drawing
       props.time_draw_sec = (time_end_draw - time_start_draw)/1000;
-      
+
       //General style
       lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
 
@@ -1932,7 +1818,6 @@
 
   //  # jQuery Functions
   $('input[type=radio][name=language_switch]').change(function() {
-    alert("here")
       if (this.value == 'en') {
         siteLang='en';
         $('.language-pt').hide(); // hides
