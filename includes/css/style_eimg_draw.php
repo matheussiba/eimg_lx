@@ -21,6 +21,10 @@
 	  /* height: 650px; */
 	  height:96vh;
 	}
+
+
+
+
 	input[type="checkbox"].cbxsidebar{
 	  cursor: pointer;
 	  width: 18px;
@@ -29,7 +33,7 @@
 	  margin:0;
 	  vertical-align: bottom;
 	  position: relative;
-	  top: -5px;
+	  top: -8px;
 	}
 	label.cbxsidebar {
 	  cursor: pointer;

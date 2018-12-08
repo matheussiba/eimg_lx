@@ -133,12 +133,115 @@
         <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
           Information<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
         </h1>
-
         <div>
           <div style="text-align:center;padding: 0; margin: 0; margin-top:5px;">
             <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: auto; margin-right: auto; width: auto;max-height: 70px;">
           </div>
-          <div style="text-align:justify;margin-right:10px;">
+          <!-- INFO Starts -->
+
+          <span class="language-en" style="text-align:center; padding:0;margin:0"><h5><b><i>Overview</i></b></h5></span>
+          <span class="language-pt" style="text-align:center; padding:0;margin:0"><h5><b><i>Visão Geral</i></b></h5></span>
+          <div class="container-fluid" style="margin-left: -15px;">
+            <!-- Overview session -->
+            <div class="row" style="text-align:center;border-top:1px solid rgba(0,0,0,0.1);padding-top:5px">
+              <div class="col" style="text-align:justify; padding">
+                  <span class="language-en">
+                    <p>
+                      eImage is part of a research project involving 3 European universities: <b>NOVA IMS</b> (Lisbon, Portugal), <b>UJI</b> (Castellón, Spain) and <b>WWU</b> (Münster, Germany).
+                      The core idea is to ask citizens and visitors of Lisbon about places they like and places they dislike within the city
+                      in order to produce an evaluative image of the Lisbon.
+                    </p>
+                  </span>
+                  <span class="language-pt">
+                    <p>
+                      eImage é parte integrante de um projeto de investigação envolvendo 3 universidades européias: <b>NOVA IMS</b> (Lisboa, Portugal), <b>UJI</b> (Castellón, Espanha) and <b>WWU</b> (Münster, Alemanha).
+                      The idéia principal é perguntar a moradores e visitantes de Lisboa, área que eles gostam e áreas que eles não gostam dentro da cidade,
+                      para assim produzir uma imagem avaliativa dessa maravilhosa capital lusitana.
+                    </p>
+                  </span>
+              </div>
+            </div>
+          </div>
+
+          <span class="language-en" style="text-align:center; padding:0;margin:0"><h5><b><i>Controls</i></b></h5></span>
+          <span class="language-pt" style="text-align:center; padding:0;margin:0"><h5><b><i>Controles</i></b></h5></span>
+          <div class="container-fluid" style="margin-left: -15px;">
+            <!-- Layer control -->
+            <div class="row" style="border-top:1px solid rgba(0,0,0,0.1);padding-top:5px">
+              <div class="col" style="">
+                <ul>
+                  <li style="margin:0; padding: 0;margin-left: -25px;">
+                    <span class="language-en"><h4><b>Basemap control</b></h4></span>
+                    <span class="language-pt"><h4><b>Escolher mapas base</b></h4></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row" style="text-align:center">
+              <div class="col-md-2 col" style="text-align:center;display: inline-block; height: 100%; vertical-align: middle;">
+                <div style="vertical-align: middle;">
+                  <img src="<?php  echo $root_directory?>resources/images/info/control_layer.png" style=" width: auto;max-height: 80px;">
+                </div>
+              </div>
+              <div class="col-md-10 col-10" style="text-align:justify; padding">
+                  <span class="language-en"><p>Choose between the 3 types of basemap to help you to find the area you want to draw:</p>
+                    <p style="margin-top:-10px"><i class="fas fa-map-marked"></i> Vector | <i class="fas fa-mountain"></i> Terrain | <i class="fas fa-globe-americas"></i> Imagery </p>
+                  </span>
+                  <span class="language-pt"><p>Escolha entre os 3 tipos de mapas para te ajudar com a encontrar a área que você deseja desenhar. Existem 3 opções:</p>
+                    <p style="margin-top:-10px"><i class="fas fa-map-marked"></i> Vetor | <i class="fas fa-mountain"></i> Altitude | <i class="fas fa-globe-americas"></i> Satélite </p>
+                  </span>
+              </div>
+            </div>
+            <!-- Drawing control -->
+            <div class="row" style="padding-top:5px">
+              <div class="col" style="">
+                <ul>
+                  <li style="margin:0; padding: 0;margin-left: -25px;">
+                    <span class="language-en"><h4><b>Drawing Toolbar</b></h4></span>
+                    <span class="language-pt"><h4><b>Barra de ferramentas</b></h4></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row" style="text-align:center">
+              <div class="col-md-2 col" style="text-align:center;display: inline-block; height: 100%; vertical-align: middle;">
+                <div style="vertical-align: middle;">
+                  <img src="<?php  echo $root_directory?>resources/images/info/control_draw.png" style=" width: auto;max-height: 90px;">
+                </div>
+              </div>
+              <div class="col-md-10 col-10" style="text-align:justify;">
+                  <span class="language-en">
+                    <p style="margin-bottom:0;padding-top:0;">When you're creating a new area:</p>
+                    <ul style="list-style-type: none; margin:0; padding: 0;">
+                      <li>
+                        <i class="fas fa-project-diagram"></i> Finish the drawing (You can also press <b>'Enter'</b>)
+                      </li>
+                      <li >
+                        <i class="fas fa-undo-alt"></i> Remove the last vertex of the polygon (Or press <b>'Ctrl+z'</b>)
+                      </li>
+                      <li >
+                        <i class="fas fa-times-circle"></i> Cancel the creation of the area (Or press <b>'Esc'</b>)
+                      </li>
+                    </ul>
+                  </span>
+                  <span class="language-pt">
+                    <p style="margin-bottom:0;padding-top:0;">Quando estiveres criando uma nova área:</p>
+                    <ul style="list-style-type: none; margin:0; padding: 0;">
+                      <li>
+                        <i class="fas fa-project-diagram"></i> Finaliza o polígono (Ou pressione <b>'Enter'</b>)
+                      </li>
+                      <li >
+                        <i class="fas fa-undo-alt"></i> Remove o último vértice (<b>'Ctrl+z'</b>)
+                      </li>
+                      <li >
+                        <i class="fas fa-times-circle"></i> Cancela a área que estiver a criar (<b>'Esc'</b>)
+                      </li>
+                    </ul>
+                  </span>
+              </div>
+            </div>
+          </div>
+          <!-- <div style="text-align:justify;margin-right:10px;">
             <div style="border:1px solid orange; width:100%;height:auto;">
               <div class="div_info_header" style="border:1px solid blue;width:100%;text-align:center;">
                 Header
@@ -239,7 +342,7 @@
               Informações serão adicionadas no domingo: 01/12/2018
               Informações serão adicionadas no domingo: 01/12/2018
             </p>
-          </div>
+          </div> -->
 
         </div>
         <!-- <div class="sidebarContentParent">
@@ -405,6 +508,8 @@
   var cnt_CtrlZPressed = 0;
   var cnt_enterKeyPressed = 0;
   var cnt_escapeKeyPressed = 0;
+  var time_start_draw, time_end_draw;
+
   // # To Delete
   var cnt_test = 0;
 
@@ -416,7 +521,6 @@
     /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
     //  ********* Map Initialization *********
     loadBasemaps();
-
     minimumZoom = IsMobileDevice ? 10 : 11;
     //Create the Leaflet map elemetn
     mymap = L.map('mapdiv', {
@@ -448,6 +552,9 @@
 
     //Keep 'pm:drawstart' event here in order to 'this' == 'document'. Inside another function the "this" element change
     mymap.on('pm:drawstart', function(e) {
+      // Remember when we started
+      time_start_draw = new Date().getTime();
+
       //A new layer has started to be drawn.
       createMode = true; //the createMode will receive 'false' when the save button is clicked
       cnt_numVertices = 0; //logs the number of clicks the user is giving, in order to add popup instructing the user.
@@ -472,16 +579,16 @@
         if(cnt_numVertices==1){
           //Adding Instructions popup when the user is creating the first area on the map
           if( (cnt_LikedAreas+cnt_DislikedAreas)==1){
-            if(siteLang='en') var str_popup = '<p>Click in this node again<br /><b>to finish drawing</b>';
-            if(siteLang='pt') var str_popup = '<p>Clique aqui de novo<br /><b>para terminar o desenho</b>';
+            if(siteLang=='en') var str_popup = '<p>Click here again when you want<br /><b>to finish the draw</b>';
+            if(siteLang=='pt') var str_popup = '<p>Clique aqui de novo quando<br />quiseres <b>terminar o desenho</b>';
             openAlertPopup(firstVertex, str_popup);
           }
         }
 
         // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
         if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
-          if(siteLang='en') var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
-          if(siteLang='pt') var str_popup = '<p>Por favor, apenas clique<br />dentro da <b>área de estudo</b>';
+          if(siteLang=='en') var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
+          if(siteLang=='pt') var str_popup = '<p>Por favor, apenas clique<br />dentro da <b>área de estudo</b>';
           //If the first click the user gives is outside the study area, it will restart the draw and do not close the AlertPopup
           if (cnt_numVertices==1) closeAlertPopUpWhenDrawIsFinished = false;
           openAlertPopup(pntClicked, str_popup);
@@ -658,15 +765,15 @@
     var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
     container.title="Toolbar Instructions";
 
-    if(siteLang=='pt'){
+    if(siteLang=='en'){
       container.innerHTML = '<p>Finish drawing (Enter)</p><p style="padding-top:0;">Remove vertex (Ctrl+z)</p><p style="padding-top:0;">Cancel Drawing (Esc)</p>';
       container.style.marginLeft= '-145px';
       container.style.width= '140px';
     }
-    if(siteLang=='en'){
+    if(siteLang=='pt'){
       container.innerHTML = '<p>Finalizar (Enter)</p><p style="padding-top:0;">Remover vértice (Ctrl+z)</p><p style="padding-top:0;">Cancelar (Esc)</p>';
-      container.style.marginLeft= '-145px';
-      container.style.width= '140px';
+      container.style.marginLeft= '-149px';
+      container.style.width= '145px';
     }
     // styles: .infobox_for_toolbar
     // events
@@ -685,7 +792,7 @@
         cnt_doNotPan++;
         if(siteLang=='en') var str_popup = "<h6>Please, stay in this area only!</h6>";
         if(siteLang=='pt') var str_popup = "<h6>Por favor, mantenha nessa área somente!</h6>";
-        if( cnt_doNotPan<3) openAlertPopup(mymap.getCenter(), ,1000 );
+        if( cnt_doNotPan<3) openAlertPopup(mymap.getCenter(), str_popup,1000 );
       }
     });
     mymap.on("movestart", function (e) {
@@ -704,7 +811,7 @@
         if(siteLang=='en') var str_popup = "<h6>Minimum zoom exceeded!</h6>";
         if(siteLang=='pt') var str_popup = "<h6>Zoom mínimo ultrapassado!</h6>";
 
-        if( cnt_zoomOutExceeded<5)  openAlertPopup(mymap.getCenter(), ,1000 );
+        if( cnt_zoomOutExceeded<5)  openAlertPopup(mymap.getCenter(), str_popup,1000 );
         setTimeout(function(){
           mymap.setZoom(zoomNotAllowed+1);
         }, 400);
@@ -757,7 +864,7 @@
       }
     });
     mymap.on('pm:drawend', function(e) {
-      //toggle visibility of toolbar, overview map
+            //toggle visibility of toolbar, overview map
       ctlCreationToolbar.remove();
       ctlMapOverview.addTo(mymap);
       if (!IsMobileDevice){
@@ -772,6 +879,9 @@
 
     mymap.on('pm:create', function(e) {
       // console.log(e);
+      // Remember when we finished
+      time_end_draw = new Date().getTime();
+
       var lyrDraw = e.layer;
 
       var width = lyrDraw.getBounds().getEast() - lyrDraw.getBounds().getWest();
@@ -788,6 +898,9 @@
       feature.type = feature.type || "Feature"; //Could be the name we want
       var props = feature.properties = feature.properties || {};
       props.id = area_id;
+      // Calculate time spent for this drawing
+      props.time_draw_sec = (time_end_draw - time_start_draw)/1000;
+      
       //General style
       lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
 
@@ -884,7 +997,6 @@
 
       // console.log(document.getElementById(area_id+"_str_startdrawing").innerHTML );
       ctlSidebar.close();
-
       if (area_id.split("-")[0] == "liked") {
         color_line_area = "forestgreen";
         color_fill_area = "#0F0";
@@ -996,6 +1108,7 @@
         document.getElementById(area_id+"_cbxAtt-hist").disabled = true;
       }
 
+      document.getElementById(area_id+"_reason_str").disabled = true;
       // Show 'edit' button, hide 'save' button
       document.getElementById(area_id+"_createNewArea").style.display="block";
       document.getElementById(area_id+"_saveArea").style.display="none";
@@ -1062,6 +1175,7 @@
       });
     }//END if(mymap.hasLayer(fgpDrawnItems))
 
+    document.getElementById(area_id+"_reason_str").disabled = false;
     // Show 'save' button, hide 'edit' button
     document.getElementById(area_id+"_editArea").style.display="none";
     document.getElementById(area_id+"_saveArea").style.display="block";
@@ -1312,11 +1426,11 @@
       }
       var tab_id = typeOfArea+'-'+cnt.toString();
       if(liked){
-        if(siteLang=='en') var title += 'Liked area '+cnt;
-        if(siteLang=='pt') var title += 'Área curtida '+cnt;
+        if(siteLang=='en') var title = 'Liked area '+cnt;
+        if(siteLang=='pt') var title = 'Área curtida '+cnt;
       }else{
-        if(siteLang=='en') var title += 'Disliked area '+cnt;
-        if(siteLang=='pt') var title += 'Área não curtida '+cnt;
+        if(siteLang=='en') var title = 'Disliked area '+cnt;
+        if(siteLang=='pt') var title = 'Área não curtida '+cnt;
       }
     }
     // alert(tab_id);
@@ -1324,8 +1438,8 @@
     str_newtab += '<div class="col-xs-12">';
     str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:2px;">';
 
-    if(siteLang =='en') str_newtab += '<h4>Choose the reasons why you like the drawn area*:</h4><p>(*Check at least 1 attribute)</p>';
-    if(siteLang =='pt') str_newtab += '<h4>Escolha os atributos pelo qual você curte a área desenhada*:</h4><p>(*Escolha ao menos 1 atributo)</p>';
+    if(siteLang =='en') str_newtab += '<h4>Choose the attributes that corresponding to the drawn area*:</h4><p>(*Check at least 1 attribute)</p>';
+    if(siteLang =='pt') str_newtab += '<h4>Escolha os atributos que correspondem a área desenhada*:</h4><p>(*Escolha ao menos 1 atributo)</p>';
 
     str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>'; //NEEDTO: say to user to click save button
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat"" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_nat">';
@@ -1341,43 +1455,57 @@
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_open">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" class="cbxsidebar" for="'+tab_id+'_cbxAtt-open"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += '--Openness';
-      if(siteLang=='pt') str_newtab += '--Aberrtura';
+      if(siteLang=='en') str_newtab += 'Not condensed settlements';
+      if(siteLang=='pt') str_newtab += 'Áreas abertas';
     }else{
-      if(siteLang=='en') str_newtab += '--Closenes';
-      if(siteLang=='pt') str_newtab += '--Não abertura';
+      if(siteLang=='en') str_newtab += 'Condensed settlements';
+      if(siteLang=='pt') str_newtab += 'Áreas não abertas';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_order">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" class="cbxsidebar" for="'+tab_id+'_cbxAtt-order"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += '--Order';
+      if(siteLang=='en') str_newtab += 'Order';
       if(siteLang=='pt') str_newtab += 'Organização';
     }else{
-      if(siteLang=='en') str_newtab += '--Disorder';
-      if(siteLang=='pt') str_newtab += '--Desorganização';
+      if(siteLang=='en') str_newtab += 'Disorganization';
+      if(siteLang=='pt') str_newtab += 'Desorganização';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_upkeep">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += '--Upkeep';
-      if(siteLang=='pt') str_newtab += '--isdaoisj';
+      if(siteLang=='en') str_newtab += 'Good maintenance';
+      if(siteLang=='pt') str_newtab += 'Boa manutenção';
     }else{
-      if(siteLang=='en') str_newtab += '--See word upkeep';
-      if(siteLang=='pt') str_newtab += '--isdji';
+      if(siteLang=='en') str_newtab += 'Bad maintenance';
+      if(siteLang=='pt') str_newtab += 'Má manutenção';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Historical Significance';
-      if(siteLang=='pt') str_newtab += '--dskopkdos';
+      if(siteLang=='en') str_newtab += 'Historical significance';
+      if(siteLang=='pt') str_newtab += 'Significado histórico';
     }else{
       if(siteLang=='en') str_newtab += '--Nor historical signifcance';
       if(siteLang=='pt') str_newtab += '--dusadasu';
     }
-    str_newtab +=     '</label><br />';
+    str_newtab +=     '</label><br /><hr />';
+
+    if(liked){
+      if(siteLang =='en') str_newtab += '<h6>Write below a reason why you <u>like</u> the area:</h6>';
+      if(siteLang =='pt') str_newtab += '<h6>Escreva uma razão pela qual você <u>curte</u> essa área:</h6>';
+    }else{
+      if(siteLang =='en') str_newtab += '<h6>Write below a reason why you <u>disliked</u> the area:</h6>';
+      if(siteLang =='pt') str_newtab += '<h6>Escreva uma razão pela qual você <u>não curte</u> essa área:</h6>';
+    }
+    str_newtab += '<input type="text" class="col" id="'+tab_id+'_reason_str" style="height:30px;" name="evaluative_reason" maxlength="400" placeholder="';
+
+    if(siteLang =='en') str_newtab += 'Type the reason here';
+    if(siteLang =='pt') str_newtab += 'Escreva sua razão aqui';
+
+    str_newtab += '">';
     str_newtab +=   '</div>';
 
     str_newtab +=   '<div class="sidebarContentChild">';
@@ -1392,6 +1520,8 @@
     str_newtab +=       '</h4>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
+
+
     str_newtab +=   '<div class="sidebarContentChild">';
     str_newtab +=     '<span class="contenChildSpan">';
     str_newtab +=       '<button id="'+tab_id+'_drawArea" class="btn btn-warning" onclick="drawArea(this)">';
@@ -1496,7 +1626,6 @@
     str_temptab +=      '<span class="contenChildSpan">';
 
     if ((cnt_LikedAreas+cnt_DislikedAreas)<1){
-      console.log(siteLang);
       if (siteLang =='en') str_temptab += '<h4><span>Which type of area you\'d like to draw first? </span></h4>';
       if (siteLang =='pt') str_temptab += '<h4><span>Qual área você gostaria de criar primeiro? </span></h4>';
     }else{
@@ -1803,6 +1932,7 @@
 
   //  # jQuery Functions
   $('input[type=radio][name=language_switch]').change(function() {
+    alert("here")
       if (this.value == 'en') {
         siteLang='en';
         $('.language-pt').hide(); // hides
