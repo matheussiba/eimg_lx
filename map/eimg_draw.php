@@ -23,17 +23,21 @@
   <?php include "../includes/header.php" ?>
   <?php include "../includes/css/style_eimg_draw.php" ?>
   <body>
+    <!-- include modals -->
+    <?php include "eimg_draw-modals.php" ?>
+
+
     <!-- ###############  Div that contains the header ############### -->
     <div id="header" class="col-md-12">
       <span class="text-center"><?php echo $header ?> </span>
-      <label class="radio-inline" >
+      <!-- <label class="radio-inline" >
         <input type="radio" name="language_switch" value="pt">
         <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
       </label>
       <label class="radio-inline">
         <input type="radio" name="language_switch" value="en" checked>
         <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
-      </label>
+      </label> -->
     </div>
 
     <!-- ###############  Div that contains the sidebar ############### -->
@@ -242,19 +246,6 @@
             </div>
           </div>
         </div>
-<!--
-  <div class="sidebarContentParent">
-  <p> See the video for helping you in the application</p>
-  <div class="sidebarContentChild">
-  <span class="contenChildSpan">
-  video
-  <iframe width="448" height="252" src="http://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </span>
-  </div>
-</div>
--->
-
-
 
   </div> <!-- close DIV id="info"> -->
 
@@ -265,91 +256,6 @@
   <!-- ###############  Div that contains the Modal ############### -->
   <div id="dlgUsabilityQuest" style="display:none;"></div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-
-    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-
-        <div class="modal-header modal-header-removeclose" style="padding:5px">
-          <h5 class="modal-title" id="exampleModalLabel">Welcome to Evaluative Image of the City</h5>
-          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button> -->
-          <div class="pull-right">
-            <!-- <label class="radio-inline" >
-              <input type="radio" name="language_switch" value="pt" checked>
-              <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="language_switch" value="en">
-              <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
-            </label> -->
-          </div>
-        </div>
-
-
-        <div class="modal-body">
-          <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: 5px">
-          <!--  Project's explanation  -->
-          <p>
-            <span>Este questionário é parte integrante de um projeto de investigação da Nova Information Management School (NOVA IMS) da Universidade Nova de Lisboa. O objetivo principal é perceber a forma como a perceção do local e as relações sociais do cidadão influenciam a sua participação numa dada área urbana.</span>
-          </p>
-          <p>
-            <span>O preenchimento do questionário demora cerca de 5 minutos e a atividade de mapeamento cerca de 15 minutos, dependendo do número de áreas que se pretenderem assinalar.</span>
-          </p>
-          <p>
-            <b langkey="index2a"></b><b> nº <strike>10</strike>, nº <strike>50</strike>, nº <strike>100</strike>,</b><b langkey="index2b"></b>
-          </p>
-          <p>
-            <span langkey="index3">A sua contribuição apoia os processos participativos da cidade de Lisboa.</span>
-          </p>
-          <p style="text-align: center; margin-top: 30px; font-weight: bold" langkey="index4">
-            Reside em Lisboa?
-          </p>
-          <div style="text-align: center; margin-bottom: 40px">
-            <label class="radio-inline">
-              <input type="radio" name="lisbon_home" value="true" checked="checked"> <span langkey="index5"> Sim </span>
-            </label>
-            <label class=" radio-inline">
-              <input type="radio" name="lisbon_home"  value="false"> <span langkey="index6"> Não</span>
-            </label>
-          </div>
-
-          <p style="font-size: 12px; margin-top: 30px">
-            <span langkey="index7 "> Notas:</span>
-            <br>
-            <span langkey="index8">1.Todos os dados recolhidos neste questionário serão tratados de forma anónima e confidencial e não serão utilizados para fins comerciais ou cedidos a terceiros.</span>
-            <br>
-            <span langkey="index8a">2. Se pretender esclarecer alguma dúvida ou pedir alguma informação sobre este estudo, queira por favor contactar-nos através do seguinte endereço de email: acedo@novaims.unl.pt (Albert Acedo Sánchez)</span> <span langkey="index8b"> ou visite o nosso</span><span> <a
-              class="link-secondary" href="http://www.engagingeographies.com/blog">blog</a>.</span>
-              <br>
-            </p>
-
-          </div> <!--/.modal-body -->
-          <div class="modal-footer" style="border:none;">
-            <div class="float-left" style="color: #A9A9A9; padding-top: 8px">
-              1/4
-            </div>
-            <div class="float-right">
-              <button type="button" class="btn btn-primary btn-next" data-dismiss="modal" aria-label="Close"
-              langkey="index9" id="home_button">Próximo
-            </button>
-          </div>
-        </div>
-        <!--  Logos  -->
-        <div class="sidebarContentChild">
-          <span class="contenChildSpan"><img src="img/nova.png" id="logo_nova" alt="Nova IMS"></span>
-          <span class="contenChildSpan"><img src="img/munster.png" id="logo_munster" alt="Münster"></span>
-          <span class="contenChildSpan"><img src="img/uji.png" id="logo_uji" alt="UJI"></span>
-        </div>
-
-      </div> <!--/.modal-content -->
-    </div>
-  </div>
-
-
   <!-- ###############  Div that contains the map application ############### -->
   <div id="mapdiv" class="col-md-12"></div>
 
@@ -359,10 +265,10 @@
   var basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery,
       basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
   var LyrAOI, LyrAOI_coords;
-  var siteLang ='en'
   var ctlLayers, ctlCreationToolbar, ctlSidebar, ctlZoom, ctlMapOverview,
       ctlScale, ctlMouseposition, ctlAttribute;
   var statusAddLikeButton = "", statusAddDislikeButton = "";
+  var siteLang;
   var temp_tab_content;
   var color_line_area, color_fill_area;
   var fgpDrawnItems;
@@ -404,6 +310,7 @@
 
   //  ********* Create Map *********
   $(document).ready(function(){
+    // cbxLangChange(getCookie("app_language"));
     /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
     //  ********* Map Initialization *********
     loadBasemaps();
@@ -491,10 +398,48 @@
 
     ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
     document.onkeydown = KeyPress; // Capture the pressed key in the document
+
+    $('#modal_2_demographics').modal('show');
+    cbxLangChange(getCookie("app_language"));
+
   }); //END $(document).ready()
 
   //  ********* JS Functions *********
   //  # Map functions
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+  function cbxLangChange(value){
+    if (value == 'en') {
+      siteLang='en';
+      $('.language-pt').hide(); // hides
+      $('.language-en').show(); // Shows
+    }
+    else if (value == 'pt') {
+      siteLang='pt';
+      $('.language-en').hide(); // hides
+      $('.language-pt').show(); // Shows
+    }
+  }
+
   function loadMobileFunction() {
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
@@ -1334,7 +1279,7 @@
       if(siteLang=='en') str_newtab += 'Presence of Nature';
       if(siteLang=='pt') str_newtab += 'Natureza presente';
     }else{
-      if(siteLang=='en') str_newtab += 'Absence of Nature';
+      if(siteLang=='en') str_newtab += 'Man-made nuisances';
       if(siteLang=='pt') str_newtab += 'Natureza não presente';
     }
     str_newtab +=     '</label><br />';
@@ -1361,17 +1306,17 @@
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_upkeep">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Good maintenance';
+      if(siteLang=='en') str_newtab += 'Well maintained';
       if(siteLang=='pt') str_newtab += 'Boa manutenção';
     }else{
-      if(siteLang=='en') str_newtab += 'Bad maintenance';
+      if(siteLang=='en') str_newtab += 'Dilapidated area';
       if(siteLang=='pt') str_newtab += 'Má manutenção';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Historical significance';
+      if(siteLang=='en') str_newtab += 'Cultural/social';
       if(siteLang=='pt') str_newtab += 'Significado histórico';
     }else{
       if(siteLang=='en') str_newtab += '--Nor historical signifcance';

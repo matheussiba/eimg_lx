@@ -32,56 +32,28 @@ if (isset($_SESSION['user_id'])) {
 
 
 <body>
-<script>
-//  ********* OLD FUNCTIONS
-var mobileDevice = false;
-if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-  /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
-  mobileDevice = true;
-};
-function openModal(id){
-  $('#'+id).modal('show');
-}
-
-$('input[type=radio][name=language_switch]').change(function() {
-    if (this.value == 'en') {
-      siteLang='en';
-      $('.language-pt').hide(); // hides
-      $('.language-en').show(); // Shows
-    }
-    else if (this.value == 'pt') {
-      siteLang='pt';
-      $('.language-en').hide(); // hides
-      $('.language-pt').show(); // Shows
-    }
-});
-$('input[type=radio][name=language_switch]').change(function() {
-    if (this.value == 'en') {
-      siteLang='en';
-      $('.language-pt').hide(); // hides
-      $('.language-en').show(); // Shows
-    }
-    else if (this.value == 'pt') {
-      siteLang='pt';
-      $('.language-en').hide(); // hides
-      $('.language-pt').show(); // Shows
-    }
-});
+  <script>
+  //  ********* OLD FUNCTIONS
+  var mobileDevice = false;
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+    /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
+    mobileDevice = true;
+  };
 
 </script>
 
-<!-- <button onclick="openModal('exampleModalCenter')"> MODAL INDEX </button> -->
-<button onclick="openModal('exampleQuest')"> MODAL Questionairre </button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+<!-- Modal_1 -->
+<div class="modal fade" id="modal_1_intro" tabindex="-1" role="dialog" aria-labelledby="modal_1_introTitle" aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header modal-header-removeclose" style="padding:5px">
-        <h5 class="modal-title" id="exampleModalLabel">Welcome to Evaluative Image of the City</h5>
+        <h5 class="modal-title" id="exampleModalLabel">
+          <span class="language-en">Welcome to eImage-LX</span>
+          <span class="language-pt">Bem vindo ao eImage-LX</span>
+        </h5>
         <div class="pull-right">
           <label class="radio-inline" >
-            <input type="radio" name="language_switch" value="pt" checked>
+            <input type="radio" name="language_switch" value="pt">
             <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
           </label>
           <label class="radio-inline">
@@ -92,7 +64,9 @@ $('input[type=radio][name=language_switch]').change(function() {
       </div>
 
       <div class="modal-body">
-        <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: 5px">
+        <div class="col" style="text-align:center;">
+          <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: 5px">
+        </div>
         <!--  Project's explanation  -->
         <p>
           <span>Este questionário é parte integrante de um projeto de investigação da Nova Information Management School (NOVA IMS) da Universidade Nova de Lisboa. O objetivo principal é perceber a forma como a perceção do local e as relações sociais do cidadão influenciam a sua participação numa dada área urbana.</span>
@@ -118,21 +92,14 @@ $('input[type=radio][name=language_switch]').change(function() {
         <div class="modal-footer" style="border:none;">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-1" style="color: #A9A9A9; padding-top: 8px">
-                1/4
-              </div>
               <div class="col" style="text-align:center;padding-top: 8px; font-size: 13px;">
                 <input type="checkbox" name="cbxAgreement">
-
                 <span class="language-en">I agree to take part in the above study.</span>
                 <span class="language-pt">Eu aceito a participar do estudo mencionado acima.</span>
               </div>
-              <div class="col-3">
-                <!-- <button type="button" class="btn btn-primary btn-next" data-dismiss="modal" aria-label="Close"
-                id="home_button">Próximo
-              </button> -->
+              <div class="col-4">
               <div style="text-align:right;">
-                <button type="button" class="btn btn-primary btn-next" style="height:auto;width:auto;font-size:12px;" id="modal_intro_next">
+                <button type="button" id="btn_go_modal_2" class="btn btn-primary btn-next" style="height:auto;width:auto;font-size:12px;">
                   <span class="language-en">Start</span>
                   <span class="language-pt">Começar</span>
                 </button>
@@ -152,128 +119,22 @@ $('input[type=radio][name=language_switch]').change(function() {
         </div>
         <div class="row">
           <div class="col">
-            <span><img src="<?php  echo $root_directory?>resources/images/uni/mundus.png" id="logo_mundus" alt="Nova IMS"></span>
+            <div style="padding-top: 18px;"><img src="<?php  echo $root_directory?>resources/images/uni/mundus.png" id="logo_mundus" alt="Nova IMS"></div>
           </div>
           <div class="col">
-            <span><img src="<?php  echo $root_directory?>resources/images/uni/novaims.png" id="logo_nova" alt="Nova IMS"></span>
+            <div><img src="<?php  echo $root_directory?>resources/images/uni/novaims.png" id="logo_nova" alt="Nova IMS"></div>
           </div>
           <div class="col">
-            <span><img src="<?php  echo $root_directory?>resources/images/uni/wwu.png" id="logo_munster" alt="Münster"></span>
+            <div><img src="<?php  echo $root_directory?>resources/images/uni/wwu.png" id="logo_munster" alt="Münster"></div>
           </div>
           <div class="col">
-            <span><img src="<?php  echo $root_directory?>resources/images/uni/uji.png" id="logo_uji" alt="UJI"></span>
+            <div><img src="<?php  echo $root_directory?>resources/images/uni/uji.png" id="logo_uji" alt="UJI"></div>
           </div>
         </div>
       </div>
     </div> <!--/.modal-content -->
   </div> <!--/.modal-dialog -->
 </div>  <!--/.modal -->
-
-
-
-
-        <!-- <div class="container">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <div class="card ">
-                    <div class="card-header">Personal Info</div>
-                    <div class="card-block">
-                        Gender:
-                        <br />
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-secondary">
-                                <input type="radio" autocomplete="off" /> Male
-                            </label>
-                            <label class="btn btn-secondary">
-                                <input type="radio" autocomplete="off" /> Female
-                            </label>
-                        </div>
-                        <br />
-                        <br />
-
-                        Age Group:
-                        <br />
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-secondary">
-                                <input type="radio" autocomplete="off" />Under 18
-                            </label>
-                            <label class="btn btn-secondary">
-                                <input type="radio" autocomplete="off" />18-25
-                            </label>
-                            <label class="btn btn-secondary">
-                                <input type="radio" autocomplete="off" />25-50
-                            </label>
-                            <label class="btn btn-secondary">
-                                <input type="radio" autocomplete="off" />Over 50
-                            </label>
-                        </div>
-                        <br />
-                        <br />
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-
-
-<!-- <div class="container">
-  <h2>Survey</h2>
-  <p>Please complete the survey</p>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Strongly disagree</th>
-        <th>Disagree</th>
-        <th>Neutral</th>
-        <th>Agree</th>
-        <th>Strongly agree</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1.</td>
-        <td>I think that I would like to use this website frequently</td>
-        <td><input type="radio" name="quest1" class="survey_sus" value="strong_disagree"></td>
-        <td><input type="radio" name="quest1" class="survey_sus" value="disagree"></td>
-        <td><input type="radio" name="quest1" class="survey_sus" value="neutral"></td>
-        <td><input type="radio" name="quest1" class="survey_sus" value="agree"></td>
-        <td><input type="radio" name="quest1" class="survey_sus" value="strong_agree"></td>
-      </tr>
-      <tr>
-        <td>2.</td>
-        <td>I would imagine that most people would learn to use this website very quickly</td>
-        <td><input type="radio" name="quest2" class="survey_sus" value="strong_disagree"></td>
-        <td><input type="radio" name="quest2" class="survey_sus" value="disagree"></td>
-        <td><input type="radio" name="quest2" class="survey_sus" value="neutral"></td>
-        <td><input type="radio" name="quest2" class="survey_sus" value="agree"></td>
-        <td><input type="radio" name="quest2" class="survey_sus" value="strong_agree"></td>
-      </tr>
-      <tr>
-        <td>3.</td>
-        <td>I needed to learn a lot of things before I could get going with this website.</td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
-      </tr>
-      <tr>
-        <td>12.</td>
-        <td>I needed to learn a lot of things before I could get going with this website.</td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
-        <td><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
-      </tr>
-      input: would people like this way to send
-      input: would people like this way to send Would you like this evaluative approach to send feedback to your city council?
-    </tbody>
-  </table>
-</div> -->
 
 <!-- ###############  Div that contains the header ############### -->
 <div id="header" class="col-md-12">
@@ -282,7 +143,18 @@ $('input[type=radio][name=language_switch]').change(function() {
 
 
 <script>
-openModal('exampleModalCenter');
+var cookie_lang = getCookie("app_language");
+console.log(cookie_lang);
+if(cookie_lang!=""){
+  $("input[type=radio][name=language_switch][value='"+cookie_lang+"']").prop("checked",true);
+}else{
+  $("input[type=radio][name=language_switch][value='pt']").prop("checked",true);
+}
+// Open the first modal
+$('#modal_1_intro').modal('show');
+
+var checkedValue = $('input[type=radio][name=language_switch]:checked').val();
+cbxLangChange(checkedValue);
 
 function setCookie(cname, cvalue, exdays) {
   var d = new Date();
@@ -305,21 +177,38 @@ function getCookie(cname) {
   }
   return "";
 }
-function checkCookie() {
-  var username = getCookie("username");
-  if (username != "") {
-   alert("Welcome again " + username);
-  } else {
-    username = prompt("Please enter your name:", "");
-    if (username != "" && username != null) {
-      setCookie("username", username, 365);
-    }
+
+function cbxLangChange(value){
+  setCookie("app_language", value, 7);
+  var cookie_lang = getCookie("app_language");
+  console.log('cook_cbxlangchange:',cookie_lang);
+  if (value == 'en') {
+    siteLang='en';
+    $('.language-pt').hide(); // hides
+    $('.language-en').show(); // Shows
+  }
+  else if (value == 'pt') {
+    siteLang='pt';
+    $('.language-en').hide(); // hides
+    $('.language-pt').show(); // Shows
   }
 }
 
-$("#btnRedirectPage").on("click", function () {
-  window.location.href = 'eimg_draw.php';
+$("#btn_go_modal_2").on("click", function () {
+  $('#modal_1_intro').modal('hide');
+  $('#modal_2_demographics').modal('show');
+
+  cbxLangChange(getCookie("app_language"));
+  // window.location.href = 'eimg_draw.php';
+
 });
+
+$('input[type=radio][name=language_switch]').change(function() {
+  cbxLangChange(this.value);
+});
+
+
+
 
 </script>
 

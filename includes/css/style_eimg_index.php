@@ -1,4 +1,49 @@
 <style>
+
+/* input {
+  position: absolute;
+  left: -9999px;
+} */
+
+.demographics {
+  /* display: inline-block;
+  position: relative; */
+  width: 100%;
+  /* margin: 5px; */
+  padding: 10px 10px 10px 0px;
+  background-color: #505050
+  color: white;
+  /* font-size: 18px; */
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/*
+label:hover, label:active {
+   background: #303030;
+}
+
+label::before {
+  content: '';
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  background-color: #505050
+}
+
+input:focus + label {
+  outline: 1px solid #00f;
+  background-color: #505050
+}
+
+input:checked + label::before {
+  background-color: #c00;
+} */
+
 /* ### CSS for some elements of the document */
 html,body {
   /* background-color: #f6d8ac; */
@@ -13,6 +58,7 @@ html,body {
 p{
   font-size: 14px;
 }
+
 #header {
   /* height: 75px; */
   height:4vh;

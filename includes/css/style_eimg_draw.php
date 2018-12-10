@@ -13,13 +13,13 @@
 
 	#header {
 	  /* height: 75px; */
-	  height:4vh;
+	  height:1vh;
 	  background-color: #2a6592;
 	  color: white;
 	}
 	#mapdiv {
 	  /* height: 650px; */
-	  height:96vh;
+	  height:99vh;
 	}
 
 
