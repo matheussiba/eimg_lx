@@ -1,180 +1,168 @@
 <!-- modal_2_demographics -->
-<div class="modal fade" id="modal_2_demographics" tabindex="-1" role="dialog" aria-labelledby="modal_1_introTitle" aria-hidden="true" data-backdrop="false">
+<div class="modal fade" id="modal_2_demographics" tabindex="-1" role="dialog" aria-labelledby="modal_2_demographics" aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-lg" role="document" style="overflow-y: initial !important">
     <div class="modal-content">
-      <div class="modal-header modal-header-removeclose" style="padding:5px">
-        <h5 class="modal-title">
-          <span class="language-en">Tell a bit about you:</span>
-          <span class="language-pt">Diga um pouco sobre voce:</span>
-        </h5>
+      <div class="modal-header modal-header-removeclose" style="padding:5px; ">
+        <div class="col" style="text-align:center;">
+          <h5 class="modal-title">
+            <span class="language-en">Tell us a bit about you:</span>
+            <span class="language-pt">Conte-nos um pouco sobre você:</span>
+          </h5>
+        </div>
       </div>
       <div class="modal-body" style="height: 70vh; overflow-y: auto;">
-        <!-- Gender -->
-        <div class="card">
-          <div class="card-header">
-            <span class="language-en">Gender:</span>
-            <span class="language-pt">Sexo:</span>
-          </div>
-          <div class="card-body">
-            <div class="container-fluid" style="text-align:center;">
-              <div class="row" style="text-align:center;">
-                <div class="col">
-                  <label class="radio-inline demographics">
-                    <input type="radio" name="user_sex" value="male">
-                    <span class="language-en">Male</span>
-                    <span class="language-pt">Masculino</span>
-                  </label>
-                </div>
-                <div class="col">
-                  <label class="radio-inline demographics">
-                    <input type="radio" name="user_sex" value="female">
-                    <span class="language-en">Female</span>
-                    <span class="language-pt">Feminino</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
+        <table class="table table-hover">
+          <tbody style="border-top: 1px solid gray;border-bottom: 1px solid rgba(0,0,0,0.1);">
+            <!-- sex -->
+            <tr>
+              <th scope="row">
+                <span class="language-en">Gender*:</span>
+                <span class="language-pt">Sexo*:</span>
+              </th>
+              <td>
+                <span class="language-en">
+                  <select id="user_sex-en">
+                    <option value="">Select</option>
+                    <option value="f">Female</option>
+                    <option value="m">Male</option>
+                  </select>
+                </span>
+                <span class="language-pt">
+                  <select id="user_sex-pt">
+                    <option value="">Selecionar</option>
+                    <option value="f">Feminino</option>
+                    <option value="m">Masculino</option>
+                  </select>
+                </span>
+              </td>
+            </tr>
+            <!-- age -->
+            <tr>
+              <th scope="row">
+                <span class="language-en">Age Group*:</span>
+                <span class="language-pt">Idade*:</span>
+              </th>
+              <td>
+                <span class="language-en">
+                  <select id="user_age-en">
+                    <option value="">Select</option>
+                    <option value="<35">Less than 35 years old</option>
+                    <option value="35–50">35–50</option>
+                    <option value=">50">More than 50 years old</option>
+                  </select>
+                </span>
+                <span class="language-pt">
+                  <select id="user_age-pt">
+                    <option value="">Selecionar</option>
+                    <option value="<35">Menos que 35 anos</option>
+                    <option value="35–50">35–50</option>
+                    <option value=">50">More than 50 anos</option>
+                  </select>
+                </span>
+              </td>
+            </tr>
+            <!-- school -->
+            <!-- <tr>
+              <th scope="row">
+                <span class="language-en">School level:</span>
+                <span class="language-pt">Escolaridade:</span>
+              </th>
+              <td>
+                <span class="language-en">
+                  <select id="user_school-en">
+                    <option value="">Select</option>
+                    <option value="add">add</option>
+                  </select>
+                </span>
+                <span class="language-pt">
+                  <select id="user_school-pt">
+                    <option value="">Selecionar</option>
+                    <option value="add">add</option>
+                  </select>
+                </span>
+              </td>
+            </tr> -->
+
+            <!-- job -->
+            <tr>
+              <th scope="row">
+                <span class="language-en">Profession*:</span>
+                <span class="language-pt">Profissão*:</span>
+              </th>
+              <td>
+                <span class="language-en">
+                  <select id="user_job-en">
+                    <option value="">Select</option>
+                    <option value="employed_worker">Employed worker</option>
+                    <option value="freelance">Freelance</option>
+                    <option value="retired">Retired</option>
+                    <option value="student">Student</option>
+                    <option value="unemployed">Unemployed</option>
+                    <option value="self_employed">Self-Employed</option>
+                    <option value="other">Other</option>
+                  </select>
+                </span>
+                <span class="language-pt">
+                  <select id="user_job-pt">
+                    <option value="">Selecionar</option>
+                    <option value="employed_worker">Empregado(a)</option>
+                    <option value="freelance">Freelance</option>
+                    <option value="retired">Reformado(a)</option>
+                    <option value="student">Estudante</option>
+                    <option value="unemployed">Desempregado(a)</option>
+                    <option value="self_employed">Trabalho por conta própria</option>
+                    <option value="other">Outra</option>
+                  </select>
+                </span>
+              </td>
+            </tr>
+            <!-- income -->
+            <tr>
+              <th scope="row">
+                <span class="language-en">Household monthly income (euros)*:</span>
+                <span class="language-pt">Renda mensal domiciliar (euros)*:</span>
+              </th>
+              <td>
+                <span class="language-en">
+                  <select id="user_income-en">
+                    <option value="">Select</option>
+                    <option value="<1000">Less than 1000</option>
+                    <option value="1000–1499">1000–1499</option>
+                    <option value="1500–1999">1500–1999</option>
+                    <option value="2000–2999">2000–2999</option>
+                    <option value="3000–4999">3000–4999</option>
+                    <option value=">5000">More than 5000</option>
+                    <option value="NA">I prefer not to answer</option>
+                  </select>
+                </span>
+                <span class="language-pt">
+                  <select id="user_income-pt">
+                    <option value="">Selecionar</option>
+                    <option value="<1000">Menos que 1000</option>
+                    <option value="1000–1499">1000–1499</option>
+                    <option value="1500–1999">1500–1999</option>
+                    <option value="2000–2999">2000–2999</option>
+                    <option value="3000–4999">3000–4999</option>
+                    <option value=">5000">Mais que 5000</option>
+                    <option value="NA">Prefiro não responder</option>
+                  </select>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="col" style="font-size:12px">
+          <span class="language-en">*Required fields</span>
+          <span class="language-pt">*Campos Obrigatórios</span>
         </div>
-
-        <!-- Age -->
-        <div class="card">
-          <div class="card-header">
-            <span class="language-en">Age Group:</span>
-            <span class="language-pt">Idade:</span>
-          </div>
-          <!-- <div class="card-body">
-            <div class="container-fluid" style="text-align:center;">
-              <div class="row" style="text-align:center;">
-                <div class="col">
-                  <label class="radio-inline demographics" style="padding:0 10px 0 10px;">
-                    <input type="radio" name="user_age" value="less18">
-                    <span class="language-en">Under 18</span>
-                    <span class="language-pt">Menor que 18</span>
-                  </label>
-                </div>
-                <div class="col">
-                  <label class="radio-inline demographics" style="padding:0 5px 0 5px;">
-                    <input type="radio" name="user_age" value="18-24"> 18-24
-                  </label>
-                </div>
-                <div class="col">
-                  <label class="radio-inline demographics" style="padding:0 5px 0 5px;">
-                    <input type="radio" name="user_age" value="25-34"> 25-34
-                  </label>
-                </div>
-                <div class="col">
-                  <label class="radio-inline demographics" style="padding:0 5px 0 5px;">
-                    <input type="radio" name="user_age" value="35-44"> 35-44
-                  </label>
-                </div>
-                <div class="col">
-                  <label class="radio-inline demographics" style="padding:0 5px 0 5px;">
-                    <input type="radio" name="user_age" value="45-54"> 45-54
-                  </label>
-                </div>
-                <div class="col">
-                  <label class="radio-inline demographics" style="padding:0 5px 0 5px;">
-                    <input type="radio" name="user_age" value="55-64"> 55-64
-                  </label>
-                </div>
-                <div class="col">
-                  <label class="radio-inline demographics" style="padding:0 5px 0 5px;">
-                    <input type="radio" name="user_age" value="over65">
-                    <span class="language-en">Over 65</span>
-                    <span class="language-pt">Maior que 65</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-          <div class="card-body">
-            <div class="container-fluid" style="text-align:center;">
-              <div class="row" style="text-align:center;">
-                <div class="col">
-                  <span class="language-en">
-                    <select>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">Under 18</option>
-                      <option value="volvo">18-24 </option>
-                      <option value="volvo">25-34 </option>
-                      <option value="volvo">35-44 </option>
-                      <option value="volvo">45-54</option>
-                      <option value="volvo">55-64</option>
-                      <option value="volvo">Over 65</option>
-                    </select>
-                  </span>
-                  <span class="language-pt">
-                    <select>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">Abaixo de 18</option>
-                      <option value="volvo">18-24 </option>
-                      <option value="volvo">25-34 </option>
-                      <option value="volvo">35-44 </option>
-                      <option value="volvo">45-54</option>
-                      <option value="volvo">55-64</option>
-                      <option value="volvo">Acima de 65</option>
-                    </select>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- School -->
-        <div class="card">
-          <div class="card-header">
-            <span class="language-en">School level:</span>
-            <span class="language-pt">Grau de escolaridade:</span>
-          </div>
-          <div class="card-body">
-
-            <div class="container-fluid" style="text-align:center;">
-              <div class="row" style="text-align:center;">
-                <div class="col">
-                  <span class="language-en">
-                    <select>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">Less than a high school diploma</option>
-                      <option value="volvo">High school degree or equivalent (e.g. GED)</option>
-                      <option value="volvo">Some college, no degree</option>
-                      <option value="volvo">Associate degree (e.g. AA, AS)</option>
-                      <option value="volvo">Bachelor’s degree (e.g. BA, BS)</option>
-                      <option value="volvo">Master’s degree (e.g. MA, MS, MEd)</option>
-                      <option value="volvo">Professional degree (e.g. MD, DDS, DVM)</option>
-                      <option value="volvo">Doctorate (e.g. PhD, EdD)</option>
-                    </select>
-                  </span>
-                  <span class="language-pt">
-                    <select>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                      <option value="volvo">NA</option>
-                    </select>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div> <!-- modal body -->
       <div class="modal-footer" style="border:none;">
         <div class="container-fluid">
-          <div class="col" style="text-align:right;">
+          <div class="col">
             <div>
-              <button type="button" id="btn_go_modal_3" class="btn btn-primary btn-next" style="height:auto;width:auto;font-size:12px;">
-                <span class="language-en">Start</span>
-                <span class="language-pt">Começar</span>
+              <button type="button" id="btn_close_modal_demographics" class="btn btn-primary btn-block">
+                <span class="language-en">Access map!</span>
+                <span class="language-pt">Acessar mapa!</span>
               </button>
             </div>
           </div>
@@ -187,63 +175,211 @@
 
 
 <!-- modal_3_sus -->
+<div class="modal fade" id="modal_3_sus" tabindex="-1" role="dialog" aria-labelledby="modal_3_sus" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-lg" role="document" style="overflow-y: initial !important">
+    <div class="modal-content">
+      <div class="modal-header modal-header-removeclose" style="padding:5px; ">
+        <div class="col" style="text-align:center;">
+          <h5 class="modal-title" style="padding:0;margin:0; font-size: 1.6vw">
+            <span class="language-en">Tell us a bit about you:</span>
+            <span class="language-pt">Conte-nos um pouco sobre você:</span>
+          </h5>
+        </div>
+      </div>
+      <div class="modal-body" style="height: 70vh; overflow-y: auto;">
+
+        <div class="sus">
+          <table class="table table-hover" style="padding:0;margin:0;">
+            <thead style="padding:0;margin:0;">
+              <tr>
+                <th class="sus_index"></th>
+                <th class="sus_question"></th>
+                <th class="sus_cbx">
+                  <span class="language-en">Strongly disagree</span>
+                  <span class="language-pt">Discordo totalmente</span>
+                </th>
+                <th class="sus_cbx">
+                  <span class="language-en">Disagree</span>
+                  <span class="language-pt">Discordo parcialmente</span>
+                </th>
+                <th class="sus_cbx">
+                  <span class="language-en">Neutral</span>
+                  <span class="language-pt">Indiferente</span>
+                </th>
+                <th class="sus_cbx">
+                  <span class="language-en">Agree</span>
+                  <span class="language-pt">Concordo parcialmente</span>
+                </th>
+                <th class="sus_cbx">
+                  <span class="language-en">Strongly agree</span>
+                  <span class="language-pt">Concordo totalmente</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody style="border-top: 1px solid gray;border-bottom: 1px solid rgba(0,0,0,0.1); padding:0;margin:0;">
+              <tr>
+                <td class="sus_index">1.</td>
+                <td class="sus_question">
+                  <span class="language-en">I think that I would like to use this system frequently. </span>
+                  <span class="language-pt">Acho que gostaria de utilizar este sistema com frequência. </span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">2.</td>
+                <td class="sus_question">
+                  <span class="language-en">I found the system unnecessarily complex. </span>
+                  <span class="language-pt">Considerei o sistema mais complexo do que necessário. </span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">3.</td>
+                <td class="sus_question">
+                  <span class="language-en">I thought the system was easy to use</span>
+                  <span class="language-pt">Achei o sistema fácil de utilizar. </span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">4.</td>
+                <td class="sus_question">
+                  <span class="language-en">I think that I would need the support of a technical person to be able to use this system.</span>
+                  <span class="language-pt">Acho que necessitaria de ajuda de um técnico para conseguir utilizar este sistema.</span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">5.</td>
+                <td class="sus_question">
+                  <span class="language-en">I found the various functions in this system were well integrated</span>
+                  <span class="language-pt">Considerei que as várias funcionalidades deste sistema estavam bem integradas.</span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">6.</td>
+                <td class="sus_question">
+                  <span class="language-en">I thought there was too much inconsistency in this system. </span>
+                  <span class="language-pt">Achei que este sistema tinha muitas inconsistências. </span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">7.</td>
+                <td class="sus_question">
+                  <span class="language-en">I would imagine that most people would learn to use this system very quickly</span>
+                  <span class="language-pt">Suponho que a maioria das pessoas aprenderia a utilizar rapidamente este sistema.</span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">8.</td>
+                <td class="sus_question">
+                  <span class="language-en">I found the system very cumbersome to use.</span>
+                  <span class="language-pt">Considerei o sistema muito complicado de utilizar. </span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">9.</td>
+                <td class="sus_question">
+                  <span class="language-en">I felt very confident using the system. </span>
+                  <span class="language-pt">Senti-me muito confiante a utilizar este sistema. </span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">10.</td>
+                <td class="sus_question">
+                  <span class="language-en">I needed to learn a lot of things before I could get going with this system.</span>
+                  <span class="language-pt">Tive que aprender muito antes de conseguir lidar com este sistema.</span>
+                </td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">11.</td>
+                <td class="sus_question">AddANother</td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="strong_agree"></td>
+              </tr>
+              <tr>
+                <td class="sus_index">12.</td>
+                <td class="sus_question">AddANother</td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="strong_disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="disagree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="neutral"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="strong_agree"></td>
+              </tr>
+          </tbody>
+          </table>
+        </div>
 
 
+        <!-- <div class="col" style="font-size:12px">
+          <span class="language-en">*Required fields</span>
+          <span class="language-pt">*Campos Obrigatórios</span>
+        </div>
+        input: would people like this way to send
+        input: would people like this way to send Would you like this evaluative approach to send feedback to your city council? -->
 
-<!-- <div class="container">
-<h2>Survey</h2>
-<p>Please complete the survey</p>
-<table class="table table-bordered">
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th>Strongly disagree</th>
-<th>Disagree</th>
-<th>Neutral</th>
-<th>Agree</th>
-<th>Strongly agree</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1.</td>
-<td>I think that I would like to use this website frequently</td>
-<td><input type="radio" name="quest1" class="survey_sus" value="strong_disagree"></td>
-<td><input type="radio" name="quest1" class="survey_sus" value="disagree"></td>
-<td><input type="radio" name="quest1" class="survey_sus" value="neutral"></td>
-<td><input type="radio" name="quest1" class="survey_sus" value="agree"></td>
-<td><input type="radio" name="quest1" class="survey_sus" value="strong_agree"></td>
-</tr>
-<tr>
-<td>2.</td>
-<td>I would imagine that most people would learn to use this website very quickly</td>
-<td><input type="radio" name="quest2" class="survey_sus" value="strong_disagree"></td>
-<td><input type="radio" name="quest2" class="survey_sus" value="disagree"></td>
-<td><input type="radio" name="quest2" class="survey_sus" value="neutral"></td>
-<td><input type="radio" name="quest2" class="survey_sus" value="agree"></td>
-<td><input type="radio" name="quest2" class="survey_sus" value="strong_agree"></td>
-</tr>
-<tr>
-<td>3.</td>
-<td>I needed to learn a lot of things before I could get going with this website.</td>
-<td><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
-</tr>
-<tr>
-<td>12.</td>
-<td>I needed to learn a lot of things before I could get going with this website.</td>
-<td><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
-<td><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
-</tr>
-input: would people like this way to send
-input: would people like this way to send Would you like this evaluative approach to send feedback to your city council?
-</tbody>
-</table>
-</div> -->
+      </div> <!-- modal body -->
+      <div class="modal-footer" style="border:none;">
+        <div class="container-fluid">
+          <div class="col" style="text-align:center;" >
+              <button type="button" id="btn_close_modal_sus" class="btn btn-primary">
+                <span style="font-size:1.6vw;">
+                  <span class="language-en">See final result!</span>
+                  <span class="language-pt">Ver resultado final!</span>
+                </span>
+              </button>
+          </div>
+        </div>
+      </div>
+    </div> <!--/.modal-content -->
+  </div> <!--/.modal-dialog -->
+</div>  <!--/.modal -->

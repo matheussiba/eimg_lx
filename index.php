@@ -43,7 +43,7 @@ if (isset($_SESSION['user_id'])) {
 </script>
 
 <!-- Modal_1 -->
-<div class="modal fade" id="modal_1_intro" tabindex="-1" role="dialog" aria-labelledby="modal_1_introTitle" aria-hidden="true" data-backdrop="false">
+<div class="modal fade" id="modal_1_intro" tabindex="-1" role="dialog" aria-labelledby="modal_1_intro" aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header modal-header-removeclose" style="padding:5px">
@@ -99,7 +99,7 @@ if (isset($_SESSION['user_id'])) {
               </div>
               <div class="col-4">
               <div style="text-align:right;">
-                <button type="button" id="btn_go_modal_2" class="btn btn-primary btn-next" style="height:auto;width:auto;font-size:12px;">
+                <button type="button" id="btn_close_modal_intro" class="btn btn-primary btn-next" style="height:auto;width:auto;font-size:12px;">
                   <span class="language-en">Start</span>
                   <span class="language-pt">Começar</span>
                 </button>
@@ -194,13 +194,9 @@ function cbxLangChange(value){
   }
 }
 
-$("#btn_go_modal_2").on("click", function () {
+$("#btn_close_modal_intro").on("click", function () {
   $('#modal_1_intro').modal('hide');
-  $('#modal_2_demographics').modal('show');
-
-  cbxLangChange(getCookie("app_language"));
-  // window.location.href = 'eimg_draw.php';
-
+  window.location.href = 'map/eimg_draw.php';
 });
 
 $('input[type=radio][name=language_switch]').change(function() {

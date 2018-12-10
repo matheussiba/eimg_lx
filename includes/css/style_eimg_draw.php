@@ -1,4 +1,5 @@
 <style>
+
 	/* ### CSS for some elements of the document */
 	html,body {
 	  /* background-color: #f6d8ac; */
@@ -21,9 +22,6 @@
 	  /* height: 650px; */
 	  height:99vh;
 	}
-
-
-
 
 	input[type="checkbox"].cbxsidebar{
 	  cursor: pointer;
@@ -68,6 +66,69 @@
 	}
 	#mapdiv .easy-button-button.disabled {
 	  height: 0;
+	}
+
+
+	/* Table SUS */
+	.sus {
+		font-size: 1.4vw;
+	}
+
+	.sus input[type='radio']{
+		transform: scale(1.7);
+	}
+
+	@media only screen and (max-width: 800px) {
+		.sus input[type='radio']{
+			 transform: scale(1);
+		 }
+	}
+
+	.sus thead, .sus tbody, .sus tr, .sus td, .sus th { display: block; }
+	.sus tr:after {
+		content: ' ';
+		display: block;
+		visibility: hidden;
+		clear: both;
+	}
+	.sus thead th {
+		padding: 0;
+		margin: 0;
+		height: auto;
+		border: 1px solid white;
+		/*text-align: left;*/
+	}
+	.sus tbody {
+		height: 55vh;
+		overflow-y: auto;
+	}
+	.sus thead{
+		/* fallback */
+		padding: 0;
+		margin: 0;
+	}
+	.sus_index {
+		width: 3%;
+		float: left;
+	}
+	.sus_question {
+		padding: 0;
+		margin: 0;
+		width: 49%;
+		float: left;
+	}
+	.sus_cbx {
+		width: 9%;
+		float: left;
+		/* fallback */
+		vertical-align: middle;
+		text-align: center;
+		font-size: 1vw!important;
+	}
+	.modal-footer{
+		padding: 0;
+		margin: 0;
+		padding-bottom: 20px;
 	}
 
 	.language-pt{

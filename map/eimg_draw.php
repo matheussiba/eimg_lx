@@ -26,7 +26,6 @@
     <!-- include modals -->
     <?php include "eimg_draw-modals.php" ?>
 
-
     <!-- ###############  Div that contains the header ############### -->
     <div id="header" class="col-md-12">
       <span class="text-center"><?php echo $header ?> </span>
@@ -251,7 +250,6 @@
 
   </div> <!-- close DIV class="sidebar-content"> -->
   </div><!-- close DIV id="sidebar"> -->
-  <!-- <button id="btn_test">TEST</button> -->
 
   <!-- ###############  Div that contains the Modal ############### -->
   <div id="dlgUsabilityQuest" style="display:none;"></div>
@@ -310,8 +308,9 @@
 
   //  ********* Create Map *********
   $(document).ready(function(){
-    // cbxLangChange(getCookie("app_language"));
-    /*DESCRIPTION: Only run it here when all the DOM elements are already added   */
+    // set the language of the application. It must be the first line of the $(document).ready()
+    cbxLangChange(getCookie("app_language"));
+
     //  ********* Map Initialization *********
     loadBasemaps();
     minimumZoom = IsMobileDevice ? 10 : 11;
@@ -330,15 +329,17 @@
 
     loadStudyArea();
 
+    loadControls(); //Load leaflet controls
+
     //Initializing the feature group where all the drawn Objects will be stored
     fgpDrawnItems = new L.FeatureGroup();
     mymap.addLayer(fgpDrawnItems);
     fgpDrawnItems.addTo(mymap);
 
-    loadControls(); //Load leaflet controls
     ctlSidebar.addPanel(returnTempTabContent()); //Add Temp Tab to the sidebar
     if(siteLang=='en') createTitleLiByHref( "#temp_tab" , "Add a new Area" ); // Creates the title, to appear when the tab icon is hovered.
     if(siteLang=='pt') createTitleLiByHref( "#temp_tab" , "Adicionar uma nova área" ); // Creates the title, to appear when the tab icon is hovered.
+
     // Add Events
     addSidebarEvents();
     addMapEvents();
@@ -400,7 +401,6 @@
     document.onkeydown = KeyPress; // Capture the pressed key in the document
 
     $('#modal_2_demographics').modal('show');
-    cbxLangChange(getCookie("app_language"));
 
   }); //END $(document).ready()
 
@@ -1762,18 +1762,6 @@
   }
 
   //  # jQuery Functions
-  $('input[type=radio][name=language_switch]').change(function() {
-      if (this.value == 'en') {
-        siteLang='en';
-        $('.language-pt').hide(); // hides
-        $('.language-en').show(); // Shows
-      }
-      else if (this.value == 'pt') {
-        siteLang='pt';
-        $('.language-en').hide(); // hides
-        $('.language-pt').show(); // Shows
-      }
-  });
   $( "#btn_Finish" ).click(function(){
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
@@ -1900,6 +1888,64 @@
     //   }
     // });
   });//end btnClose click event
+
+  //  # close modals from eimg_draw-modals.php
+  $("#btn_close_modal_demographics").on("click", function () {
+    //checking values from demographics modal
+    var e = document.getElementById("user_sex-"+siteLang);
+    var user_sex = e.options[e.selectedIndex].value;
+    var e = document.getElementById("user_age-"+siteLang);
+    var user_age = e.options[e.selectedIndex].value;
+    var e = document.getElementById("user_job-"+siteLang);
+    var user_job = e.options[e.selectedIndex].value;
+    var e = document.getElementById("user_income-"+siteLang);
+    var user_income = e.options[e.selectedIndex].value;
+
+    var field_blank = [];
+    if(user_sex==""){
+      if (siteLang=="en") field_blank.push("Gender");
+      if (siteLang=="pt") field_blank.push("Sexo");
+    }
+    if(user_age==""){
+      if (siteLang=="en") field_blank.push("Age");
+      if (siteLang=="pt") field_blank.push("Idade");
+    }
+    if(user_job==""){
+      if (siteLang=="en") field_blank.push("Profession");
+      if (siteLang=="pt") field_blank.push("Profissão");
+    }
+    if(user_income==""){
+      if (siteLang=="en") field_blank.push("Income");
+      if (siteLang=="pt") field_blank.push("Renda");
+    }
+
+    //if(field_blank==[]){
+    if(field_blank!=[]){
+      $('#modal_2_demographics').modal('hide');
+      $('#modal_3_sus').modal('show');
+    }else{
+      if (siteLang=="en") var str = "Please, answer the following fields:\n"
+      if (siteLang=="pt") var str = "Por favor, responda os seguintes campos:\n"
+      alert(str+field_blank.toString())
+    }
+
+  });
+  $("#btn_close_modal_sus").on("click", function () {
+    //checking values from sus modal
+    var i;
+    for (i = 1; i <= 12; i++) {
+      var checkedValue = $('input[type=radio][name=quest'+i.toString()+']:checked').val();
+      if(typeof checkedValue == "undefined"){
+        if (siteLang == "en") var str = "Plase, answer all the questions before you go next";
+        if (siteLang == "pt") var str = "Por favor, responda todas as perguntas antes de prosseguir";
+        alert(str);
+        break
+      }
+    }
+
+    $('#modal_3_sus').modal('hide');
+    window.location.href = 'eimg_viewer.php';
+  });
 
   </script>
   </body>
