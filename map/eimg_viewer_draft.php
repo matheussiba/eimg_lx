@@ -317,7 +317,7 @@ if (isset($_SESSION['user_id'])) {
     //************************  DATA FOR VIEWER ******
     refreshPlaces();
     ctlSidebar.open('home');
-    setInterval(refreshPlaces,10000);
+    //setInterval(refreshPlaces,10000);
     toggleInputActiveClass()
   }); //END $(document).ready()
   //  ********* eimg_VIEWER Functions *********
@@ -432,17 +432,31 @@ if (isset($_SESSION['user_id'])) {
           onEachFeature:aggAttributes
         });
         console.log("count features per class: ",array_cnt_feat_class);
+
         lyrEIMG.addTo(mymap);
-        console.log("number of features loaded in lyrEIMG:", lyrEIMG.getLayers().length);
-        console.log("Areas updated successfully...");
+        //console.log("number of features loaded in lyrEIMG:", lyrEIMG.getLayers().length);
+        //console.log("Areas updated successfully...");
       },//end success
       error: function(xhr, status, error){
         alert("ERROR: "+error);
       }
     }); // End ajax
   }//End refreshPlaces
-  function aggAttributes(json, lyr) {
-    var att = json.properties;
+
+  function filterPlaces() {
+    if(number_classes==3){
+      if (feature.properties.Picnic === "Yes") return true
+    }
+    lyrEIMG.eachLayer(function(layer){
+      console.log(layer);
+    });
+
+    //Classes meaning=>5CLASSES {1:mostDisliked, 2:Disliked, 3:Liked/Disliked, 4:Liked, 5:mostLiked}
+    //Classes meaning=>3CLASSES {1:mostDisliked, 2:Liked/Disliked, 3:mostLiked}
+  }
+
+  function aggAttributes(feature, lyr) {
+    var att = feature.properties;
     strToolTip = "<i class='fa fa-thumbs-up' ></i> "+att.ct_liked;
     strToolTip += "   ";
     strToolTip += "<i class='fa fa-thumbs-down'></i> "+att.ct_disliked;
@@ -460,7 +474,7 @@ if (isset($_SESSION['user_id'])) {
       lyr.bindTooltip(strToolTip);
     }
 
-    var att = json.properties;
+    var att = feature.properties;
     strPopup  = "<h5>Category: "+att.category+":</h5>";
     strPopup += "Count of Likes:\t"+att.ct_liked+"<br />";
     strPopup += "Count of Dislikes:\t"+att.ct_disliked+"<br />";
@@ -482,7 +496,7 @@ if (isset($_SESSION['user_id'])) {
     });
 
   }
-  function stylePlaces(json) {
+  function stylePlaces(feature) {
     feat_loaded++;
 
     //Setting the max of opacity for each layer
@@ -495,13 +509,17 @@ if (isset($_SESSION['user_id'])) {
       ['red', 'darkorange', 'yellowgreen', 'green'],
       ['red', 'magenta', 'gold', 'cyan', 'green']
     ];
-    var att = json.properties;
+    var att = feature.properties;
+
     var opacity_calc = min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(eimg_stats.min))*(max_opacity-min_opacity))/(parseInt(eimg_stats.max)-parseInt(eimg_stats.min)));
 
     //the values were ordered in the AJAX call
     if (feat_loaded > eimg_stats.count/number_classes*quantile_class){quantile_class++;}
     if (symbology_type == "quantile"){
       array_cnt_feat_class[quantile_class-1] = (array_cnt_feat_class[quantile_class-1])+1;
+      //Classes meaning=>5CLASSES {1:mostDisliked, 2:Disliked, 3:Liked/Disliked, 4:Liked, 5:mostLiked}
+      //Classes meaning=>3CLASSES {1:mostDisliked, 2:Liked/Disliked, 3:mostLiked}
+      att.symbology = quantile_class;
       return {color: array_colors[number_classes-2][quantile_class-1], weight:0, fillColor: array_colors[number_classes-2][quantile_class-1], fillOpacity: opacity_calc };
     }
     if (symbology_type == "eq_interval"){
@@ -509,6 +527,9 @@ if (isset($_SESSION['user_id'])) {
       while (eq_interval_class<=number_classes){
         if( att.liked_percent <= 100/number_classes*eq_interval_class){
           array_cnt_feat_class[eq_interval_class-1] = (array_cnt_feat_class[eq_interval_class-1])+1;
+          //Classes meaning=>5CLASSES {1:mostDisliked, 2:Disliked, 3:Liked/Disliked, 4:Liked, 5:mostLiked}
+          //Classes meaning=>3CLASSES {1:mostDisliked, 2:Liked/Disliked, 3:mostLiked}
+          att.symbology = eq_interval_class;
           return {color: array_colors[number_classes-2][eq_interval_class-1], weight:0, fillColor: array_colors[number_classes-2][eq_interval_class-1], fillOpacity: opacity_calc };
         }
         eq_interval_class++;
