@@ -63,44 +63,111 @@ if (isset($_SESSION['user_id'])) {
         </div>
 
         <!-- Checkboxes to Select Liked and Disliked Places -->
-        <div id="divFilterEvaluation" class="col-xs-12">
-          <h3 class="text-center">Filter Areas</h3>
-          <div class="col-xs-6">
-            <input type="checkbox" id="cbx_eval_l" class='cbx_fltPlaces' name='fltPlaces' value='1' checked>
-            <label for="cbx_eval_l">Liked</label>
+        <div id="divFilterEvaluation" class="container-fluid text-center">
+          <div class="row text-center">
+            <div class="col">
+              <h4 class="text-center">Filter Areas</h4>
+            </div>
           </div>
-          <div class="col-xs-6">
-            <input type="checkbox" id="cbx_eval_d" class='cbx_fltPlaces' name='fltPlaces' value='2' checked>
-            <label for="cbx_eval_d">Disliked</label>
-          </div>
-          <div class="col-xs-6">
-            <input type="checkbox" id="cbx_eval_ld" class='cbx_fltPlaces' name='fltPlaces' value='3' checked>
-            <label for="cbx_eval_ld">Liked/Disliked</label>
+          <div class="row text-center">
+            <div class="col">
+              <div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
+                <label id="cbx_eval_ml" class="btn btn-secondary text-left">
+                  <input type="checkbox" class='cbx_fltPlaces groupinput' name='fltPlaces' value='1' checked>
+                  Most Liked
+                  <svg width="4vw" height="4vh" class="svg_legend">
+                    <rect width="4vw" height="4vh" style="fill:green;stroke-width:0;)" />
+                  </svg>
+                </label>
+                <label id="cbx_eval_l" class="btn btn-secondary text-left">
+                  <input type="checkbox" class='cbx_fltPlaces groupinput' name='fltPlaces' value='2' checked>
+                  Liked
+                  <svg width="4vw" height="4vh" class="svg_legend">
+                    <rect width="4vw" height="4vh" style="fill:cyan;stroke-width:0;)" />
+                  </svg>
+                </label>
+                <label id="cbx_eval_ld" class="btn btn-secondary text-left">
+                  <input type="checkbox" class='cbx_fltPlaces groupinput' name='fltPlaces' value='3' checked>
+                  Liked/Disliked
+                  <svg width="4vw" height="4vh" class="svg_legend">
+                    <rect width="4vw" height="4vh" style="fill:gold;stroke-width:0;)" />
+                  </svg>
+                </label>
+                <label id="cbx_eval_d" class="btn btn-secondary text-left">
+                  <input type="checkbox" class='cbx_fltPlaces groupinput' name='fltPlaces' value='2' checked>
+                  Disliked
+                  <svg width="4vw" height="4vh" class="svg_legend">
+                    <rect width="4vw" height="4vh" style="fill:magenta;stroke-width:0;)" />
+                  </svg>
+                </label>
+                <label id="cbx_eval_md" class="btn btn-secondary text-left">
+                  <input type="checkbox" class='cbx_fltPlaces groupinput' name='fltPlaces' value='3' checked>
+                  Most Disliked
+                  <svg width="4vw" height="4vh" class="svg_legend">
+                    <rect width="4vw" height="4vh" style="fill:red;stroke-width:0;)" />
+                  </svg>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
 
-        <div id="divFilterAttributes" class="col-xs-12">
-          <h3 class="text-center">Filter Attributes</h3>
-          <div class="col-xs-4">
-            <!-- Metadata for values of the Attributes -->
+        <div id="divFilterAttributes" class="container-fluid text-center">
+          <div class="row text-center">
+            <div class="col">
+              <h4>Filter Attributes</h4>
+            </div>
+          </div>
+          <div class="row text-center">
+            <div class="col ">
+              <!-- Metadata for values of the Attributes -->
+              <div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
+                <label class="btn btn-secondary text-left">
+                  <input type="checkbox" id="cbx_att_nat" class='cbx_fltAttributes groupinput' name='fltAttributes' value="ct_nat">
+                  Naturalness
+                </label>
+                <label class="btn btn-secondary text-left">
+                  <input type="checkbox" id="cbx_att_open" class='cbx_fltAttributes groupinput' name='fltAttributes' value="ct_ope">
+                  Openness
+                </label>
+                <label class="btn btn-secondary text-left">
+                  <input type="checkbox" id="cbx_att_order" class='cbx_fltAttributes groupinput' name='fltAttributes' value="ct_ord">
+                  Order
+                </label>
+                <label class="btn btn-secondary text-left">
+                  <input type="checkbox" id="cbx_att_upkeep" class='cbx_fltAttributes groupinput' name='fltAttributes' value="ct_upk">
+                  Upkeep
+                </label>
+                <label class="btn btn-secondary text-left">
+                  <input type="checkbox" id="cbx_att_hist" class='cbx_fltAttributes groupinput' name='fltAttributes' value="ct_his">
+                  Historical Significance
+                </label>
+                <button id='btnCheckAtt' class='btn btn-dark btn-block'>
+                  <i id ="iconCheckAtt" class="fa fa-check-square"></i>
+                  <span class="language-en toggleName">Check All</span>
+                  <span class="language-pt toggleName">Marcar todos</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <input type="checkbox" id="cbx_att_nat" class='cbx_fltAttributes' name='fltAttributes' value="ct_nat">
-            <label for="cbx_att_nat">Naturalness</label><br />
-            <input type="checkbox" id="cbx_att_open" class='cbx_fltAttributes' name='fltAttributes' value="ct_ope">
-            <label for="cbx_att_open">Openness</label>
+        <hr />
+        <div class="row">
+          <div class="col-5">
+            <span class="language-en">
+              For Adjust the visualization go to:
+            </span>
+            <span class="language-pt">
+              Para ajustar a visualização vá em:
+            </span>
           </div>
-          <div class="col-xs-4">
-            <input type="checkbox" id="cbx_att_order" class='cbx_fltAttributes' name='fltAttributes' value="ct_ord">
-            <label for="cbx_att_order">Order</label><br />
-            <input type="checkbox" id="cbx_att_upkeep" class='cbx_fltAttributes' name='fltAttributes' value="ct_upk">
-            <label for="cbx_att_upkeep">Upkeep</label>
-          </div>
-          <div class="col-xs-4">
-            <input type="checkbox" id="cbx_att_hist" class='cbx_fltAttributes' name='fltAttributes' value="ct_his">
-            <label for="cbx_att_hist">Historical Significance</label><br />
-            <button id='btnCheckAtt' class='btn btn-primary btn-block'>
-              <i id ="iconCheckAtt" class="fa fa-check-square"></i>
+          <div class="col-7">
+            <button id='btn_goInfoTab' class='btn btn-light' onclick="ctlSidebar.open('settings')">
+              <i class="fa fa-gear"></i>
+              <span class="language-en">Settings</span>
+              <span class="language-pt">Configurações</span>
             </button>
           </div>
         </div>
@@ -110,7 +177,9 @@ if (isset($_SESSION['user_id'])) {
       <!-- sidebar_tab: settings -->
       <div class="leaflet-sidebar-pane" id="settings">
         <h1 class="leaflet-sidebar-header"> <!-- Header of the tab -->
-          Information<span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
+          <span class="language-en">Settings</span>
+          <span class="language-pt">Configurações</span>
+          <span class="leaflet-sidebar-close"><i class="fa fa-chevron-circle-left"></i></span>
         </h1>
         <div>
           <div style="text-align:center;padding: 0; margin: 0; margin-top:5px;">
@@ -121,13 +190,35 @@ if (isset($_SESSION['user_id'])) {
           <div id="divSymbology" class="col-xs-12">
             <h5 class="text-center">Simbology</h5>
             <p> Choose the way you want your data to be displayed:</p>
-            <input type="radio" id="radio_eqInterval" class='radio_typeSymbology' name='chooseTypeSymbology' value="eq_interval" checked>
-            <label for="radio_eqInterval">Equal Interval</label><br />
-            <input type="radio" id="radio_quantile" class='radio_typeSymbology' name='chooseTypeSymbology' value="quantile">
-            <label for="radio_quantile">Quantile</label>
-            <p> Choose the number of classes you want to divide your data:</p>
-            <input type="range" id="range_nrClasses" class='range_numberOfClasses' min="2" max="5" value="3">
+
+
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-info">
+                <input type="radio" id="radio_eqInterval" class='radio_typeSymbology groupinput' name='chooseTypeSymbology' value="eq_interval" autocomplete="off" checked>
+                Equal Interval
+              </label>
+              <label class="btn btn-info">
+                <input type="radio" id="radio_quantile" class='radio_typeSymbology groupinput' name='chooseTypeSymbology' value="quantile" autocomplete="off">
+                Quantile
+              </label>
+            </div>
+
             <hr />
+
+            <p> Choose the number of classes you want to divide your data:</p>
+
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-info">
+                <input type="radio" id="num_cat_3" class='range_numberOfClasses groupinput' name='chooseNumberOfClasses' value="3" autocomplete="off" checked>
+                3 classes
+              </label>
+              <label class="btn btn-info">
+                <input type="radio" id="num_cat_5" class='range_numberOfClasses groupinput' name='chooseNumberOfClasses' value="5" autocomplete="off">
+                5 classes
+              </label>
+            </div>
+
+
           </div>
 
         </div>
@@ -226,10 +317,21 @@ if (isset($_SESSION['user_id'])) {
     //************************  DATA FOR VIEWER ******
     refreshPlaces();
     ctlSidebar.open('home');
-    setTimeout(refreshPlaces, 10000);
-
+    setInterval(refreshPlaces,10000);
+    toggleInputActiveClass()
   }); //END $(document).ready()
   //  ********* eimg_VIEWER Functions *********
+  function toggleInputActiveClass() {
+    // Making the inputs that are already checked with the class active for the first run.
+    $('input.groupinput').each(function () {
+      if($(this).prop('checked') == true){
+        $( this ).parent().addClass( "active" )
+      }
+      else{
+        $( this ).parent().removeClass( "active" )
+      }
+    });
+  }
   function refreshPlaces(){
     var cntChecks = 0;
     var whereClause = "";
@@ -237,7 +339,7 @@ if (isset($_SESSION['user_id'])) {
     // get values for symbology
     symbology_type = $("input[name='chooseTypeSymbology']:checked").val();
     // console.log(symbology_type);
-    number_classes = document.getElementById("range_nrClasses").value;
+    number_classes = $("input[name='chooseNumberOfClasses']:checked").val();
     // console.log(number_classes);
 
     // Checkboxes Liked and Disliked places
@@ -299,7 +401,7 @@ if (isset($_SESSION['user_id'])) {
       },
       type:'POST',
       success:function(response){
-        console.log(response);
+        //console.log(response);
         eimg_stats = JSON.parse(response);
       },
       error: function(xhr, status, error){ alert("ERROR: "+error); }
@@ -316,7 +418,7 @@ if (isset($_SESSION['user_id'])) {
       },
       type:'POST',
       success:function(response){
-        console.log(response);
+        //console.log(response);
         if (lyrEIMG) {
           mymap.removeLayer(lyrEIMG);
         };
@@ -391,7 +493,7 @@ if (isset($_SESSION['user_id'])) {
       ['red', 'green'],
       ['red', 'gold', 'green'],
       ['red', 'darkorange', 'yellowgreen', 'green'],
-      ['red', 'darkorange', 'gold', 'yellowgreen', 'green']
+      ['red', 'magenta', 'gold', 'cyan', 'green']
     ];
     var att = json.properties;
     var opacity_calc = min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(eimg_stats.min))*(max_opacity-min_opacity))/(parseInt(eimg_stats.max)-parseInt(eimg_stats.min)));
@@ -554,12 +656,15 @@ if (isset($_SESSION['user_id'])) {
 
     ctlLayers = L.control.layers(
       {
-        '<i class="fas fa-map-marked"></i>': basemap_mapbox,
+        '<i class="fas fa-map-marked"></i>': basemap_osm,
         '<i class="fas fa-mountain"></i>': basemap_Gterrain,
         '<i class="fas fa-globe-americas"></i>': basemap_GimageHybrid,
         // '<i class="fas fa-image"></i>': basemap_WorldImagery
       }, null, {collapsed: false}
     ).addTo(mymap);
+
+
+    mymap.addLayer(basemap_osm);
 
     // Adds a control using the easy button plugin
     var ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
@@ -796,13 +901,22 @@ if (isset($_SESSION['user_id'])) {
 
   //  ********* jQuery Functions *********
   $("#btnCheckAtt").on("click", function () {
-    if( $('#iconCheckAtt').hasClass('fa-check-square') ){ //The user wants to check All attributes
+    // $(this).text('<i id ="iconCheckAtt" class="fa fa-check-square"></i> Check all')
+
+    if( $('#iconCheckAtt').hasClass('fa-check-square') ){
+      //The user wants to check All attributes
       $('input[type=checkbox].cbx_fltAttributes').each(function () {
         $(this).prop('checked', true);
       });
       //Change the glyphicon icon to uncheked
       $( "#iconCheckAtt" ).toggleClass( "fa-square" );
       $( "#iconCheckAtt" ).removeClass('fa-check-square');
+
+      if(siteLang=="en"){
+        $(".toggleName").text("Uncheck all")
+      }else if(siteLang=="pt"){
+        $(".toggleName").text("Desmarcar todos")
+      }
       //$("#iconCheckAtt").addClass('glyphicon-check').removeClass('glyphicon-unchecked');
     }else{ // The user wants to uncheck all
       $('input[type=checkbox].cbx_fltAttributes').each(function () {
@@ -811,13 +925,18 @@ if (isset($_SESSION['user_id'])) {
       //Change the glyphicon icon to check
       $( "#iconCheckAtt" ).toggleClass( "fa-check-square" );
       $( "#iconCheckAtt" ).removeClass('fa-square');
+      if(siteLang=="en"){
+        $(".toggleName").text("Check all")
+      }else if(siteLang=="pt"){
+        $(".toggleName").text("Marcar todos")
+      }
     };
+    toggleInputActiveClass();
     refreshPlaces();
   });
   $("#btnProcess").on("click", function () {
     //var text = $(this).attr("text");
     // console.log("Clicked");
-
     $.ajax({
       url:'eimg_viewer-flatten_polys.php',
       //data:{ },
@@ -847,7 +966,16 @@ if (isset($_SESSION['user_id'])) {
     refreshPlaces();
   });
   $( "#divSymbology" ).on( "change", ".range_numberOfClasses", function() {
+    number_classes = $("input[name='chooseNumberOfClasses']:checked").val();
+    if(number_classes == 3){
+      $('#cbx_eval_l').hide();
+      $('#cbx_eval_d').hide();
+    }else if(number_classes == 5){
+      $('#cbx_eval_l').show();
+      $('#cbx_eval_d').show();
+    }
     refreshPlaces();
+
   });
 
 

@@ -240,10 +240,29 @@
 	  display: none;
 	}
 
+	.svg_legend{
+		float:right;
+		padding-left: 5px; 
+	}
 	/* ### CSS for changing bootstrap classes  */
 
 	.btn {
 		border-radius: 24px;
+	}
+
+
+	.btn-group-sm {
+		border-radius: 24px;
+	}
+
+	.btn-group-vertical > button{
+	  margin:0px !important;
+	  padding: 0px !important;
+		border-radius: 0px !important;
+	}
+
+	label.btn{
+		margin-bottom: 0px;
 	}
 
 	.btn.disabled {
