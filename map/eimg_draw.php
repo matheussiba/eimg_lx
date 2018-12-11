@@ -251,9 +251,6 @@
   </div> <!-- close DIV class="sidebar-content"> -->
   </div><!-- close DIV id="sidebar"> -->
 
-  <!-- ###############  Div that contains the Modal ############### -->
-  <div id="dlgUsabilityQuest" style="display:none;"></div>
-
   <!-- ###############  Div that contains the map application ############### -->
   <div id="mapdiv" class="col-md-12"></div>
 
@@ -406,27 +403,6 @@
 
   //  ********* JS Functions *********
   //  # Map functions
-  function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
-  function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
   function cbxLangChange(value){
     if (value == 'en') {
       siteLang='en';
@@ -439,7 +415,6 @@
       $('.language-pt').show(); // Shows
     }
   }
-
   function loadMobileFunction() {
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
@@ -1699,12 +1674,6 @@
   }
 
   //  # Message Functions
-  function openModal(){
-    /* DESCRIPTION: Open the warning modal */
-    // data-toggle="modal" data-target="#exampleModal";
-    // $('.modal').css("display", "block");
-    $('#exampleModalCenter').modal('show');
-  }
   function warnCheckAtt(){
     /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
     if(siteLang=='en') alert("Please, check at least one attribute corresponding to the area drawn");
@@ -1759,6 +1728,27 @@
         openAlertPopup(mymap.getCenter(), str_popup);
       }
     }
+  }
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
   }
 
   //  # jQuery Functions
@@ -1936,7 +1926,7 @@
     for (i = 1; i <= 12; i++) {
       var checkedValue = $('input[type=radio][name=quest'+i.toString()+']:checked').val();
       if(typeof checkedValue == "undefined"){
-        if (siteLang == "en") var str = "Plase, answer all the questions before you go next";
+        if (siteLang == "en") var str = "Plase, answer all the questions before you see the result";
         if (siteLang == "pt") var str = "Por favor, responda todas as perguntas antes de prosseguir";
         alert(str);
         break
@@ -1944,7 +1934,7 @@
     }
 
     $('#modal_3_sus').modal('hide');
-    window.location.href = 'eimg_viewer.php';
+    //window.location.href = 'eimg_viewer.php';
   });
 
   </script>

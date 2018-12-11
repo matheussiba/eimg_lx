@@ -56,7 +56,7 @@
                     <option value="">Selecionar</option>
                     <option value="<35">Menos que 35 anos</option>
                     <option value="35–50">35–50</option>
-                    <option value=">50">More than 50 anos</option>
+                    <option value=">50">Mais que 50 anos</option>
                   </select>
                 </span>
               </td>
