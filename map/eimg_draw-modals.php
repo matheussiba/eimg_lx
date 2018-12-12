@@ -339,7 +339,10 @@
               </tr>
               <tr>
                 <td class="sus_index">11.</td>
-                <td class="sus_question">AddANother</td>
+                <td class="sus_question">
+                  <span class="language-en">I found this application very useful for giving feedback to my city council.</span>
+                  <span class="language-pt">Eu achei este aplicativo muito útil para dar feedback ao meu conselho da cidade.</span>
+                </td>
                 <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="strong_disagree"></td>
                 <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="disagree"></td>
                 <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="neutral"></td>
@@ -348,7 +351,10 @@
               </tr>
               <tr>
                 <td class="sus_index">12.</td>
-                <td class="sus_question">AddANother</td>
+                <td class="sus_question">
+                  <span class="language-en">This application makes participative processes really easy to be done.</span>
+                  <span class="language-pt">Esta aplicação torna os processos participativos muito fáceis de serem feitos.</span>
+                </td>
                 <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="strong_disagree"></td>
                 <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="disagree"></td>
                 <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="neutral"></td>

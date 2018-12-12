@@ -26,19 +26,6 @@
     <!-- include modals -->
     <?php include "eimg_draw-modals.php" ?>
 
-    <!-- ###############  Div that contains the header ############### -->
-    <div id="header" class="col-md-12">
-      <span class="text-center"><?php echo $header ?> </span>
-      <!-- <label class="radio-inline" >
-        <input type="radio" name="language_switch" value="pt">
-        <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
-      </label>
-      <label class="radio-inline">
-        <input type="radio" name="language_switch" value="en" checked>
-        <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
-      </label> -->
-    </div>
-
     <!-- ###############  Div that contains the sidebar ############### -->
     <div id="sidebar_div" class="leaflet-sidebar collapsed">
       <!-- Nav tabs -->
@@ -1255,26 +1242,26 @@
       if(siteLang=='pt') str_newtab += 'Natureza presente';
     }else{
       if(siteLang=='en') str_newtab += 'Man-made nuisances';
-      if(siteLang=='pt') str_newtab += 'Natureza não presente';
+      if(siteLang=='pt') str_newtab += 'Perturbações causadas pelo homem';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_open">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" class="cbxsidebar" for="'+tab_id+'_cbxAtt-open"> ';
     if(liked){
       if(siteLang=='en') str_newtab += 'Open views';
-      if(siteLang=='pt') str_newtab += 'Áreas abertas';
+      if(siteLang=='pt') str_newtab += 'Vista ampla';
     }else{
       if(siteLang=='en') str_newtab += 'Restricted views';
-      if(siteLang=='pt') str_newtab += 'Áreas não abertas';
+      if(siteLang=='pt') str_newtab += 'Vista restrita';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_order">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" class="cbxsidebar" for="'+tab_id+'_cbxAtt-order"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Order';
+      if(siteLang=='en') str_newtab += 'Organized area';
       if(siteLang=='pt') str_newtab += 'Organização';
     }else{
-      if(siteLang=='en') str_newtab += 'Disorganization';
+      if(siteLang=='en') str_newtab += 'Disorganized area';
       if(siteLang=='pt') str_newtab += 'Desorganização';
     }
     str_newtab +=     '</label><br />';
@@ -1291,11 +1278,11 @@
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Good cultural/social environment';
-      if(siteLang=='pt') str_newtab += 'Significado histórico';
+      if(siteLang=='en') str_newtab += 'Good cultural/social scene';
+      if(siteLang=='pt') str_newtab += 'Boa cena cultural/social';
     }else{
-      if(siteLang=='en') str_newtab += 'Bad cultural/social environment';
-      if(siteLang=='pt') str_newtab += '--dusadasu';
+      if(siteLang=='en') str_newtab += 'Bad cultural/social scene';
+      if(siteLang=='pt') str_newtab += 'Má cena cultural/social';
     }
     str_newtab +=     '</label><br /><hr />';
 

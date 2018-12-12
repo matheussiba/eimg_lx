@@ -24,11 +24,6 @@ if (isset($_SESSION['user_id'])) {
 <?php include "../includes/css/style_eimg_draw.php" ?>
 <body>
 
-  <!-- ###############  Div that contains the header ############### -->
-  <div id="header" class="col-md-12">
-    <span class="text-center"><?php echo $header ?> </span>
-  </div>
-
   <!-- ###############  Div that contains the sidebar ############### -->
   <div id="sidebar_div" class="leaflet-sidebar collapsed">
     <!-- Nav tabs -->
@@ -419,6 +414,9 @@ if (isset($_SESSION['user_id'])) {
         });
 
         lyrEIMG.addTo(mymap);
+
+        lyrEIMG.getLayers().filter( filterPlaces ).forEach(function(layer) {mymap.removeLayer(layer);});
+
         //console.log("number of features loaded in lyrEIMG:", lyrEIMG.getLayers().length);
         //console.log("Areas updated successfully...");
       },//end success
@@ -433,15 +431,7 @@ if (isset($_SESSION['user_id'])) {
     $('input[type=checkbox].cbx_fltPlaces:checked').each(function () {
         array.push( $(this).attr("value") );
     });
-    console.log(array);
-    // console.log(feature.properties);
-    // return (!(array.indexOf( feature.properties.symbology ) > -1));
-
-    // lyrEIMG.filter(l=>l instanceof L.Marker).forEach(l=>map.remove(l));
-
-
-    //Classes meaning=>5CLASSES {1:mostDisliked, 2:Disliked, 3:Liked/Disliked, 4:Liked, 5:mostLiked}
-    //Classes meaning=>3CLASSES {1:mostDisliked, 2:Liked/Disliked, 3:mostLiked}
+    return !(array.indexOf( feature.feature.properties.symbology ) > -1);
   }
 
   function aggAttributes(feature, lyr) {

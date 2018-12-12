@@ -20,7 +20,7 @@
   /* NEEDTO: There will be no header and footer all the information will be added to the map */
   #mapdiv {
     /* height: 650px; */
-    height:96vh;
+    height:100vh;
   }
 
 

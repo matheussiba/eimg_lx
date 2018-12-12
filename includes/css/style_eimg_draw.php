@@ -20,7 +20,7 @@
 	}
 	#mapdiv {
 	  /* height: 650px; */
-	  height:99vh;
+	  height:100vh;
 	}
 
 	input[type="checkbox"].cbxsidebar{
@@ -242,7 +242,7 @@
 
 	.svg_legend{
 		float:right;
-		padding-left: 5px; 
+		padding-left: 5px;
 	}
 	/* ### CSS for changing bootstrap classes  */
 
