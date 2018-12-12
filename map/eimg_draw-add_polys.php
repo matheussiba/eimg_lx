@@ -26,22 +26,19 @@
     if (isset($_POST['att_hist'])) {
       $att_hist = $_POST['att_hist'];
     }
-
-    // 1, Liked, 1,1,1,0,1
-    $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=eimg_lx;', 'postgres', 'admin');
-
     // Credentials
     include "../includes/db_credentials.php";
     $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
     $pdo = new PDO($dsn, $username, $password);
 
+    //Counts the total number of features before adding
     $result = $pdo->query("SELECT count(*) FROM eimg_raw_polys;");
-    $returnJson= "";
+    $cntNumberFeat= "";
     $row=$result->fetch();
     if ($row) {
-      $returnJson .= json_encode($row);
+      $cntNumberFeat .= json_encode($row);
     }
-    echo $returnJson;
+    echo $cntNumberFeat;
 
     $str = "INSERT INTO $table
             ( geom_4326,
@@ -65,16 +62,15 @@
     try{
       $sql = $pdo->prepare($str);
       if ($sql->execute($params)) {
-        echo "place succesfully added";
-        // session_destroy();
+        echo "place succesfully added SERVER";
 
         $result = $pdo->query("SELECT count(*) FROM eimg_raw_polys;");
-        $returnJson= "";
+        $cntNumberFeat= "";
         $row=$result->fetch();
         if ($row) {
-          $returnJson .= json_encode($row);
+          $cntNumberFeat .= json_encode($row);
         }
-        echo $returnJson;
+        echo $cntNumberFeat;
 
       } else {
         echo var_dump($sql->errorInfo());

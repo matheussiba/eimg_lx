@@ -69,22 +69,67 @@ if (isset($_SESSION['user_id'])) {
         </div>
         <!--  Project's explanation  -->
         <p>
-          <span>Este questionário é parte integrante de um projeto de investigação da Nova Information Management School (NOVA IMS) da Universidade Nova de Lisboa. O objetivo principal é perceber a forma como a perceção do local e as relações sociais do cidadão influenciam a sua participação numa dada área urbana.</span>
+          <span class="language-en">
+            eImage is part of a research project involving 3 European universities: <b>NOVA IMS</b> (Lisbon, Portugal), <b>UJI</b> (Castellón, Spain) and <b>WWU</b> (Münster, Germany).
+            The core idea is to ask citizens and visitors of Lisbon about places they like and places they dislike within the city
+            in order to produce an evaluative image of the Lisbon.
+          </span>
+          <span class="language-pt">
+            eImage é parte integrante de um projeto de investigação envolvendo 3 universidades européias: <b>NOVA IMS</b> (Lisboa, Portugal), <b>UJI</b> (Castellón, Espanha) and <b>WWU</b> (Münster, Alemanha).
+            The idéia principal é perguntar a moradores e visitantes de Lisboa, área que eles gostam e áreas que eles não gostam dentro da cidade,
+            para assim produzir uma imagem avaliativa dessa maravilhosa capital lusitana.
+          </span>
         </p>
         <p>
-          <span>O preenchimento do questionário demora cerca de 5 minutos e a atividade de mapeamento cerca de 15 minutos, dependendo do número de áreas que se pretenderem assinalar.</span>
+          <span class="language-en">
+            This mapping activity takes most people around 7 minutes, depending on how many areas you draw.
+          </span>
+          <span class="language-pt">
+            Essa atividade de mapeamento leva a maioria das pessoas em torno de 7 minutos, dependendo de quantas áreas você deseja desenhar.
+          </span>
         </p>
         <p>
-          <span>A sua contribuição apoia os processos participativos da cidade de Lisboa.</span>
+          <span class="language-en">
+            Your contribution supports the participative processes of the city of Lisbon.
+          </span>
+          <span class="language-pt">
+            A sua contribuição apoia os processos participativos da cidade de Lisboa.
+          </span>
         </p>
 
+        <p><b><h4 id="message_mobile">
+          <span class="language-en">
+            Please use your mobile device in the landscape orientation.
+          </span>
+          <span class="language-pt">
+            Por favor use o seu telemóvel na orientação landscape.
+          </span>
+        </h4></b></p>
+
+        <p><b><h4 id="message_ie"></h4></b></p>
+
         <p style="font-size: 12px; margin-top: 30px">
-          <span> Notas:</span>
+          <span class="language-en">
+            Notes:
+          </span>
+          <span class="language-pt">
+            Notas:
+          </span>
           <br>
-          <span>1.Todos os dados recolhidos neste questionário serão tratados de forma anónima e confidencial e não serão utilizados para fins comerciais ou cedidos a terceiros.</span>
+          <span class="language-en">
+            1. All data collected is treated with confidentiality and anonymity, and will not be used for commercial purposes or distributed to third parties.
+          </span>
+          <span class="language-pt">
+            1. Todos os dados recolhidos neste questionário serão tratados de forma anónima e confidencial e não serão utilizados para fins comerciais ou cedidos a terceiros.
+          </span>
           <br>
-          <span>2. Se pretender esclarecer alguma dúvida ou pedir alguma informação sobre este estudo, queira por favor contactar-nos através do seguinte endereço de email: acedo@novaims.unl.pt (Albert Acedo Sánchez)</span> <span> ou visite o nosso</span><span> <a
-            class="link-secondary" href="http://www.engagingeographies.com/blog">blog</a>.</span>
+          <span class="language-en">
+            2. For more information or questions about this study, please contact us using the following email address: msbarros.gis@gmail.com (Matheus Siqueira Barros).
+          </span>
+          <span class="language-pt">
+            2. Se pretender esclarecer alguma dúvida ou pedir alguma informação sobre este estudo, queira por favor contactar-nos através do seguinte endereço de email: msbarros.gis@gmail.com (Matheus Siqueira Barros).
+          </span>
+
             <br>
           </p>
 
@@ -136,12 +181,6 @@ if (isset($_SESSION['user_id'])) {
   </div> <!--/.modal-dialog -->
 </div>  <!--/.modal -->
 
-<!-- ###############  Div that contains the header ############### -->
-<div id="header" class="col-md-12">
-  <p class="text-center"><?php echo $header ?> </p>
-</div>
-
-
 <script>
 var cookie_lang = getCookie("app_language");
 console.log(cookie_lang);
@@ -155,6 +194,10 @@ $('#modal_1_intro').modal('show');
 
 var checkedValue = $('input[type=radio][name=language_switch]:checked').val();
 cbxLangChange(checkedValue);
+
+if (!mobileDevice){
+  document.getElementById("message_mobile").style.display="none";
+}
 
 function setCookie(cname, cvalue, exdays) {
   var d = new Date();
@@ -195,16 +238,21 @@ function cbxLangChange(value){
 }
 
 $("#btn_close_modal_intro").on("click", function () {
-  $('#modal_1_intro').modal('hide');
-  window.location.href = 'map/eimg_draw.php';
+  var statuscbx = $('input[type=checkbox][name=cbxAgreement]').prop('checked');
+  if(statuscbx){
+    $('#modal_1_intro').modal('hide');
+    window.location.href = 'map/eimg_draw.php';
+  }else{
+    if(siteLang=="en") var str = "You need to agree with the terms and conditions before proceed";
+    if(siteLang=="pt") var str = "Você precisa concordar com os termos e condições antes de prosseguir";
+    alert(str);
+  }
+
 });
 
 $('input[type=radio][name=language_switch]').change(function() {
   cbxLangChange(this.value);
 });
-
-
-
 
 </script>
 

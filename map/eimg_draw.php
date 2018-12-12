@@ -91,7 +91,7 @@
             <span class="language-en">Whenever you're done, come back here and click the 'Finish' button in order to see the result of all participants.</span>
             <span class="language-pt">Quando você estiver terminar, volte aqui de novo e clique no botão abaixo para finalizar e ver o resultado de todos os participantes que já participaram</span>
           </p>
-          <button id='btn_Finish' class='btn btn-info btn-block'>
+          <button class='btn btn-info btn-block btn_Finish'>
             <span class="language-en">Finish and see result</span>
             <span class="language-pt">Finalizar e ver resultado</span>
           </button>
@@ -1261,10 +1261,10 @@
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_open">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" class="cbxsidebar" for="'+tab_id+'_cbxAtt-open"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Not condensed settlements';
+      if(siteLang=='en') str_newtab += 'Open views';
       if(siteLang=='pt') str_newtab += 'Áreas abertas';
     }else{
-      if(siteLang=='en') str_newtab += 'Condensed settlements';
+      if(siteLang=='en') str_newtab += 'Restricted views';
       if(siteLang=='pt') str_newtab += 'Áreas não abertas';
     }
     str_newtab +=     '</label><br />';
@@ -1281,7 +1281,7 @@
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_upkeep">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Well maintained';
+      if(siteLang=='en') str_newtab += 'Well maintained area';
       if(siteLang=='pt') str_newtab += 'Boa manutenção';
     }else{
       if(siteLang=='en') str_newtab += 'Dilapidated area';
@@ -1291,10 +1291,10 @@
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Cultural/social';
+      if(siteLang=='en') str_newtab += 'Good cultural/social environment';
       if(siteLang=='pt') str_newtab += 'Significado histórico';
     }else{
-      if(siteLang=='en') str_newtab += '--Nor historical signifcance';
+      if(siteLang=='en') str_newtab += 'Bad cultural/social environment';
       if(siteLang=='pt') str_newtab += '--dusadasu';
     }
     str_newtab +=     '</label><br /><hr />';
@@ -1458,8 +1458,8 @@
 
     if ( (cnt_LikedAreas>=0) && (cnt_DislikedAreas>=1) ){
 
-      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button id="btn_Finish" class="btn btn-info btn-block"><span>Finish and see result</span></button>';
-      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button id="btn_Finish" class="btn btn-info btn-block"><span>Finalizar e ver resultado</span></button>';
+      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block btn_Finish"><span>Finish and see result</span></button>';
+      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block btn_Finish"><span>Finalizar e ver resultado</span></button>';
     }
 
     str_temptab +=  '</div>';
@@ -1752,7 +1752,7 @@
   }
 
   //  # jQuery Functions
-  $( "#btn_Finish" ).click(function(){
+  $( ".btn_Finish" ).click(function(){
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
@@ -1839,6 +1839,9 @@
                   error:function(xhr, status, error){
                     // $("#divLog").text("Something went wront... "+error);
                     console.log("Something went wront... "+error);
+                    console.log(xhr);
+                    console.log(status);
+
                   }//End error
                 });//End AJAX call
               }//end if(cnt == cnt_feat)
