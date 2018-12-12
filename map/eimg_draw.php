@@ -1755,8 +1755,8 @@
   $( "#btn_Finish" ).click(function(){
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
-      // if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
-      if ( (cnt_LikedAreas >= 4) && (cnt_DislikedAreas >= 4) ){
+      if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
+      // if ( (cnt_LikedAreas >= 4) && (cnt_DislikedAreas >= 4) ){
         var cnt = 0;
         var cnt_feat = fgpDrawnItems.getLayers().length;
         fgpDrawnItems.eachLayer(function(layer){
@@ -1850,9 +1850,9 @@
         });// fgpDrawnItems.eachLayer(function(layer))
 
         //Shows the modal
-        $("#dlgUsabilityQuest").show();
-      }else if ((cnt_LikedAreas + cnt_DislikedAreas) >= 3) {
-        alert("PARABÉNS!! Muito Obrigado por me ajudar a testar o site! Você é maravilhos@!!! :) Mas mexa mais um pouco nele. Tente encontrar algum 'bug' ou qualquer DEFEITO ou qualquer coisa que vc não gostou. Anote para depois me dizer! :)");
+        $('#modal_3_sus').modal('show');
+      // }else if ((cnt_LikedAreas + cnt_DislikedAreas) >= 3) {
+      //   alert("PARABÉNS!! Muito Obrigado por me ajudar a testar o site! Você é maravilhos@!!! :) Mas mexa mais um pouco nele. Tente encontrar algum 'bug' ou qualquer DEFEITO ou qualquer coisa que vc não gostou. Anote para depois me dizer! :)");
       }else if ((cnt_LikedAreas >= 1) && (cnt_DislikedAreas == 0)){
         if(siteLang=='en') alert("A DISLIKED area is missing.\nPlease, draw it to proceed!");
         if(siteLang=='pt') alert("Por favor, desenhe uma área que você NÃO CURTE, antes de finalizar! :)");
@@ -1909,10 +1909,11 @@
       if (siteLang=="pt") field_blank.push("Renda");
     }
 
-    //if(field_blank==[]){
-    if(field_blank!=[]){
+    // console.log(field_blank.length);
+    if(field_blank.length==0){
+    // if(field_blank!=[]){
       $('#modal_2_demographics').modal('hide');
-      $('#modal_3_sus').modal('show');
+      //$('#modal_3_sus').modal('show');
     }else{
       if (siteLang=="en") var str = "Please, answer the following fields:\n"
       if (siteLang=="pt") var str = "Por favor, responda os seguintes campos:\n"
@@ -1933,8 +1934,8 @@
       }
     }
 
-    $('#modal_3_sus').modal('hide');
-    //window.location.href = 'eimg_viewer.php';
+    //$('#modal_3_sus').modal('hide');
+    window.location.href = 'eimg_viewer.php';
   });
 
   </script>
