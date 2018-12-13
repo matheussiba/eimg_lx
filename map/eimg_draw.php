@@ -114,8 +114,6 @@
             </span>
           </div>
         </div>
-
-
       </div> <!-- close DIV id="home"> -->
 
       <!-- sidebar_tab: info -->
@@ -232,13 +230,16 @@
             </div>
           </div>
         </div>
-
   </div> <!-- close DIV id="info"> -->
 
   </div> <!-- close DIV class="sidebar-content"> -->
   </div><!-- close DIV id="sidebar"> -->
 
   <!-- ###############  Div that contains the map application ############### -->
+  <div id="geocode_panel">
+    <input id="search_address" type="textbox">
+    <input id="geocode_submit" type="button" value="Go!">
+  </div>
   <div id="mapdiv" class="col-md-12"></div>
 
   <script>
@@ -253,7 +254,8 @@
   var siteLang;
   var temp_tab_content;
   var color_line_area, color_fill_area;
-  var fgpDrawnItems;
+  var fgpDrawnItems, pin_marker;
+  var timeout_removePin, timeout_zoomNotAllowed, timeout_removeToolBox, timeout_closePopup;
   var area_id;
   var previousTab, activeTab;
   var sidebarOpened;
@@ -267,6 +269,7 @@
   var firstVertex, pntClicked;
   var minimumZoom = 11;
   var closeAlertPopUpWhenDrawIsFinished;
+  var GM_geocoder;
 
   // # Logging variables
   var log_functions = false;
@@ -384,392 +387,11 @@
     ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
     document.onkeydown = KeyPress; // Capture the pressed key in the document
 
-    $('#modal_2_demographics').modal('show');
+    // $('#modal_2_demographics').modal('show');
 
   }); //END $(document).ready()
 
   //  ********* JS Functions *********
-  //  # Map functions
-  function cbxLangChange(value){
-    if (value == 'en') {
-      siteLang='en';
-      $('.language-pt').hide(); // hides
-      $('.language-en').show(); // Shows
-    }
-    else if (value == 'pt') {
-      siteLang='pt';
-      $('.language-en').hide(); // hides
-      $('.language-pt').show(); // Shows
-    }
-  }
-  function loadMobileFunction() {
-    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-      /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
-      IsMobileDevice = true;
-    };
-    if(IsMobileDevice){
-      /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
-      if("orientation" in screen) {
-        var orientation_str = screen.orientation.type;
-        var orientation_array = orientation_str.split("-");
-        if( orientation_array[0] == "portrait"){
-          // NEEDTO: Show this message in a modal div
-          alert("This application is better seen if you change the orientation of your device to: landscape");
-        }
-      }
-    }
-    $( window ).on( "orientationchange", function( event ){
-      /* DESCRIPTION: ADDDESCRIPTION  */
-      //Do things based on the orientation of the mobile device
-      if(IsMobileDevice){
-        if("orientation" in screen) {
-          var orientation_array = (screen.orientation.type).split("-");
-          if( orientation_array[0] == "portrait"){
-            // NEEDTO: Show this message in a modal div
-            alert("Change the orientation of the device to: landscape");
-          }else{  //landscape mode
-            //Reloads the page
-            //location.reload();
-            // console.log( orientation_array[0] );
-          }
-        }
-      }
-    });//END $( window ).on( "orientationchange", ())
-  }
-  function loadStudyArea(){
-    /* DESCRIPTION: Adds the Study area, comprises of 12 freguesias:
-     * Estrela, Misericórdia, Santa Maria Maior, São Vicente, Penha de França, Beato,
-     * Arroios, Santo António, Campo de Ourique, Campolide, Avenidas Novas, Areeiro  */
-    $.ajax({
-      url:'eimg_get_dbtable.php',
-      data: {
-        type_op: "data",
-        tbl: "study_area_4326",
-        select:"*"
-      },
-      type:'POST',
-      success:function(response){
-        // console.log(response);
-        var layer = JSON.parse(response);
-        // console.log(layer);
-        LyrAOI_coords = layer.features[0].geometry.coordinates;
-        LyrAOI=L.geoJSON(layer);
-        var lyr_bounds = LyrAOI.getBounds();
-        var value = 0.03;
-        LyrAOI.addTo(mymap);
-        //Creating a boundary for the map based on the bounds of the layer added
-        //Increasing lat and long in the same proportion
-        var slt = (lyr_bounds._southWest.lat)-value; //south latitude
-        var sln = (lyr_bounds._southWest.lng)-value*2; //south longitude
-        var nlt = (lyr_bounds._northEast.lat)+value; //north latitude
-        var nln = (lyr_bounds._northEast.lng)+value*2; //north longitude
-        // defining the max bounds for panning around the map
-        var southWest = L.latLng(slt,sln);
-        var northEast = L.latLng(nlt,nln);
-        var mybounds =  L.latLngBounds(southWest, northEast);
-        //Zoom the map to the bounds of the added layer
-        mymap.fitBounds(LyrAOI.getBounds());
-        //Set the maximum boundaries in which the map can be panned
-        mymap.setMaxBounds(mybounds);
-        //Create a test polygon to see the area of the maxBounds
-        // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
-      },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
-    }); // End ajax
-  }
-  function loadBasemaps() {
-    /* DESCRIPTION: Add basemaps to the map*/
-    basemap_osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy;<a href="http://osm.org/copyright">OSM</a>'
-    });
-    basemap_mapbox = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
-      attribution: '&copy;<a href="https://www.mapbox.com/feedback/">Mapbox</a>'
-    });
-    basemap_Gterrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
-      subdomains:['mt0','mt1','mt2','mt3']
-    });
-    basemap_Gimagery = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-      subdomains:['mt0','mt1','mt2','mt3']
-    });
-    basemap_GimageHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-      subdomains:['mt0','mt1','mt2','mt3']
-    });
-    basemap_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
-    });
-    Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
-      name: 'overlay',
-    });
-  }
-  function loadControls() {
-    /* Add leaflet controls to the map */
-    //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
-    ctlSidebar = L.control.sidebar({
-      container:'sidebar_div',
-      autopan: false,
-      closeButton: false,
-    }).addTo(mymap);
-
-    if(siteLang=='en') {
-      createTitleLiByHref( "#home" , "Click to see the Home" );
-      createTitleLiByHref( "#info" , "Click to see information" );
-    }
-    if(siteLang=='pt') {
-      createTitleLiByHref( "#home" , "Clique para ir ao início" );
-      createTitleLiByHref( "#info" , "Clique para ir para ver as informações" );
-    }
-
-    //Add attribution to the map
-    ctlAttribute = L.control.attribution({position:'bottomright'}).addTo(mymap);
-    ctlAttribute.addAttribution('OSM');
-    ctlAttribute.addAttribution('&copy;<a href="http://mastergeotech.info">Master GeoTech</a>');
-    ctlAttribute.addAttribution('&copy;<a href="https://github.com/codeofsumit/leaflet.pm">LeafletPM</a>');
-
-    //Control scale
-    ctlScale = L.control.scale({position:'bottomright', metric:true, imperial:false, maxWidth:200, }).addTo(mymap);
-
-    //Control Latitude and Longitude
-    if (!IsMobileDevice){
-      ctlMouseposition = L.control.mousePosition({position:'bottomright'}).addTo(mymap);
-    }
-
-    // Add the overview control to the map
-    ctlMapOverview = L.control.overview({
-      position: 'bottomright',
-      onAfterInitLayout: function (overview) {
-      }
-    }).addTo(mymap);
-
-    ctlLayers = L.control.layers(
-      {
-        '<i class="fas fa-map-marked"></i>': basemap_mapbox,
-        '<i class="fas fa-mountain"></i>': basemap_Gterrain,
-        '<i class="fas fa-globe-americas"></i>': basemap_GimageHybrid,
-        // '<i class="fas fa-image"></i>': basemap_WorldImagery
-      }, null, {collapsed: false}
-    ).addTo(mymap);
-
-    // Adds a control using the easy button plugin
-    var ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
-    var ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
-    var ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(area_id, true);}, 'Click to cancel the drawing');
-    ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'});
-
-    var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
-    container.title="Toolbar Instructions";
-
-    if(siteLang=='en'){
-      container.innerHTML = '<p>Finish drawing (Enter)</p><p style="padding-top:0;">Remove vertex (Ctrl+z)</p><p style="padding-top:0;">Cancel Drawing (Esc)</p>';
-      container.style.marginLeft= '-145px';
-      container.style.width= '140px';
-    }
-    if(siteLang=='pt'){
-      container.innerHTML = '<p>Finalizar (Enter)</p><p style="padding-top:0;">Remover vértice (Ctrl+z)</p><p style="padding-top:0;">Cancelar (Esc)</p>';
-      container.style.marginLeft= '-149px';
-      container.style.width= '145px';
-    }
-    // styles: .infobox_for_toolbar
-    // events
-    container.onmouseover = function(){ container.style.visibility = 'hidden';}
-
-    // Add Zoom if not in the
-    if (!IsMobileDevice){
-      ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
-    }
-  }
-  function addMapEvents() {
-    /* DESCRIPTION: Add all the events related to the leaflet map element */
-    mymap.on("moveend", function () {
-      // console.log(mymap.getCenter().toString());
-      if(mymap.getZoom()==minimumZoom+1){
-        cnt_doNotPan++;
-        if(siteLang=='en') var str_popup = "<h6>Please, stay in this area only!</h6>";
-        if(siteLang=='pt') var str_popup = "<h6>Por favor, mantenha nessa área somente!</h6>";
-        if( cnt_doNotPan<3) openAlertPopup(mymap.getCenter(), str_popup,1000 );
-      }
-    });
-    mymap.on("movestart", function (e) {
-      // console.log(mymap.getCenter().toString());
-      // console.log(e);
-      // var mapClickedPositon = [e.latlng.lat, e.latlng.lng];
-      // var cntMousePosition = 0;
-      // cnt_movechange++;
-      // console.log("MoveStart:",cnt_movechange);
-    });
-    mymap.on("zoomend", function () {
-      // console.log(mymap.getCenter().toString());
-      var zoomNotAllowed = minimumZoom;
-      if(mymap.getZoom()==zoomNotAllowed){
-        cnt_zoomOutExceeded++;
-        if(siteLang=='en') var str_popup = "<h6>Minimum zoom exceeded!</h6>";
-        if(siteLang=='pt') var str_popup = "<h6>Zoom mínimo ultrapassado!</h6>";
-
-        if( cnt_zoomOutExceeded<5)  openAlertPopup(mymap.getCenter(), str_popup,1000 );
-        setTimeout(function(){
-          mymap.setZoom(zoomNotAllowed+1);
-        }, 400);
-      }
-      // if(mymap.getZoom()==18 && cnt_zoomInExceeded<1){
-      //   cnt_zoomInExceeded++;
-      //   openAlertPopup(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
-      // }
-    });
-    mymap.on('baselayerchange', function(e){
-      // console.log(e);
-      if (e.name == '<i class="fas fa-image"></i>'){
-        ctlLayers.addOverlay(Hydda_RoadsAndLabels, 'streets');
-      }else{
-        mymap.removeLayer(Hydda_RoadsAndLabels);
-        ctlLayers.removeLayer(Hydda_RoadsAndLabels);
-      }
-    })
-    mymap.on('contextmenu', function(e){
-      /* DESCRIPTION: listener when a click is given on the map  */
-      // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
-      if(editMode){
-        //if in editMode or createMode the area_id is already set to be accessed in the function
-        saveArea();
-      }
-    });
-    mymap.on('mousemove', function(e){
-      /* DESCRIPTION: listener when a click is given on the map  */
-      // console.log(1);
-    });
-    mymap.on('click', function(e){
-      /* DESCRIPTION: listener when a click is given on the map  */
-      pntClicked = e.latlng; // FORMAT: {lat: 38.72452, lng: -9.11160}
-      // openAlertPopup(e.latlng, "<h6>test!</h6>",1000 )
-
-      if(createMode && cnt_numVertices==0) firstVertex =  pntClicked;
-
-      // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
-      if(clickedLayerId != null){
-        //if getActiveTabId() != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
-        if ((getActiveTabId()!=clickedLayerId) && (createMode==false)){
-          ctlSidebar.open(clickedLayerId);
-          clickedLayerId = null;
-        }
-      }else{
-        //if(getActiveTabId() != null) means that the sidebar is opened
-        if(getActiveTabId() != null){
-          ctlSidebar.close();
-        }
-      }
-    });
-    mymap.on('pm:drawend', function(e) {
-            //toggle visibility of toolbar, overview map
-      ctlCreationToolbar.remove();
-      ctlMapOverview.addTo(mymap);
-      if (!IsMobileDevice){
-        ctlZoom.addTo(mymap);
-      }
-      if(closeAlertPopUpWhenDrawIsFinished) mymap.closePopup();
-
-      //When the user is drawing it means that the 'area_id' should exist and it's the id of the area being drawn
-      //A creation of a new area is only finished when the user clicks the save button
-      createMode = false;
-    });
-
-    mymap.on('pm:create', function(e) {
-      // console.log(e);
-      // Remember when we finished
-      time_end_draw = new Date().getTime();
-
-      var lyrDraw = e.layer;
-
-      var width = lyrDraw.getBounds().getEast() - lyrDraw.getBounds().getWest();
-      var height = lyrDraw.getBounds().getNorth() - lyrDraw.getBounds().getSouth();
-
-      // console.log(
-      //   'center:' + lyrDraw.getCenter() +'\n'+
-      //   'width:' + width +'\n'+
-      //   'height:' + height +'\n'
-      // );
-
-      //Initialize the attributes. We can name it the way we want
-      var feature = lyrDraw.feature = lyrDraw.feature || {};
-      feature.type = feature.type || "Feature"; //Could be the name we want
-      var props = feature.properties = feature.properties || {};
-      props.id = area_id;
-      // Calculate time spent for this drawing
-      props.time_draw_sec = (time_end_draw - time_start_draw)/1000;
-
-      //General style
-      lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
-
-      var jsn_draw=lyrDraw.toGeoJSON().geometry;
-      //Count the number of coordinates inside the JSON geometry.
-      //In the case of polygon. The last element is equal to the first in order close the polygon.
-      //So the subtraction of 1 gives us the exactly number of vertices of the drawn polygon
-      var numberOfVertices = ((jsn_draw.coordinates[0]).length)-1;
-      if (numberOfVertices < 3){
-        if(siteLang=='en') alert("The area drawn has less than 3 vertices.\nPlease, draw it again!");
-        if(siteLang=='pt') alert("A área desenhada tem menos de 3 vértices.\nPor favor, comece de novo!");
-        // Start a new draw again
-        restartDraw(lyrDraw);
-        return;
-      }
-
-      if( (width<0.0007) || (height<0.0007) ){
-        if(siteLang=='en') alert("The area drawn is too small\nPlease, draw it again!");
-        if(siteLang=='pt') alert("A área desenhada é muito pequena\nPor favor, comece de novo!");
-        // Start a new draw again
-        mymap.removeLayer(lyrDraw);
-        var button_drawArea_id = area_id+"_drawArea";
-        document.getElementById(button_drawArea_id).click();
-        return;
-      }
-
-      lyrDraw.on('click', function(){
-        clickedLayerId = lyrDraw.feature.properties.id;
-        // console.log("Clicked Layer: ",clickedLayerId);
-      });
-
-      //Add the layer created to the feature group
-      fgpDrawnItems.addLayer(lyrDraw);
-      // console.log("length ftGroup: ",fgpDrawnItems.getLayers().length  );
-
-      document.getElementById(area_id+"_drawArea").style.display="none";
-      document.getElementById(area_id+"_saveArea").style.display="block";
-      //Show attributes div
-      document.getElementById(area_id+"_divChosenAttr").style.display = "block";
-
-      // Enabling edit to the layer
-      fgpDrawnItems.eachLayer(function(layer){
-        var layer_id = layer.feature.properties.id;
-        if(layer_id == area_id){
-          //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user clicks save
-          editMode = true;
-          layer.setStyle(setStyle_edit);
-          layer.pm.enable();
-          return;
-        }
-      });
-
-      //Open the sidebar
-      if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
-
-    });//pm:create
-  }
-  function isMarkerInsidePolygon(marker, poly_coords) {
-    /* DESCRIPTION: Check if the point is inside a polygon
-     * marker format == {lat: 38.744, lng: -9.111}
-     * polygon format == [lng, lat]
-     * source: https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon*/
-    var x = marker.lng, y = marker.lat;
-    var inside = false;
-    for (var i = 0, j = poly_coords.length - 1; i < poly_coords.length; j = i++) {
-        var xi = poly_coords[i][0], yi = poly_coords[i][1];
-        var xj = poly_coords[j][0], yj = poly_coords[j][1];
-
-        var intersect = ((xi > x) != (xj > x))
-            && (y < (yj - yi) * (x - xi) / (xj - xi) + yi);
-        if (intersect) inside = !inside;
-    }
-    // console.log(inside);
-    return inside;
-  };
-
   //  # Drawing Functions
   function drawArea(button_clicked_properties){
     /* DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
@@ -1071,10 +693,9 @@
   function showInfoBox(){
     /* DESCRIPTION: Shows a Information Box to the user in order to know how to use the CreationToolbar*/
     $('.infobox_for_toolbar').css('visibility','visible');
-    //hide after 4 seconds
-    setTimeout(function() {
-      $('.infobox_for_toolbar').css('visibility','hidden');
-    }, 15000);
+    //hide after 15
+    if (timeout_removeToolBox) clearTimeout(timeout_removeToolBox);
+    timeout_removeToolBox =  setTimeout(function() {$('.infobox_for_toolbar').css('visibility','hidden'); }, 15000);
   }
   function restartDraw(lyrDraw){
     /* DESCRIPTION: Start a new draw again*/
@@ -1105,7 +726,446 @@
     .setLatLng(popup_position) // FORMAT == {lat: 38.7345, lng: -9.1111}
     .setContent(popup_content)
     .openOn(mymap);
-    setTimeout(function(){ mymap.closePopup(infoPopUp);}, duration_open);
+
+    if(timeout_closePopup) clearTimeout(timeout_closePopup)
+    timeout_closePopup = setTimeout(function(){ mymap.closePopup(infoPopUp);}, duration_open);
+  }
+
+  //  # Map functions
+  function cbxLangChange(value){
+    if (value == 'en') {
+      siteLang='en';
+      $('.language-pt').hide(); // hides
+      $('.language-en').show(); // Shows
+    }
+    else if (value == 'pt') {
+      siteLang='pt';
+      $('.language-en').hide(); // hides
+      $('.language-pt').show(); // Shows
+    }
+  }
+  function loadMobileFunction() {
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+      /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
+      IsMobileDevice = true;
+    };
+    if(IsMobileDevice){
+      /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
+      if("orientation" in screen) {
+        var orientation_str = screen.orientation.type;
+        var orientation_array = orientation_str.split("-");
+        if( orientation_array[0] == "portrait"){
+          // NEEDTO: Show this message in a modal div
+          alert("This application is better seen if you change the orientation of your device to: landscape");
+        }
+      }
+    }
+    $( window ).on( "orientationchange", function( event ){
+      /* DESCRIPTION: ADDDESCRIPTION  */
+      //Do things based on the orientation of the mobile device
+      if(IsMobileDevice){
+        if("orientation" in screen) {
+          var orientation_array = (screen.orientation.type).split("-");
+          if( orientation_array[0] == "portrait"){
+            // NEEDTO: Show this message in a modal div
+            alert("Change the orientation of the device to: landscape");
+          }else{  //landscape mode
+            //Reloads the page
+            //location.reload();
+            // console.log( orientation_array[0] );
+          }
+        }
+      }
+    });//END $( window ).on( "orientationchange", ())
+  }
+  function loadStudyArea(){
+    /* DESCRIPTION: Adds the Study area, comprises of 12 freguesias:
+     * Estrela, Misericórdia, Santa Maria Maior, São Vicente, Penha de França, Beato,
+     * Arroios, Santo António, Campo de Ourique, Campolide, Avenidas Novas, Areeiro  */
+    $.ajax({
+      url:'eimg_get_dbtable.php',
+      data: {
+        type_op: "data",
+        tbl: "study_area_4326",
+        select:"*"
+      },
+      type:'POST',
+      success:function(response){
+        // console.log(response);
+        var layer = JSON.parse(response);
+        // console.log(layer);
+        LyrAOI_coords = layer.features[0].geometry.coordinates;
+        LyrAOI=L.geoJSON(layer);
+        var lyr_bounds = LyrAOI.getBounds();
+        var value = 0.03;
+        LyrAOI.addTo(mymap);
+        //Creating a boundary for the map based on the bounds of the layer added
+        //Increasing lat and long in the same proportion
+        var slt = (lyr_bounds._southWest.lat)-value; //south latitude
+        var sln = (lyr_bounds._southWest.lng)-value*2; //south longitude
+        var nlt = (lyr_bounds._northEast.lat)+value; //north latitude
+        var nln = (lyr_bounds._northEast.lng)+value*2; //north longitude
+        // defining the max bounds for panning around the map
+        var southWest = L.latLng(slt,sln);
+        var northEast = L.latLng(nlt,nln);
+        var mybounds =  L.latLngBounds(southWest, northEast);
+        //Zoom the map to the bounds of the added layer
+        mymap.fitBounds(LyrAOI.getBounds());
+        //Set the maximum boundaries in which the map can be panned
+        mymap.setMaxBounds(mybounds);
+        //Create a test polygon to see the area of the maxBounds
+        // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
+      },
+      error: function(xhr, status, error){ alert("ERROR: "+error); }
+    }); // End ajax
+  }
+  function loadBasemaps() {
+    /* DESCRIPTION: Add basemaps to the map*/
+    basemap_osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy;<a href="http://osm.org/copyright">OSM</a>'
+    });
+    basemap_mapbox = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2lzMm1hdGhldXMiLCJhIjoiY2lsYXRkcTQ2MGJudXVia25ueXZyMzJkcCJ9.sc74TfXfIWKE2Xw3aVcNvw", {
+      attribution: '&copy;<a href="https://www.mapbox.com/feedback/">Mapbox</a>'
+    });
+    basemap_Gterrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+      subdomains:['mt0','mt1','mt2','mt3']
+    });
+    basemap_Gimagery = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+      subdomains:['mt0','mt1','mt2','mt3']
+    });
+    basemap_GimageHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+      subdomains:['mt0','mt1','mt2','mt3']
+    });
+    basemap_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
+    });
+    Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
+      name: 'overlay',
+    });
+  }
+  function loadControls() {
+    /* Add leaflet controls to the map */
+    //Plugin leaflet-sidebar-v2: https://github.com/nickpeihl/leaflet-sidebar-v2
+    ctlSidebar = L.control.sidebar({
+      container:'sidebar_div',
+      autopan: false,
+      closeButton: false,
+    }).addTo(mymap);
+
+    if(siteLang=='en') {
+      createTitleLiByHref( "#home" , "Click to see the Home" );
+      createTitleLiByHref( "#info" , "Click to see information" );
+
+      // Geocode box
+      $('#search_address').prop('placeholder','Search for an address...');
+      $("#geocode_submit").prop('value', 'Search');
+    }
+    if(siteLang=='pt') {
+      createTitleLiByHref( "#home" , "Clique para ir ao início" );
+      createTitleLiByHref( "#info" , "Clique para ir para ver as informações" );
+
+      // Geocode box
+      $('#search_address').prop('placeholder','Procure um endereço...');
+      $("#geocode_submit").prop('value', 'Procurar');
+    }
+
+    //Add attribution to the map
+    ctlAttribute = L.control.attribution({position:'bottomright'}).addTo(mymap);
+    ctlAttribute.addAttribution('OSM');
+    ctlAttribute.addAttribution('&copy;<a href="http://mastergeotech.info">Master GeoTech</a>');
+    ctlAttribute.addAttribution('&copy;<a href="https://github.com/codeofsumit/leaflet.pm">LeafletPM</a>');
+
+    //Control scale
+    ctlScale = L.control.scale({position:'bottomright', metric:true, imperial:false, maxWidth:200, }).addTo(mymap);
+
+    //Control Latitude and Longitude
+    if (!IsMobileDevice){
+      ctlMouseposition = L.control.mousePosition({position:'bottomright'}).addTo(mymap);
+    }
+
+    // Add the overview control to the map
+    ctlMapOverview = L.control.overview({
+      position: 'bottomright',
+      onAfterInitLayout: function (overview) {
+      }
+    }).addTo(mymap);
+
+    ctlLayers = L.control.layers(
+      {
+        '<i class="fas fa-map-marked"></i>': basemap_mapbox,
+        '<i class="fas fa-mountain"></i>': basemap_Gterrain,
+        '<i class="fas fa-globe-americas"></i>': basemap_GimageHybrid,
+        // '<i class="fas fa-image"></i>': basemap_WorldImagery
+      }, null, {collapsed: false}
+    ).addTo(mymap);
+
+    // Adds a control using the easy button plugin
+    var ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
+    var ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
+    var ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(area_id, true);}, 'Click to cancel the drawing');
+    ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'});
+
+    var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
+    container.title="Toolbar Instructions";
+
+    if(siteLang=='en'){
+      container.innerHTML = '<p>Finish drawing (Enter)</p><p style="padding-top:0;">Remove vertex (Ctrl+z)</p><p style="padding-top:0;">Cancel Drawing (Esc)</p>';
+      container.style.marginLeft= '-145px';
+      container.style.width= '140px';
+    }
+    if(siteLang=='pt'){
+      container.innerHTML = '<p>Finalizar (Enter)</p><p style="padding-top:0;">Remover vértice (Ctrl+z)</p><p style="padding-top:0;">Cancelar (Esc)</p>';
+      container.style.marginLeft= '-149px';
+      container.style.width= '145px';
+    }
+    // styles: .infobox_for_toolbar
+    // events
+    container.onmouseover = function(){ container.style.visibility = 'hidden';}
+
+    // Add Zoom if not in the
+    if (!IsMobileDevice){
+      ctlZoom = L.control.zoom({position:'topright'}).addTo(mymap);
+    }
+  }
+  function addMapEvents() {
+    /* DESCRIPTION: Add all the events related to the leaflet map element */
+    mymap.on("moveend", function () {
+      // console.log(mymap.getCenter().toString());
+      if(mymap.getZoom()==minimumZoom+1){
+        cnt_doNotPan++;
+        if(siteLang=='en') var str_popup = "<h6>Please, stay in this area only!</h6>";
+        if(siteLang=='pt') var str_popup = "<h6>Por favor, mantenha nessa área somente!</h6>";
+        if( cnt_doNotPan<3) openAlertPopup(mymap.getCenter(), str_popup,1000 );
+      }
+    });
+    mymap.on("movestart", function (e) {
+      // console.log(mymap.getCenter().toString());
+      // console.log(e);
+      // var mapClickedPositon = [e.latlng.lat, e.latlng.lng];
+      // var cntMousePosition = 0;
+      // cnt_movechange++;
+      // console.log("MoveStart:",cnt_movechange);
+    });
+    mymap.on("zoomend", function () {
+      // console.log(mymap.getCenter().toString());
+      var zoomNotAllowed = minimumZoom;
+      if(mymap.getZoom()==zoomNotAllowed){
+        cnt_zoomOutExceeded++;
+        if(siteLang=='en') var str_popup = "<h6>Minimum zoom exceeded!</h6>";
+        if(siteLang=='pt') var str_popup = "<h6>Zoom mínimo ultrapassado!</h6>";
+
+        if( cnt_zoomOutExceeded<5){
+          if(timeout_zoomNotAllowed) clearTimeout(timeout_zoomNotAllowed);
+          openAlertPopup(mymap.getCenter(), str_popup,1000 );
+        }
+        timeout_zoomNotAllowed = setTimeout(function(){ mymap.setZoom(zoomNotAllowed+1);}, 400);
+      }
+      // if(mymap.getZoom()==18 && cnt_zoomInExceeded<1){
+      //   cnt_zoomInExceeded++;
+      //   openAlertPopup(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
+      // }
+    });
+    mymap.on('baselayerchange', function(e){
+      // console.log(e);
+      if (e.name == '<i class="fas fa-image"></i>'){
+        ctlLayers.addOverlay(Hydda_RoadsAndLabels, 'streets');
+      }else{
+        mymap.removeLayer(Hydda_RoadsAndLabels);
+        ctlLayers.removeLayer(Hydda_RoadsAndLabels);
+      }
+    })
+    mymap.on('contextmenu', function(e){
+      /* DESCRIPTION: listener when a click is given on the map  */
+      // $("#divLog").text("Map Clicked... Random Number: "+(Math.floor(Math.random() * 100)).toString());
+      if(editMode){
+        //if in editMode or createMode the area_id is already set to be accessed in the function
+        saveArea();
+      }
+    });
+    mymap.on('mousemove', function(e){
+      /* DESCRIPTION: listener when a click is given on the map  */
+      // console.log(1);
+    });
+    mymap.on('click', function(e){
+      /* DESCRIPTION: listener when a click is given on the map  */
+      pntClicked = e.latlng; // FORMAT: {lat: 38.72452, lng: -9.11160}
+      // openAlertPopup(e.latlng, "<h6>test!</h6>",1000 )
+
+      if(createMode && cnt_numVertices==0) firstVertex =  pntClicked;
+
+      // if clickedLayerId != null, means that the position the user clicked on the map has a layer, otherwise, it clicked in a empty space on a map
+      if(clickedLayerId != null){
+        //if getActiveTabId() != clickedLayerId means that the sidebar is not opened in the tab of the clicked layer
+        if ((getActiveTabId()!=clickedLayerId) && (createMode==false)){
+          ctlSidebar.open(clickedLayerId);
+          clickedLayerId = null;
+        }
+      }else{
+        //if(getActiveTabId() != null) means that the sidebar is opened
+        if(getActiveTabId() != null){
+          ctlSidebar.close();
+        }
+      }
+    });
+    mymap.on('pm:drawend', function(e) {
+            //toggle visibility of toolbar, overview map
+      ctlCreationToolbar.remove();
+      ctlMapOverview.addTo(mymap);
+      if (!IsMobileDevice){
+        ctlZoom.addTo(mymap);
+      }
+      if(closeAlertPopUpWhenDrawIsFinished) mymap.closePopup();
+
+      //When the user is drawing it means that the 'area_id' should exist and it's the id of the area being drawn
+      //A creation of a new area is only finished when the user clicks the save button
+      createMode = false;
+    });
+
+    mymap.on('pm:create', function(e) {
+      // console.log(e);
+      // Remember when we finished
+      time_end_draw = new Date().getTime();
+
+      var lyrDraw = e.layer;
+
+      var width = lyrDraw.getBounds().getEast() - lyrDraw.getBounds().getWest();
+      var height = lyrDraw.getBounds().getNorth() - lyrDraw.getBounds().getSouth();
+
+      // console.log(
+      //   'center:' + lyrDraw.getCenter() +'\n'+
+      //   'width:' + width +'\n'+
+      //   'height:' + height +'\n'
+      // );
+
+      //Initialize the attributes. We can name it the way we want
+      var feature = lyrDraw.feature = lyrDraw.feature || {};
+      feature.type = feature.type || "Feature"; //Could be the name we want
+      var props = feature.properties = feature.properties || {};
+      props.id = area_id;
+      // Calculate time spent for this drawing
+      props.time_draw_sec = (time_end_draw - time_start_draw)/1000;
+
+      //General style
+      lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
+
+      var jsn_draw=lyrDraw.toGeoJSON().geometry;
+      //Count the number of coordinates inside the JSON geometry.
+      //In the case of polygon. The last element is equal to the first in order close the polygon.
+      //So the subtraction of 1 gives us the exactly number of vertices of the drawn polygon
+      var numberOfVertices = ((jsn_draw.coordinates[0]).length)-1;
+      if (numberOfVertices < 3){
+        if(siteLang=='en') alert("The area drawn has less than 3 vertices.\nPlease, draw it again!");
+        if(siteLang=='pt') alert("A área desenhada tem menos de 3 vértices.\nPor favor, comece de novo!");
+        // Start a new draw again
+        restartDraw(lyrDraw);
+        return;
+      }
+
+      if( (width<0.0007) || (height<0.0007) ){
+        if(siteLang=='en') alert("The area drawn is too small\nPlease, draw it again!");
+        if(siteLang=='pt') alert("A área desenhada é muito pequena\nPor favor, comece de novo!");
+        // Start a new draw again
+        mymap.removeLayer(lyrDraw);
+        var button_drawArea_id = area_id+"_drawArea";
+        document.getElementById(button_drawArea_id).click();
+        return;
+      }
+
+      lyrDraw.on('click', function(){
+        clickedLayerId = lyrDraw.feature.properties.id;
+        // console.log("Clicked Layer: ",clickedLayerId);
+      });
+
+      //Add the layer created to the feature group
+      fgpDrawnItems.addLayer(lyrDraw);
+      // console.log("length ftGroup: ",fgpDrawnItems.getLayers().length  );
+
+      document.getElementById(area_id+"_drawArea").style.display="none";
+      document.getElementById(area_id+"_saveArea").style.display="block";
+      //Show attributes div
+      document.getElementById(area_id+"_divChosenAttr").style.display = "block";
+
+      // Enabling edit to the layer
+      fgpDrawnItems.eachLayer(function(layer){
+        var layer_id = layer.feature.properties.id;
+        if(layer_id == area_id){
+          //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user clicks save
+          editMode = true;
+          layer.setStyle(setStyle_edit);
+          layer.pm.enable();
+          return;
+        }
+      });
+
+      //Open the sidebar
+      if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
+
+    });//pm:create
+  }
+  function isMarkerInsidePolygon(marker, poly_coords) {
+    /* DESCRIPTION: Check if the point is inside a polygon
+     * marker format == {lat: 38.744, lng: -9.111}
+     * polygon format == [lng, lat]
+     * source: https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon*/
+    var x = marker.lng, y = marker.lat;
+    var inside = false;
+    for (var i = 0, j = poly_coords.length - 1; i < poly_coords.length; j = i++) {
+        var xi = poly_coords[i][0], yi = poly_coords[i][1];
+        var xj = poly_coords[j][0], yj = poly_coords[j][1];
+
+        var intersect = ((xi > x) != (xj > x))
+            && (y < (yj - yi) * (x - xi) / (xj - xi) + yi);
+        if (intersect) inside = !inside;
+    }
+    // console.log(inside);
+    return inside;
+  };
+
+  //  # Geocode functions
+  function createGeocoder() {
+    GM_geocoder = new google.maps.Geocoder();
+    $("#geocode_submit").click(function(){
+      geocodeAddress(GM_geocoder)
+    });//end btnClose click event
+  }
+  function geocodeAddress(geocoder) {
+    var address = document.getElementById('search_address').value;
+    if(address!=""){
+      if(getActiveTabId() != null) ctlSidebar.close();
+      geocoder.geocode({'address': address}, function(results, status) {
+        if (status === 'OK') {
+          var lat = results[0].geometry.location.lat();
+          var lng = results[0].geometry.location.lng();
+          var marker_format = {lat: lat, lng: lng}
+          var inAOI = isMarkerInsidePolygon(marker_format, LyrAOI_coords)
+          if(inAOI){
+            if (pin_marker){
+              mymap.removeLayer(pin_marker); // remove
+              if(timeout_removePin) clearTimeout(timeout_removePin);
+            }
+            pin_marker = L.marker([lat,lng]).addTo(mymap);
+            //mymap.fitBounds(LyrAOI.getBounds());
+            mymap.setView(new L.LatLng(lat, lng), 15);
+            timeout_removePin = setTimeout(function(){ mymap.removeLayer(pin_marker);}, 5000);
+
+          }else{
+            if(siteLang=="en") var str_popup = "<p>The address/place typed<br />is not in the study area<br />Try another!</p>"
+            if(siteLang=="pt") var str_popup = "<p>O endereço/sítio procurado<br />não está dentro da área de estudo!<br />Tente outro!</p>"
+            mymap.fitBounds(LyrAOI.getBounds());
+            openAlertPopup(mymap.getCenter(), str_popup, 3000 );
+          }
+        } else {
+          if(siteLang=="en") var str = "Address/Place not found!"
+          if(siteLang=="pt") var str = "Endereço/Sítio não encontrado!"
+          alert( str );
+        }
+      });
+    }else{
+      if(siteLang=="en") var str = "Type an Address/Place to help you to find it on the map"
+      if(siteLang=="pt") var str = "Digite um endereço/sítio para te ajudar a encontrá-lo no mapa"
+      alert( str );
+    }
+
   }
 
   //  # Sidebar Functions
@@ -1589,6 +1649,8 @@
       activeTab = null;
       sidebarOpened = false;
 
+      if(IsMobileDevice) document.getElementById("geocode_panel").style.display = "block";
+
       //Mimics a sidebar click, to remove the blue background color of the icon if a liked or disliked tab was clicked before the closing of the sidebar
       sidebarChange('closing');
 
@@ -1615,6 +1677,9 @@
 
     });
     ctlSidebar.on('opening', function() {
+
+      if(IsMobileDevice) document.getElementById("geocode_panel").style.display = "none";
+
       cnt_SidebarOpens++;
       //because the context event fires the opening event (if sidebar is closed), the following variable is to know the status of the sidebar, in order to organize the previous and active tab in the 'content' event.
       sidebarOpened = true;
@@ -1928,6 +1993,9 @@
     window.location.href = 'eimg_viewer.php';
   });
 
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvbEjSjXLc2_ft48iGBt_Eavw0Q9u3afk&libraries=places&callback=createGeocoder">
   </script>
   </body>
   </html>

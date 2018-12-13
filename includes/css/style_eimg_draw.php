@@ -22,6 +22,19 @@
 	  /* height: 650px; */
 	  height:100vh;
 	}
+	#geocode_panel {
+    position: absolute;
+    top: 10px;
+    z-index: 9999;
+    background-color: rgba(255,255,255,0.7);
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    /* font-family: 'Roboto','sans-serif'; */
+    line-height: 30px;
+    padding-left: 5px;
+    left: 45vw; /* calc(100% - 80px); */
+  }
 
 	input[type="checkbox"].cbxsidebar{
 	  cursor: pointer;

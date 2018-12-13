@@ -17,7 +17,6 @@
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet-overview-nootherdev-fork.css">
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/font-awesome.min.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
-  <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet.awesome-markers.css">
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/easy-button.css">
 
   <!-- Adding JS files -->
@@ -37,7 +36,6 @@
   <script src="<?php  echo $root_directory?>resources/plugins/leaflet.pm.min.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/leaflet.ajax.min.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/L.Control.MousePosition.js"></script>
-  <script src="<?php  echo $root_directory?>resources/plugins/leaflet.awesome-markers.min.js"></script>
   <script src="<?php  echo $root_directory?>resources/plugins/easy-button.js"></script>
   <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
 
