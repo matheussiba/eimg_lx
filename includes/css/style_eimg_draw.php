@@ -25,15 +25,17 @@
 	#geocode_panel {
     position: absolute;
     top: 10px;
-    z-index: 9999;
+    z-index: 999; /* After the map, before the sidebar*/
     background-color: rgba(255,255,255,0.7);
     padding: 5px;
-    border: 1px solid #999;
+    border: 1px solid rgba(0,0,0,0.3);
     text-align: center;
     /* font-family: 'Roboto','sans-serif'; */
     line-height: 30px;
-    padding-left: 5px;
-    left: 45vw; /* calc(100% - 80px); */
+    padding-left: 7px;
+
+		left: 50%;
+		transform: translate( -50%); /* Centrates the element in the middle of the screen */
   }
 
 	input[type="checkbox"].cbxsidebar{

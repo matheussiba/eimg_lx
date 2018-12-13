@@ -528,34 +528,6 @@ if (isset($_SESSION['user_id'])) {
       /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
       IsMobileDevice = true;
     };
-    if(IsMobileDevice){
-      /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
-      if("orientation" in screen) {
-        var orientation_str = screen.orientation.type;
-        var orientation_array = orientation_str.split("-");
-        if( orientation_array[0] == "portrait"){
-          // NEEDTO: Show this message in a modal div
-          alert("This application is better seen if you change the orientation of your device to: landscape");
-        }
-      }
-    }
-    $( window ).on( "orientationchange", function( event ){
-      /* DESCRIPTION: ADDDESCRIPTION  */
-      //Do things based on the orientation of the mobile device
-      if(IsMobileDevice){
-        if("orientation" in screen) {
-          var orientation_array = (screen.orientation.type).split("-");
-          if( orientation_array[0] == "portrait"){
-            // NEEDTO: Show this message in a modal div
-            alert("Change the orientation of the device to: landscape");
-          }else{  //landscape mode
-            //Reloads the page
-            //location.reload();
-            // console.log( orientation_array[0] );
-          }
-        }
-      }
-    });//END $( window ).on( "orientationchange", ())
   }
   function loadStudyArea(){
     /* DESCRIPTION: Adds the Study area, comprises of 12 freguesias:

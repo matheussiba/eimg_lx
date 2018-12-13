@@ -78,7 +78,7 @@
             <span class="language-en">Whenever you're done, come back here and click the 'Finish' button in order to see the result of all participants.</span>
             <span class="language-pt">Quando você estiver terminar, volte aqui de novo e clique no botão abaixo para finalizar e ver o resultado de todos os participantes que já participaram</span>
           </p>
-          <button class='btn btn-info btn-block btn_Finish'>
+          <button class='btn btn-info btn-block' onclick="myFunction()">
             <span class="language-en">Finish and see result</span>
             <span class="language-pt">Finalizar e ver resultado</span>
           </button>
@@ -749,34 +749,34 @@
       /*### DESCRIPTION: Check if the web application is being seen in a mobile device   */
       IsMobileDevice = true;
     };
-    if(IsMobileDevice){
-      /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
-      if("orientation" in screen) {
-        var orientation_str = screen.orientation.type;
-        var orientation_array = orientation_str.split("-");
-        if( orientation_array[0] == "portrait"){
-          // NEEDTO: Show this message in a modal div
-          alert("This application is better seen if you change the orientation of your device to: landscape");
-        }
-      }
-    }
-    $( window ).on( "orientationchange", function( event ){
-      /* DESCRIPTION: ADDDESCRIPTION  */
-      //Do things based on the orientation of the mobile device
-      if(IsMobileDevice){
-        if("orientation" in screen) {
-          var orientation_array = (screen.orientation.type).split("-");
-          if( orientation_array[0] == "portrait"){
-            // NEEDTO: Show this message in a modal div
-            alert("Change the orientation of the device to: landscape");
-          }else{  //landscape mode
-            //Reloads the page
-            //location.reload();
-            // console.log( orientation_array[0] );
-          }
-        }
-      }
-    });//END $( window ).on( "orientationchange", ())
+    // if(IsMobileDevice){
+    //   /*### DESCRIPTION: Lock the screen of a mobile device in a landscape mode   */
+    //   if("orientation" in screen) {
+    //     var orientation_str = screen.orientation.type;
+    //     var orientation_array = orientation_str.split("-");
+    //     if( orientation_array[0] == "portrait"){
+    //       // NEEDTO: Show this message in a modal div
+    //       alert("This application is better seen if you change the orientation of your device to: landscape");
+    //     }
+    //   }
+    // }
+    // $( window ).on( "orientationchange", function( event ){
+    //   /* DESCRIPTION: ADDDESCRIPTION  */
+    //   //Do things based on the orientation of the mobile device
+    //   if(IsMobileDevice){
+    //     if("orientation" in screen) {
+    //       var orientation_array = (screen.orientation.type).split("-");
+    //       if( orientation_array[0] == "portrait"){
+    //         // NEEDTO: Show this message in a modal div
+    //         alert("Change the orientation of the device to: landscape");
+    //       }else{  //landscape mode
+    //         //Reloads the page
+    //         //location.reload();
+    //         // console.log( orientation_array[0] );
+    //       }
+    //     }
+    //   }
+    // });//END $( window ).on( "orientationchange", ())
   }
   function loadStudyArea(){
     /* DESCRIPTION: Adds the Study area, comprises of 12 freguesias:
@@ -1416,6 +1416,12 @@
     str_newtab +=       '</button>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
+
+    if ( (cnt_LikedAreas>=0) && (cnt_DislikedAreas>=1) ){
+      if (siteLang =='en') str_newtab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="myFunction()"><span>Finish and see result</span></button>';
+      if (siteLang =='pt') str_newtab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="myFunction()"><span>Finalizar e ver resultado</span></button>';
+    }
+
     str_newtab += '</div>';
 
     var newtab_content = {
@@ -1504,9 +1510,8 @@
     str_temptab +=   '</div>';
 
     if ( (cnt_LikedAreas>=0) && (cnt_DislikedAreas>=1) ){
-
-      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block btn_Finish"><span>Finish and see result</span></button>';
-      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block btn_Finish"><span>Finalizar e ver resultado</span></button>';
+      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="myFunction()"><span>Finish and see result</span></button>';
+      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="myFunction()"><span>Finalizar e ver resultado</span></button>';
     }
 
     str_temptab +=  '</div>';
@@ -1804,7 +1809,7 @@
   }
 
   //  # jQuery Functions
-  $( ".btn_Finish" ).click(function(){
+  function myFunction(){
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
@@ -1919,7 +1924,8 @@
       if(siteLang=='en') alert("To finize you shoud draw, at least, 1 area you LIKED and 1 area you DISLIKE.\nPlease, draw it to proceed!");
       if(siteLang=='pt') alert("Para finalizar você precisa criar, no mínimo 1 área que você CURTE e uma área que você NÃO CURTE.\n :)");
     }
-  });//end btnFinish click event
+  };//end btnFinish
+
   $(".btnClose").click(function(){
     $("#dlgUsabilityQuest").hide();
     window.location.href = 'eimg_viewer.php';
