@@ -38,6 +38,17 @@
 		transform: translate( -50%); /* Centrates the element in the middle of the screen */
   }
 
+	#modal_3_sus .modal-dialog {
+	  /* width: 100% !important;
+	  height: 100%;
+	  margin: 0;
+	  padding: 0; */
+	}
+	/* #modal_3_sus .modal-content {
+	  height: auto;
+	  min-height: 98%;
+	} */
+
 	input[type="checkbox"].cbxsidebar{
 	  cursor: pointer;
 	  width: 18px;

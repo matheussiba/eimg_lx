@@ -78,7 +78,7 @@
             <span class="language-en">Whenever you're done, come back here and click the 'Finish' button in order to see the result of all participants.</span>
             <span class="language-pt">Quando você estiver terminar, volte aqui de novo e clique no botão abaixo para finalizar e ver o resultado de todos os participantes que já participaram</span>
           </p>
-          <button class='btn btn-info btn-block' onclick="myFunction()">
+          <button class='btn btn-info btn-block' onclick="finish_mapDraw()">
             <span class="language-en">Finish and see result</span>
             <span class="language-pt">Finalizar e ver resultado</span>
           </button>
@@ -387,6 +387,7 @@
     ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
     document.onkeydown = KeyPress; // Capture the pressed key in the document
 
+    $('#modal_3_sus').modal('show');
     // $('#modal_2_demographics').modal('show');
 
   }); //END $(document).ready()
@@ -523,6 +524,22 @@
         document.getElementById(area_id+"_cbxAtt-hist").disabled = true;
       }
 
+      // if(cnt_LikedAreas>=1 && cnt_DislikedAreas>=1){
+      //   var arrayDiv = document.getElementsByClassName("div_btnFinish");
+      //   for (var i = 0; i < arrayDiv.length; i++) {
+      //     arrayDiv[i].style.display = "block";
+      //   }
+      // }
+
+      if(cnt_LikedAreas>=1 && cnt_DislikedAreas>=1){
+        var elementsOfClass= document.getElementsByClassName('FinishApp');
+        for (var i = 0; i < elementsOfClass.length; i++) {
+          elementsOfClass[i].style.display = "block";
+        }
+        console.log("total_CNT = ",cnt_LikedAreas+cnt_DislikedAreas);
+      }
+
+
       document.getElementById(area_id+"_reason_str").disabled = true;
       // Show 'edit' button, hide 'save' button
       document.getElementById(area_id+"_createNewArea").style.display="block";
@@ -613,6 +630,7 @@
         area_id = (button_clicked_properties.id).split("_")[0];
         var close_sidebar = true;
       }
+
       mymap.pm.disableDraw('Poly');
       // console.log(fgpDrawnItems.getLayers() );
       if(mymap.hasLayer(fgpDrawnItems)){
@@ -640,6 +658,17 @@
       editMode = false;
       createMode = false;
       deleteTabByHref('#'+area_id, close_sidebar);
+
+      //
+      if(cnt_LikedAreas==0 || cnt_DislikedAreas==0){
+        var elementsOfClass= document.getElementsByClassName('FinishApp');
+        for (var i = 0; i < elementsOfClass.length; i++) {
+          elementsOfClass[i].style.display = "block";
+        }
+        console.log("total_CNT = ",cnt_LikedAreas+cnt_DislikedAreas);
+      }
+
+
     }
   };//END removeArea()
   function setStyleNormal(){
@@ -1259,7 +1288,7 @@
       var liked = true;
       var icon = "thumbs-up";
       cnt_LikedAreas++;
-      for (cnt = 1; cnt <= 3; cnt++) {
+      for (var cnt = 1; cnt <= 3; cnt++) {
         if( !(searchTagIfExistsByHref("#"+typeOfArea+'-'+cnt.toString())) ){
           break;
         }
@@ -1271,8 +1300,7 @@
       var liked = false;
       var icon = "thumbs-down";
       cnt_DislikedAreas++;
-      var cnt = cnt_DislikedAreas;
-      for (cnt = 1; cnt <= 3; cnt++) {
+      for (var cnt = 1; cnt <= 3; cnt++) {
         if( !(searchTagIfExistsByHref("#"+typeOfArea+'-'+cnt.toString())) ){
           break;
         }
@@ -1416,12 +1444,11 @@
     str_newtab +=       '</button>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
+    str_newtab += '</div>';
 
-    if ( (cnt_LikedAreas>=0) && (cnt_DislikedAreas>=1) ){
-      if (siteLang =='en') str_newtab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="myFunction()"><span>Finish and see result</span></button>';
-      if (siteLang =='pt') str_newtab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="myFunction()"><span>Finalizar e ver resultado</span></button>';
-    }
-
+    str_newtab +=   '<div id="'+tab_id+'_btnFinish" class="FinishApp" style="display:none;">';
+    if (siteLang =='en') str_newtab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finish and see result</span></button>';
+    if (siteLang =='pt') str_newtab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finalizar e ver resultado</span></button>';
     str_newtab += '</div>';
 
     var newtab_content = {
@@ -1509,9 +1536,9 @@
     str_temptab +=    '</span>';
     str_temptab +=   '</div>';
 
-    if ( (cnt_LikedAreas>=0) && (cnt_DislikedAreas>=1) ){
-      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="myFunction()"><span>Finish and see result</span></button>';
-      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="myFunction()"><span>Finalizar e ver resultado</span></button>';
+    if ( (cnt_LikedAreas>=1) && (cnt_DislikedAreas>=1) ){
+      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finish and see result</span></button>';
+      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finalizar e ver resultado</span></button>';
     }
 
     str_temptab +=  '</div>';
@@ -1809,7 +1836,7 @@
   }
 
   //  # jQuery Functions
-  function myFunction(){
+  function finish_mapDraw(){
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
@@ -1988,15 +2015,19 @@
     for (i = 1; i <= 12; i++) {
       var checkedValue = $('input[type=radio][name=quest'+i.toString()+']:checked').val();
       if(typeof checkedValue == "undefined"){
-        if (siteLang == "en") var str = "Plase, answer all the questions before you see the result";
-        if (siteLang == "pt") var str = "Por favor, responda todas as perguntas antes de prosseguir";
-        alert(str);
+        if (siteLang == "en") var str_alert = "Plase, answer all the questions before you see the result";
+        if (siteLang == "pt") var str_alert = "Por favor, responda todas as perguntas antes de prosseguir";
         break
       }
     }
 
-    //$('#modal_3_sus').modal('hide');
-    window.location.href = 'eimg_viewer.php';
+    if(str_alert){
+      alert(str_alert);
+    }else{
+      //$('#modal_3_sus').modal('hide');
+      window.location.href = 'eimg_viewer.php';
+    }
+
   });
 
   </script>
