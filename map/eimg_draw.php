@@ -403,8 +403,17 @@
     ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
     document.onkeydown = KeyPress; // Capture the pressed key in the document
 
-    //$('#modal_3_sus').modal('show');
-    $('#modal_2_demographics').modal('show');
+    cookie_userDefined = getCookie("user_id");
+    if(cookie_userDefined==""){
+       window.location.href = '../index.php';
+    }else{
+      cookie_appFinished = getCookie("app_finished");
+      if(cookie_appFinished!=""){
+        $('#modal_3_sus').modal('show');
+      }else{
+        $('#modal_2_demographics').modal('show');
+      }
+    }
 
   }); //END $(document).ready()
 
@@ -1179,7 +1188,7 @@
     GM_geocoder = new google.maps.Geocoder();
     $("#geocode_submit").click(function(){
       geocodeAddress(GM_geocoder)
-    });//end btnClose click event
+    });
   }
   function geocodeAddress(geocoder) {
     var address = document.getElementById('search_address').value;
@@ -1780,6 +1789,7 @@
     });//END content
   }
   function finish_mapDraw(){
+
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
@@ -1878,6 +1888,8 @@
             }
           });
         });// fgpDrawnItems.eachLayer(function(layer))
+
+        setCookie("app_finished", "true", 7);
 
         //Shows the modal
         $('#modal_3_sus').modal('show');
@@ -1980,7 +1992,7 @@
     return "";
   }
 
-  //  # Analytics Functions
+  //  # Analytics
   function incrementColumn(columnName) {
     $.ajax({
       url:'<?php  echo $root_directory?>general/increment_column_value.php',
@@ -1996,20 +2008,31 @@
     }); // End ajax
   }
 
-  //  # jQuery Functions
-  $(".btnClose").click(function(){
-    $("#dlgUsabilityQuest").hide();
-    window.location.href = 'eimg_viewer.php';
+  //  # Analytics
+  function insertValuesTable(table, columns, values) {
+    $.ajax({
+      url:'<?php  echo $root_directory?>general/insert_table.php',
+      data: {
+        tbl: table,
+        columns: columns,
+        values: values
+      },
+      type:'POST',
+      success:function(response){
+        console.log(response);
+        if ( response.substring(0, 5) == "ERROR") {
+          alert(response)
+        }else{
+          // alert(response)
+        }
 
-    // $.ajax({
-    //   type: 'GET',
-    //   url: 'destroy_session.php',
-    //   success:function(response){
-    //     console.log(response);
-    //     //window.location.href = 'eimg_viewer.php';
-    //   }
-    // });
-  });//end btnClose click event
+      },
+      error: function(xhr, status, error){ alert("ERROR: "+error); }
+    }); // End ajax
+  }
+
+
+  //  # jQuery Functions
   //  # close modals from eimg_draw-modals.php
   $("#btn_close_modal_demographics").on("click", function () {
     //checking values from demographics modal
@@ -2051,10 +2074,20 @@
       if (siteLang=="en") field_blank.push("Resident/Visitor");
       if (siteLang=="pt") field_blank.push("Morador/Visitante");
     }
-
+    //
+    // console.log(getCookie("user_id"));
+    // console.log(typeof getCookie("user_id"));
     // console.log(field_blank.length);
     if(field_blank.length==0){
     // if(field_blank!=[]){
+      var table_insert = "data_demographics";
+      var columns_insert = "user_id, sex, age, education, job, income, type_user";
+      var values_insert = getCookie("user_id") + ",'"+ user_sex + "','"+ user_age + "','"+ user_school + "',"+ "''" + ",'"+ user_income + "','"+ type_user +"'";
+      console.log(columns_insert, values_insert);
+
+      insertValuesTable(table_insert, columns_insert, values_insert)
+
+      setCookie("demographics_sent", "true", 7);
       $('#modal_2_demographics').modal('hide');
       //$('#modal_3_sus').modal('show');
     }else{
@@ -2067,6 +2100,7 @@
   $("#btn_close_modal_sus").on("click", function () {
     //checking values from sus modal
     var i;
+    var array_quest_sus = [];
     for (i = 1; i <= 12; i++) {
       var checkedValue = $('input[type=radio][name=quest'+i.toString()+']:checked').val();
       if(typeof checkedValue == "undefined"){
@@ -2074,11 +2108,31 @@
         if (siteLang == "pt") var str_alert = "Por favor, responda todas as perguntas antes de prosseguir";
         break
       }
+      array_quest_sus.push(checkedValue);
     }
-
     if(str_alert){
       alert(str_alert);
     }else{
+
+      var values_insert = "";
+      values_insert += getCookie("user_id") + ',';
+      values_insert += "'";
+      values_insert += array_quest_sus.join("','");
+      values_insert += "'";
+
+      var columns_question_name = [];
+      for (i = 1; i <= 12; i++) columns_question_name.push( "question"+i.toString() );
+
+      var columns_insert = "";
+      columns_insert += "user_id" + ',';
+      columns_insert += columns_question_name.join(",");
+
+      var table_insert = "data_sus";
+
+      console.log(columns_insert, values_insert);
+
+      insertValuesTable(table_insert, columns_insert, values_insert)
+
       //$('#modal_3_sus').modal('hide');
       window.location.href = 'eimg_viewer.php';
     }

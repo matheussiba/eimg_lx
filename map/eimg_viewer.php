@@ -881,7 +881,7 @@ if (isset($_SESSION['user_id'])) {
     return "";
   }
 
-  //  # Analytics Functions
+  //  # Analytics
   function incrementColumn(columnName) {
     $.ajax({
       url:'<?php  echo $root_directory?>general/increment_column_value.php',
