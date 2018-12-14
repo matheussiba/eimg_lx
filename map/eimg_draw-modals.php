@@ -46,48 +46,79 @@
                 <span class="language-en">
                   <select id="user_age-en">
                     <option value="">Select</option>
-                    <option value="<35">Less than 35 years old</option>
-                    <option value="35–50">35–50</option>
-                    <option value=">50">More than 50 years old</option>
+                    <option value="<18">Under 18 years old</option>
+                    <option value="18-24">18-24 years old</option>
+                    <option value="25-34">25-34 years old</option>
+                    <option value="35-44">35-44 years old</option>
+                    <option value="45-54">45-54 years old</option>
+                    <option value="55-64">55-64 years old</option>
+                    <option value=">65">65 years or older</option>
                   </select>
                 </span>
                 <span class="language-pt">
                   <select id="user_age-pt">
                     <option value="">Selecionar</option>
-                    <option value="<35">Menos que 35 anos</option>
-                    <option value="35–50">35–50</option>
-                    <option value=">50">Mais que 50 anos</option>
+                    <option value="<18">Menor que 18 anos</option>
+                    <option value="18-24">18-24 anos</option>
+                    <option value="25-34">25-34 anos</option>
+                    <option value="35-44">35-44 anos</option>
+                    <option value="45-54">45-54 anos</option>
+                    <option value="55-64">55-64 anos</option>
+                    <option value=">65">65 anos ou mais</option>
                   </select>
                 </span>
               </td>
             </tr>
             <!-- school -->
-            <!-- <tr>
+            <tr>
               <th scope="row">
-                <span class="language-en">School level:</span>
-                <span class="language-pt">Escolaridade:</span>
+                <span class="language-en">Education*:</span>
+                <span class="language-pt">Escolaridade*:</span>
               </th>
               <td>
                 <span class="language-en">
                   <select id="user_school-en">
                     <option value="">Select</option>
-                    <option value="add">add</option>
+                    <option value="no_school">No schooling completed</option>
+                    <option value="primary">Primary/High school</option>
+                    <option value="secondary_student">Secondary/High school student</option>
+                    <option value="secondary">Secondary/High school</option>
+                    <option value="technical_student">Technical student</option>
+                    <option value="technical">Technical degree</option>
+                    <option value="bachelor_student">Bachelor student</option>
+                    <option value="bachelor">Bachelor degree</option>
+                    <option value="master_student">Master student</option>
+                    <option value="master">Master degree</option>
+                    <option value="doctorate_student">Doctorate student</option>
+                    <option value="doctorate">Doctorate degree</option>
+                    <option value="another">Another</option>
                   </select>
                 </span>
                 <span class="language-pt">
                   <select id="user_school-pt">
                     <option value="">Selecionar</option>
-                    <option value="add">add</option>
+                    <option value="no_school">Nenhuma escolaridade completada</option>
+                    <option value="primary">Ensino básico/fundamental</option>
+                    <option value="secondary_student">Estudante de ensino secundário/médio</option>
+                    <option value="secondary">Ensino secundário/médio</option>
+                    <option value="technical_student">Estudante de nível técnico</option>
+                    <option value="technical">Nível Técnico completo</option>
+                    <option value="bachelor_student">Estudante de licenciatura</option>
+                    <option value="bachelor">Licenciatura completa</option>
+                    <option value="master_student">Estudante de mestrado</option>
+                    <option value="master">Mestrado completo</option>
+                    <option value="doctorate_student">Estudante de doutoramento</option>
+                    <option value="doctorate">Doutoramento completo</option>
+                    <option value="another">Outro</option>
                   </select>
                 </span>
               </td>
-            </tr> -->
-
+            </tr>
             <!-- job -->
-            <tr>
+            <!-- <tr>
               <th scope="row">
-                <span class="language-en">Profession*:</span>
-                <span class="language-pt">Profissão*:</span>
+                <span class="language-en">Profession:</span>
+                <span class="language-pt">Profissão:</span>
               </th>
               <td>
                 <span class="language-en">
@@ -111,11 +142,11 @@
                     <option value="student">Estudante</option>
                     <option value="unemployed">Desempregado(a)</option>
                     <option value="self_employed">Trabalho por conta própria</option>
-                    <option value="other">Outra</option>
+                    <option value="other">Outro</option>
                   </select>
                 </span>
               </td>
-            </tr>
+            </tr> -->
             <!-- income -->
             <tr>
               <th scope="row">
@@ -149,6 +180,22 @@
                 </span>
               </td>
             </tr>
+            <tr>
+              <td colspan="2" class="text-center">
+                <label style="margin-right: 15px">
+                  <input type="radio" name="type_user" value="resident" class="survey_sus">
+                  <span class="language-en">I'm a <b>resident</b> of Lisbon</span>
+                  <span class="language-pt">Eu sou um <b>morador</b> de Lisboa</span>
+                </label>
+
+                <label>
+                  <input type="radio" name="type_user" value="visitor" class="survey_sus">
+                  <span class="language-en">I'm a <b>visitor</b> of Lisbon</span>
+                  <span class="language-pt">Eu sou um <b>visitante</b> de Lisboa</span>
+                </label>
+              </td>
+            </tr>
+
           </tbody>
         </table>
         <div class="col" style="font-size:12px">

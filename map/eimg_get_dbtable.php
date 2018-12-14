@@ -13,7 +13,7 @@ $opt = [
   PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,//If occur some error fom the DB, it is displayed
   // PDO::ATTR_ERRMODE            => PDO::ERRMODE_SILENT, //If occur some error fom the DB, it's not displayed
   PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-  PDO::ATTR_EMULATE_PREPARES   => false //true, for send multiple queries in one line and false in order to it not be possible
+  PDO::ATTR_EMULATE_PREPARES   => false //true, to send multiple queries in one line and false to send only ONE per call
 ];
 $pdo = new PDO($dsn, $username, $password, $opt);
 

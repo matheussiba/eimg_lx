@@ -25,11 +25,6 @@ if (isset($_SESSION['user_id'])) {
 <?php include "includes/css/style_eimg_draw.php" ?>
 <?php include "includes/css/style_eimg_index.php" ?>
 
-<style>
-
-
-</style>
-
 
 <body>
 <!-- Modal_1 -->
@@ -217,6 +212,9 @@ if (isset($_SESSION['user_id'])) {
 var IsMobileDevice, isPortrait, isIE, cookie_lang, checkedValue, map_original_center, minimumZoom, mymap, ctlSidebar, ctlAttribute;
 var LyrAOI, baselayers, basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery, basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
 
+//  ********* Increment the column in the DB *********
+incrementColumn("cnt_access_app")
+
 $(document).ready(function(){
   //  ********* Map Initialization *********
   loadBasemaps();
@@ -368,6 +366,23 @@ function cbxLangChange(value){
     $('.language-en').hide(); // hides
     $('.language-pt').show(); // Shows
   }
+}
+
+//  # Analytics Functions
+function incrementColumn(columnName) {
+  $.ajax({
+    url:'<?php  echo $root_directory?>analytics/increment.php',
+    data: {
+      column: columnName
+    },
+    type:'POST',
+    success:function(response){
+      var column_num_access = JSON.parse(response);
+      var num = column_num_access[columnName];
+      setCookie("user_id", num, 7);
+    },
+    error: function(xhr, status, error){ alert("ERROR: "+error); }
+  }); // End ajax
 }
 
 $("#btn_close_modal_intro").on("click", function () {

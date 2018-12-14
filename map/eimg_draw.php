@@ -290,8 +290,8 @@
   var cnt_escapeKeyPressed = 0;
   var time_start_draw, time_end_draw;
 
-  // # To Delete
-  var cnt_test = 0;
+  //  ********* Increment the column in the DB *********
+  incrementColumn("cnt_access_draw");
 
   //  ********* Mobile Device parameters and Function *********
   loadMobileFunction();
@@ -392,10 +392,6 @@
         }else{
           removeLastVertex();
         }
-
-
-
-
       });
       // also fired on the markers of the polygon
       layer.on('pm:snap', function(e) {
@@ -408,7 +404,7 @@
     document.onkeydown = KeyPress; // Capture the pressed key in the document
 
     //$('#modal_3_sus').modal('show');
-    // $('#modal_2_demographics').modal('show');
+    $('#modal_2_demographics').modal('show');
 
   }); //END $(document).ready()
 
@@ -1228,8 +1224,6 @@
   //  # Sidebar Functions
   function sidebarChange(e){
     /* DESCRIPTION: Global events for the sidebar. 'e' can be either "closing", "opening" or "content"*/
-    // just a temporary count for testing to see how many times the sidebar was changed
-    cnt_test++;
     // get the active Tab the sidebar founds itself. if 'e'=="closing", clickedTab == null
     var clickedTab = getActiveTabId(true);
 
@@ -1267,7 +1261,7 @@
       }
     }
 
-    // console.log(cnt_test, "Previous Tab:", previousTab, "Active Tab:", clickedTab);
+    // console.log( "Previous Tab:", previousTab, "Active Tab:", clickedTab);
     // When the user clicks to create a new area but nothing's drawn for that area.
     // When the status of the sidebar changes, this new area is deleted
     if(previousTab!=null){
@@ -1730,7 +1724,7 @@
         //to not overide the edit mode style
         setStyleNormal();
       }
-      // console.log(cnt_test,"CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
+      // console.log("CLOSE Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode, "cbxChecked:", cntCheckedCbx );
 
       if(cnt_LikedAreas+cnt_DislikedAreas<6){
         document.getElementById('dynamic-icon-tab').className = 'fa fa-plus';
@@ -1749,7 +1743,7 @@
       if (createMode){
         warnFinishCreation();
       }
-      // console.log(cnt_test,"OPEN Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
+      // console.log("OPEN Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
 
     });
     ctlSidebar.on('content', function(e) {
@@ -1781,96 +1775,10 @@
         toggleLyrStyle(activeTab, setStyle_clicked);
       }
 
-      // console.log(cnt_test,"CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
+      // console.log("CONT Prev: ",previousTab, "Act: ", activeTab, "CM", createMode, "EM", editMode);
 
     });//END content
   }
-
-  //  # Message Functions
-  function warnCheckAtt(){
-    /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
-    if(siteLang=='en') alert("Please, check at least one attribute corresponding to the area drawn");
-    if(siteLang=='pt') alert("Por favor, escolha ao menos um atributo correspondente a área desenhada");
-    //Open the sidebar
-    if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
-  }
-  function warnDeleteArea(){
-    /* DESCRIPTION: Warn the user if tries to delete an area */
-    return confirm("Are you sure you want to delete this area permanently?")
-  }
-  function warnFinishCreation(){
-    /* DESCRIPTION: Warn the user if tries open the sidebar in a creation mode */
-    if(siteLang=='en') var str_popup='<span><h6>Please, finish the draw first</h6></span>';
-    if(siteLang=='pt') var str_popup='<span><h6>Por favor, finalize o desenho primeiro</h6></span>';
-    openAlertPopup(mymap.getCenter(), str_popup);
-    showInfoBox();
-    ctlSidebar.close();
-  }
-
-  //  # Document Functions
-  function KeyPress(e) {
-    /* DESCRIPTION: call functions based on the combination of keys the users is pressing */
-    var evtobj = window.event? event : e
-    //Ctrl+z
-    if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
-      // if the user press Ctrl+z and a new layer is being created, remove the last vertex of the layer
-      if(createMode){
-        cnt_CtrlZPressed++;
-        removeLastVertex();
-      }
-    }
-    if (evtobj.keyCode == 13) {
-      // if the user press Enter and a layer is being edited, the area is saved
-      if(editMode){
-        cnt_enterKeyPressed++;
-        saveArea();
-      }
-      // if the user press Enter and a new layer is being created, the area is finished
-      if(createMode){
-        cnt_enterKeyPressed++;
-        finishCreation();
-      }
-
-      var address = document.getElementById('search_address').value;
-      if(address!="" && (!createMode) && (!editMode) ){
-        geocodeAddress(GM_geocoder);
-      }
-
-    }
-    if (evtobj.keyCode == 27) {
-      // if the user press Esc and a new layer is being created, the area is canceled
-      if(createMode) {
-        cnt_escapeKeyPressed++;
-        if(siteLang=='en') var str_popup='<span><h7>The drawing was successfully canceled</h7></span>';
-        if(siteLang=='pt') var str_popup='<span><h7>O desenho foi cancelado com sucesso</h7></span>';
-        removeArea(area_id, true, 2000);
-        openAlertPopup(mymap.getCenter(), str_popup);
-      }
-    }
-  }
-  function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
-  function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
-
-  //  # jQuery Functions
   function finish_mapDraw(){
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
@@ -1988,6 +1896,107 @@
     }
   };//end btnFinish
 
+  //  # Message Functions
+  function warnCheckAtt(){
+    /* DESCRIPTION: Warn the user to check at least one attribute in the checkbox */
+    if(siteLang=='en') alert("Please, check at least one attribute corresponding to the area drawn");
+    if(siteLang=='pt') alert("Por favor, escolha ao menos um atributo correspondente a área desenhada");
+    //Open the sidebar
+    if (getActiveTabId()!=area_id){ctlSidebar.open(area_id);}
+  }
+  function warnDeleteArea(){
+    /* DESCRIPTION: Warn the user if tries to delete an area */
+    return confirm("Are you sure you want to delete this area permanently?")
+  }
+  function warnFinishCreation(){
+    /* DESCRIPTION: Warn the user if tries open the sidebar in a creation mode */
+    if(siteLang=='en') var str_popup='<span><h6>Please, finish the draw first</h6></span>';
+    if(siteLang=='pt') var str_popup='<span><h6>Por favor, finalize o desenho primeiro</h6></span>';
+    openAlertPopup(mymap.getCenter(), str_popup);
+    showInfoBox();
+    ctlSidebar.close();
+  }
+
+  //  # Document Functions
+  function KeyPress(e) {
+    /* DESCRIPTION: call functions based on the combination of keys the users is pressing */
+    var evtobj = window.event? event : e
+    //Ctrl+z
+    if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
+      // if the user press Ctrl+z and a new layer is being created, remove the last vertex of the layer
+      if(createMode){
+        cnt_CtrlZPressed++;
+        removeLastVertex();
+      }
+    }
+    if (evtobj.keyCode == 13) {
+      // if the user press Enter and a layer is being edited, the area is saved
+      if(editMode){
+        cnt_enterKeyPressed++;
+        saveArea();
+      }
+      // if the user press Enter and a new layer is being created, the area is finished
+      if(createMode){
+        cnt_enterKeyPressed++;
+        finishCreation();
+      }
+
+      var address = document.getElementById('search_address').value;
+      if(address!="" && (!createMode) && (!editMode) ){
+        geocodeAddress(GM_geocoder);
+      }
+
+    }
+    if (evtobj.keyCode == 27) {
+      // if the user press Esc and a new layer is being created, the area is canceled
+      if(createMode) {
+        cnt_escapeKeyPressed++;
+        if(siteLang=='en') var str_popup='<span><h7>The drawing was successfully canceled</h7></span>';
+        if(siteLang=='pt') var str_popup='<span><h7>O desenho foi cancelado com sucesso</h7></span>';
+        removeArea(area_id, true, 2000);
+        openAlertPopup(mymap.getCenter(), str_popup);
+      }
+    }
+  }
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  //  # Analytics Functions
+  function incrementColumn(columnName) {
+    $.ajax({
+      url:'<?php  echo $root_directory?>analytics/increment.php',
+      data: {
+        column: columnName
+      },
+      type:'POST',
+      success:function(response){
+        var column_num_access = JSON.parse(response);
+        var num = column_num_access[columnName];
+      },
+      error: function(xhr, status, error){ alert("ERROR: "+error); }
+    }); // End ajax
+  }
+
+  //  # jQuery Functions
   $(".btnClose").click(function(){
     $("#dlgUsabilityQuest").hide();
     window.location.href = 'eimg_viewer.php';
@@ -2001,7 +2010,6 @@
     //   }
     // });
   });//end btnClose click event
-
   //  # close modals from eimg_draw-modals.php
   $("#btn_close_modal_demographics").on("click", function () {
     //checking values from demographics modal
@@ -2009,6 +2017,8 @@
     var user_sex = e.options[e.selectedIndex].value;
     var e = document.getElementById("user_age-"+siteLang);
     var user_age = e.options[e.selectedIndex].value;
+    var e = document.getElementById("user_school-"+siteLang);
+    var user_school = e.options[e.selectedIndex].value;
     var e = document.getElementById("user_job-"+siteLang);
     var user_job = e.options[e.selectedIndex].value;
     var e = document.getElementById("user_income-"+siteLang);
