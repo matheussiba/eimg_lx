@@ -60,21 +60,21 @@
           </div>
 
         <div id="text_sidebar_home_1" style="text-align: justify;text-justify: inter-word; padding-top: 15px;">
-          <p style="font-size:14px; padding-bottom: 0px;margin-top:0px;">
+          <p style="padding-bottom: 0px;margin-top:0px;" class="sidebar_paragraph">
             <span class="language-en">Please, draw in the map at least 2 areas:</span>
             <span class="language-pt">Por favor, desenho no mapa no mínimo 2 áreas:</span>
           </p>
           <ul>
-            <li style="font-size:14px;">
+            <li class="sidebar_paragraph">
               <span class="language-en">1 area you like in Lisbon (max:3)</span>
               <span class="language-pt">1 área que você gosta em Lisboa (máx:3)</span>
             </li>
-            <li style="font-size:14px;">
+            <li class="sidebar_paragraph">
               <span class="language-en">1 area you dislike in Lisbon (max:3) </span>
               <span class="language-pt">1 área que você não gosta (ou não gosta tanto) em Lisboa (máx:3)</span>
             </li>
           </ul>
-          <p style="font-size:14px;">
+          <p class="sidebar_paragraph">
             <span class="language-en">Whenever you're done, come back here and click the 'Finish' button in order to see the result of all participants.</span>
             <span class="language-pt">Quando você estiver terminar, volte aqui de novo e clique no botão abaixo para finalizar e ver o resultado de todos os participantes que já participaram</span>
           </p>
@@ -87,7 +87,7 @@
         <div class="sidebarContentParent">
           <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
             <span class="contenChildSpan">
-              <p>
+              <p class="sidebar_paragraph">
                 <span class="language-en">To create a new area go to:</span>
                 <span class="language-pt">Para criar uma nova área vá em:</span>
               </p>
@@ -101,7 +101,7 @@
           </div>
           <div id="text_sidebar_home_2" class="sidebarContentChild" style="width: 100%; text-align: center;">
             <span class="contenChildSpan">
-              <p>
+              <p class="sidebar_paragraph">
                 <span class="language-en">For more details go to:</span>
                 <span class="language-pt">Para mais detalhes clique em:</span>
               </p>
@@ -126,26 +126,29 @@
             <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: auto; margin-right: auto; width: auto;max-height: 70px;">
           </div>
           <!-- INFO Starts -->
-
-          <span class="language-en" style="text-align:center; padding:0;margin:0"><h5><b><i>Overview</i></b></h5></span>
-          <span class="language-pt" style="text-align:center; padding:0;margin:0"><h5><b><i>Visão Geral</i></b></h5></span>
+          <span class="language-en" style="text-align:center; padding:0;margin:0"><h5><b><i>Drawing Areas</i></b></h5></span>
+          <span class="language-pt" style="text-align:center; padding:0;margin:0"><h5><b><i>Desenhar áreas</i></b></h5></span>
           <div class="container-fluid" style="margin-left: -15px;">
             <!-- Overview session -->
             <div class="row" style="text-align:center;border-top:1px solid rgba(0,0,0,0.1);padding-top:5px">
               <div class="col" style="text-align:justify; padding">
                   <span class="language-en">
+                    <p> It's so simple to draw an area with eImage: </p>
                     <p>
-                      eImage is part of a research project involving 3 European universities: <b>NOVA IMS</b> (Lisbon, Portugal), <b>UJI</b> (Castellón, Spain) and <b>WWU</b> (Münster, Germany).
-                      The core idea is to ask citizens and visitors of Lisbon about places they like and places they dislike within the city
-                      in order to produce an evaluative image of the Lisbon.
+                      <b>First</b>, you click in the <i class="fa fa-plus"></i> sign of the sidebar.
+                      <b>Second</b>, you click in <span style="color:green">green</span> button to draw an area you like
+                      or in the <span style="color:red">red</span> button to draw an area you dislike.
+                      <b>Finally</b>, you click on the map to start the drawing.
                     </p>
                   </span>
                   <span class="language-pt">
-                    <p>
-                      eImage é parte integrante de um projeto de investigação envolvendo 3 universidades européias: <b>NOVA IMS</b> (Lisboa, Portugal), <b>UJI</b> (Castellón, Espanha) and <b>WWU</b> (Münster, Alemanha).
-                      The idéia principal é perguntar a moradores e visitantes de Lisboa, área que eles gostam e áreas que eles não gostam dentro da cidade,
-                      para assim produzir uma imagem avaliativa dessa maravilhosa capital lusitana.
-                    </p>
+                    <p> Desenhar uma área com a eImage é muito simples: </p>
+                     <p>
+                       <b> Primeiro </b>, clique no símbolo <i class="fa fa-plus"></i> da barra lateral.
+                       <b> Segundo </b>, você clica no botão <span style = "color: green"> verde </span> para desenhar uma área que você gosta
+                       ou no botão <span style = "color: red"> vermelho </span> para desenhar uma área que você não gosta.
+                       <b> Finalmente, </b>, você clica no mapa para iniciar o desenho.
+                     </p>
                   </span>
               </div>
             </div>
@@ -269,7 +272,7 @@
   var firstVertex, pntClicked;
   var minimumZoom = 11;
   var closeAlertPopUpWhenDrawIsFinished;
-  var GM_geocoder;
+  var GM_geocoder, new_vertex, previous_vertex;
 
   // # Logging variables
   var log_functions = false;
@@ -354,27 +357,44 @@
       var layer = e.workingLayer;
       layer.on('pm:vertexadded', function(e) {
         // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
-        // console.log('vertexadded', e);
         cnt_numVertices++;
 
-        if(cnt_numVertices==1){
-          //Adding Instructions popup when the user is creating the first area on the map
-          if( (cnt_LikedAreas+cnt_DislikedAreas)==1){
-            if(siteLang=='en') var str_popup = '<p>Click here again when you want<br /><b>to finish the draw</b>';
-            if(siteLang=='pt') var str_popup = '<p>Clique aqui de novo quando<br />quiseres <b>terminar o desenho</b>';
-            openAlertPopup(firstVertex, str_popup);
-          }
+        if(cnt_numVertices == 1){
+          previous_vertex = [0,0];
+          new_vertex = [e.latlng.lat, e.latlng.lng];
+        }else{
+          previous_vertex = new_vertex;
+          new_vertex = [e.latlng.lat, e.latlng.lng];
         }
 
-        // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
-        if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
-          if(siteLang=='en') var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
-          if(siteLang=='pt') var str_popup = '<p>Por favor, apenas clique<br />dentro da <b>área de estudo</b>';
-          //If the first click the user gives is outside the study area, it will restart the draw and do not close the AlertPopup
-          if (cnt_numVertices==1) closeAlertPopUpWhenDrawIsFinished = false;
-          openAlertPopup(pntClicked, str_popup);
+        var dif_lat = Math.abs(new_vertex[0]-previous_vertex[0]);
+        var dif_lng = Math.abs(new_vertex[1]-previous_vertex[1]);
+        console.log(dif_lat, dif_lng);
+        if( dif_lat>0.00008 || dif_lng>0.00008 ){
+          if(cnt_numVertices==1){
+            //Adding Instructions popup when the user is creating the first area on the map
+            if( (cnt_LikedAreas+cnt_DislikedAreas)<=2){
+            if(siteLang=='en') var str_popup = '<p>Click here again when you want<br /><b>to finish the draw</b>';
+            if(siteLang=='pt') var str_popup = '<p>Clique aqui de novo quando<br />quiseres <b>terminar o desenho</b>';
+              openAlertPopup(firstVertex, str_popup);
+            }
+          }
+
+          // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
+          if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
+            if(siteLang=='en') var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
+            if(siteLang=='pt') var str_popup = '<p>Por favor, apenas clique<br />dentro da <b>área de estudo</b>';
+            //If the first click the user gives is outside the study area, it will restart the draw and do not close the AlertPopup
+            if (cnt_numVertices==1) closeAlertPopUpWhenDrawIsFinished = false;
+            openAlertPopup(pntClicked, str_popup);
+            removeLastVertex();
+          }
+        }else{
           removeLastVertex();
         }
+
+
+
 
       });
       // also fired on the markers of the polygon
@@ -387,7 +407,7 @@
     ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
     document.onkeydown = KeyPress; // Capture the pressed key in the document
 
-    $('#modal_3_sus').modal('show');
+    //$('#modal_3_sus').modal('show');
     // $('#modal_2_demographics').modal('show');
 
   }); //END $(document).ready()
@@ -398,7 +418,12 @@
     /* DESCRIPTION: It tun after the user clicked on the button 'Draw Area' inside an liked or disliked tab */
     // Passing the ID gotten from the id of the button clicked to the global variable in order to be accesed in the anonymous functions
     if (createMode==false){
-      area_id = ((button_clicked_properties.id).split("_"))[0];
+      //area_id = ((button_clicked_properties.id).split("_"))[0];
+      area_id = button_clicked_properties;
+      if(siteLang=='en') var str_popup='<span><h6>Please, click on the map<br />to start the drawing...</h6></span>';
+      if(siteLang=='pt') var str_popup='<span><h6>Por favor, clique no mapa<br />para começar o desenho...</h6></span>';
+      if( (cnt_LikedAreas+cnt_DislikedAreas)<=2) openAlertPopup(mymap.getCenter(), str_popup);
+
       if (log_functions){console.log('drawArea', area_id);}
 
       document.getElementById(area_id+"_str_startdrawing").innerHTML ="";
@@ -701,17 +726,18 @@
       document.workingLayer._map.pm.Draw["Poly"]._finishShape();
     }else if(num_vertices>=1){
       //At least one click was given, so firstVertex exists
-      if(siteLang=='en') var str_popup = '<p>Please, add at least <br /><b>3 vertices</b>';
+      if(siteLang=='en') var str_popup = '<p>Please, add at least <br /><b>3 vertices</b><br />';
       if(siteLang=='pt') var str_popup = '<p>Por favor, adicione no mínimo <br /><b>3 vértices</b>';
       openAlertPopup(firstVertex, str_popup);
     }else{
-      if(siteLang=='en') var str_popup = '<p>Please, add at least <br /><b>3 vertices</b>';
-      if(siteLang=='pt') var str_popup = '<p>Por favor, adicione no mínimo <br /><b>3 vértices</b>';
+      if(siteLang=='en') var str_popup = '<p>Please, start clicking on the map<br /><b>to draw the area you want</b>';
+      if(siteLang=='pt') var str_popup = '<p>Por favor, comece a clicar no mapa <br /><b>para desenhar a área que voce deseja</b>';
       openAlertPopup(mymap.getCenter(), str_popup);
     }
   }
   function removeLastVertex(){
     /* DESCRIPTION: When the layer is being drawn, for more than 2 vertices the user can remove the last vertex by pressing Ctrl+z */
+    new_vertex = previous_vertex;
     var num_vertices = document.workingLayer._latlngs.length;
     if (num_vertices>1){
       document.workingLayer._map.pm.Draw["Poly"]._removeLastVertex();
@@ -738,8 +764,9 @@
     //restart variables
     editMode=false;
     createMode=false;
-    var button_drawArea_id = area_id+"_drawArea";
-    document.getElementById(button_drawArea_id).click();
+    // var button_drawArea_id = area_id+"_drawArea";
+    // document.getElementById(button_drawArea_id).click();
+    drawArea(area_id);
   }
   function openAlertPopup(popup_position, popup_content, duration_open=5000){
     /* DESCRIPTION: Shows the user a message in a Popup instead of using alert*/
@@ -886,7 +913,7 @@
       createTitleLiByHref( "#info" , "Click to see information" );
 
       // Geocode box
-      $('#search_address').prop('placeholder','Search for an address...');
+      $('#search_address').prop('placeholder','Search for a place/address...');
       $("#geocode_submit").prop('value', 'Search');
     }
     if(siteLang=='pt') {
@@ -894,7 +921,7 @@
       createTitleLiByHref( "#info" , "Clique para ir para ver as informações" );
 
       // Geocode box
-      $('#search_address').prop('placeholder','Procure um endereço...');
+      $('#search_address').prop('placeholder','Procure um sítio/endereço...');
       $("#geocode_submit").prop('value', 'Procurar');
     }
 
@@ -1095,8 +1122,9 @@
         if(siteLang=='pt') alert("A área desenhada é muito pequena\nPor favor, comece de novo!");
         // Start a new draw again
         mymap.removeLayer(lyrDraw);
-        var button_drawArea_id = area_id+"_drawArea";
-        document.getElementById(button_drawArea_id).click();
+        // var button_drawArea_id = area_id+"_drawArea";
+        // document.getElementById(button_drawArea_id).click();
+        drawArea(area_id);
         return;
       }
 
@@ -1499,6 +1527,7 @@
     //variable for verifying when a 'liked' or 'disliked' area was created. It should be after the sidebar is opened
     newTabCreated = true;
 
+    drawArea(tab_id);
   };//END create_areaTab()
   function returnTempTabContent(){
     /* DESCRIPTION: Returns the content of the '#temp_tab' update the button status all the time it's called
@@ -1628,7 +1657,7 @@
     return foundStatus;
   };//END searchTagIfExistsByHref()
   function existentTabs(){
-    /* DESCRIPTION: returns true if a tab exists and false if not
+    /* DESCRIPTION: returns all existentTabs
     ### Data entry example: href = "#temp_tab"  */
     var array_tabs = [];
     var lis = document.querySelectorAll('#sidebarTab_div li');
@@ -1639,7 +1668,7 @@
       array_tabs.push(tab);
     }
     return array_tabs
-  };//END searchTagIfExistsByHref()
+  };//END existentTabs()
   function createTitleLiByHref(href, newtitle){
     /* DESCRIPTION: Updates the title of the tab "li" element when it's hovered
     ### When a new tab is added using the API, the title receives a HTML, f.e:
@@ -1801,6 +1830,12 @@
         cnt_enterKeyPressed++;
         finishCreation();
       }
+
+      var address = document.getElementById('search_address').value;
+      if(address!="" && (!createMode) && (!editMode) ){
+        geocodeAddress(GM_geocoder);
+      }
+
     }
     if (evtobj.keyCode == 27) {
       // if the user press Esc and a new layer is being created, the area is canceled

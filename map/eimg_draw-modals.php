@@ -181,8 +181,8 @@
       <div class="modal-header modal-header-removeclose" style="padding:5px; ">
         <div class="col" style="text-align:center;">
           <h5 class="modal-title" style="padding:0;margin:0; font-size: 1.6vw">
-            <span class="language-en">Tell us a bit about you:</span>
-            <span class="language-pt">Conte-nos um pouco sobre você:</span>
+            <span class="language-en">Your Feedback about eImage LX:</span>
+            <span class="language-pt">Sua opinião sobre eImage LX:</span>
           </h5>
         </div>
       </div>
@@ -340,8 +340,8 @@
               <tr>
                 <td class="sus_index">11.</td>
                 <td class="sus_question">
-                  <span class="language-en">I found this application very useful for giving feedback to my city council.</span>
-                  <span class="language-pt">Eu achei este aplicativo muito útil para dar feedback ao meu conselho da cidade.</span>
+                  <span class="language-en">This app helps me say what I like/dislike effectively.</span>
+                  <span class="language-pt">Esse aplicativo me ajuda a dizer o que eu gosto/não gosto efetivamente.</span>
                 </td>
                 <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="strong_disagree"></td>
                 <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="disagree"></td>
@@ -352,8 +352,8 @@
               <tr>
                 <td class="sus_index">12.</td>
                 <td class="sus_question">
-                  <span class="language-en">This application makes participative processes really easy to be done.</span>
-                  <span class="language-pt">Esta aplicação torna os processos participativos muito fáceis de serem feitos.</span>
+                  <span class="language-en">This app could be an effective way to give feedback to my city council.</span>
+                  <span class="language-pt">Esse aplicativo pode ser uma maneira eficaz de fornecer feedback ao meu conselho municipal.</span>
                 </td>
                 <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="strong_disagree"></td>
                 <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="disagree"></td>

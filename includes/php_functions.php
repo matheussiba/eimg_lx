@@ -28,6 +28,14 @@ function show_msg(){
 }
 
 //   ******************  DATABASE FUNCTIONS  ********************************
+function clean_array($array){
+  foreach ($array as $key => $val) {
+    $array[$key]=htmlentities($val);
+  }
+  return $array;
+}
+
+
 
     function count_field_val($pdo, $tbl, $fld, $val) {
          try {

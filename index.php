@@ -135,9 +135,11 @@ if (isset($_SESSION['user_id'])) {
           <div class="container-fluid">
             <div class="row">
               <div class="col" style="text-align:center;padding-top: 8px; font-size: 13px;">
-                <input type="checkbox" name="cbxAgreement">
-                <span class="language-en">I agree to take part in the above study.</span>
-                <span class="language-pt">Eu aceito a participar do estudo mencionado acima.</span>
+                <label style="cursor:pointer;">
+                  <input type="checkbox" name="cbxAgreement" style="cursor:pointer;">
+                  <span class="language-en">I agree to take part in the above study.</span>
+                  <span class="language-pt">Eu aceito a participar do estudo mencionado acima.</span>
+                </label>
               </div>
               <div class="col-4">
               <div style="text-align:right;">
@@ -185,11 +187,12 @@ if (isset($_SESSION['user_id'])) {
   <div id="sidebarTab_div" class="leaflet-sidebar-tabs">
     <ul id="sidebarTab_top" class="sidebarTab_ul" role="tablist">
       <li><a href="#home" role="tab"><i class="fa fa-home"></i></a></li>
-      <li><a href="#home" role="tab"><i class="fa fa-thumbs-up"></i></a></li>
-      <li><a href="#home" role="tab"><i class="fa fa-thumbs-down"></i></a></li>
-      <li><a href="#home" role="tab"><i class="fa fa-thumbs-up"></i></a></li>
-      <li><a href="#home" role="tab"><i class="fa fa-thumbs-down"></i></a></li>
-      <li><a href="#home" role="tab"><i class="fa fa-thumbs-down"></i></a></li>
+      <li><a href="#foo0" role="tab"><i class="fa fa-thumbs-up"></i></a></li>
+      <li><a href="#foo1" role="tab"><i class="fa fa-thumbs-down"></i></a></li>
+      <!-- <li><a href="#foo2" role="tab"><i class="fa fa-thumbs-down"></i></a></li>
+      <li><a href="#foo3" role="tab"><i class="fa fa-thumbs-up"></i></a></li>
+      <li><a href="#foo4" role="tab"><i class="fa fa-thumbs-down"></i></a></li>
+      <li><a href="#foo5" role="tab"><i class="fa fa-thumbs-down"></i></a></li> -->
     </ul>
     <ul id="sidebarTab_bottom" class="sidebarTab_ul" role="tablist">
       <li><a href="#info" role="tab"><i class="fa fa-info-circle"></i></a></li>
@@ -199,14 +202,20 @@ if (isset($_SESSION['user_id'])) {
   <div class="leaflet-sidebar-content">
     <div class="leaflet-sidebar-pane" id="home"> </div>
     <div class="leaflet-sidebar-pane" id="info"> </div>
+    <div class="leaflet-sidebar-pane" id="foo0"> </div>
+    <div class="leaflet-sidebar-pane" id="foo1"> </div>
+    <!-- <div class="leaflet-sidebar-pane" id="foo2"> </div>
+    <div class="leaflet-sidebar-pane" id="foo3"> </div>
+    <div class="leaflet-sidebar-pane" id="foo4"> </div>
+    <div class="leaflet-sidebar-pane" id="foo5"> </div> -->
   </div>
 </div>
 
 <div id="mapdiv" class="col-md-12"></div>
 
 <script>
-var IsMobileDevice, isPortrait, isIE, cookie_lang, checkedValue, minimumZoom, mymap, ctlSidebar, ctlAttribute;
-var LyrAOI, basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery, basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
+var IsMobileDevice, isPortrait, isIE, cookie_lang, checkedValue, map_original_center, minimumZoom, mymap, ctlSidebar, ctlAttribute;
+var LyrAOI, baselayers, basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery, basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
 
 $(document).ready(function(){
   //  ********* Map Initialization *********
@@ -226,54 +235,102 @@ $(document).ready(function(){
   });
 
   loadStudyArea();
-
   loadControls(); //Load leaflet controls
+
+  map_original_center = [mymap.getCenter().lat, mymap.getCenter().lng ]
+  setTimeout(changeMap, 2000)
+  setInterval(changeMap, 10000);
 
 }); //END $(document).ready()
 
+function changeMap() {
+  console.log("Hello");
 
-// mymap.removeLayer(grayscale);
-// mymap.addLayer(streets);
-// basemap_osm
-// basemap_mapbox
-// basemap_Gterrain
-// basemap_Gimagery
-// basemap_GimageHybrid
-// basemap_WorldImagery
-
-
-  // Receive true if the application is being used in Mobile device, false otherwise
-  IsMobileDevice = (((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) ? true : false);
-  if(IsMobileDevice){
-    if("orientation" in screen) {
-      var orientation_str = screen.orientation.type;
-      var orientation_array = orientation_str.split("-");
-      // Receive true if the application is being used in portrait mode, false otherwise
-      isPortrait = ((orientation_array[0] == "portrait") ? true : false);
-    }
+  var eft = existentFooTabs();
+  for (var i = 0; i < eft.length; i++) {
+    deleteTabByID(eft[i]);
   }
-  // Receive true if Internet Explorer, false otherwise
-  isIE = ((window.navigator.userAgent.indexOf("MSIE ") > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) ? true : false);
-  console.log(isIE);
 
-  cookie_lang = getCookie("app_language");
-  console.log(cookie_lang);
-  if(cookie_lang!=""){
-    $("input[type=radio][name=language_switch][value='"+cookie_lang+"']").prop("checked",true);
-  }else{
-    $("input[type=radio][name=language_switch][value='pt']").prop("checked",true);
+  foo0 = {
+    id: 'foo0',
+    tab: '<i class="fa fa-thumbs-down"></i>',
+    button: function (event) { console.log(event); }
   }
-  // Open the first modal
-  $('#modal_1_intro').modal('show');
-  checkedValue = $('input[type=radio][name=language_switch]:checked').val();
-  cbxLangChange(checkedValue);
+  foo1 = {
+    id: 'foo1',
+    tab: '<i class="fa fa-thumbs-up"></i>',
+    button: function (event) { console.log(event); }
+  }
+  foo2 = {
+    id: 'foo2',
+    tab: '<i class="fa fa-thumbs-down"></i>',
+    button: function (event) { console.log(event); }
+  }
+  foo3 = {
+    id: 'foo3',
+    tab: '<i class="fa fa-thumbs-up"></i>',
+    button: function (event) { console.log(event); }
+  }
+  foo4 = {
+    id: 'foo4',
+    tab: '<i class="fa fa-thumbs-down"></i>',
+    button: function (event) { console.log(event); }
+  }
+  foo5 = {
+    id: 'foo5',
+    tab: '<i class="fa fa-thumbs-up"></i>',
+    button: function (event) { console.log(event); }
+  }
 
-  if (!isPortrait){
-    document.getElementById("message_mobile").style.display="none";
+  var randomNumber = Math.floor(Math.random() * 6);
+  var arrayTabs = [foo0,foo1,foo2,foo3,foo4,foo5];
+  for (var i=0; i<=randomNumber; i++) {
+    ctlSidebar.addPanel(arrayTabs[i]);
   }
-  if (!isIE){
-    document.getElementById("message_ie").style.display="none";
+
+  // console.log( map_original_center[0]+(Math.random() * 0.0001) );
+  console.log(Math.floor(Math.random() * 2)+14 );
+
+
+
+  mymap.setView(new L.LatLng(map_original_center[0]+(Math.random() * 0.03), map_original_center[1]+(Math.random() * 0.03)), Math.floor(Math.random() * 2)+14 );
+}
+
+
+// Receive true if the application is being used in Mobile device, false otherwise
+IsMobileDevice = (((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) ? true : false);
+if(IsMobileDevice){
+  if("orientation" in screen) {
+    var orientation_str = screen.orientation.type;
+    var orientation_array = orientation_str.split("-");
+    // Receive true if the application is being used in portrait mode, false otherwise
+    isPortrait = ((orientation_array[0] == "portrait") ? true : false);
   }
+}
+// Receive true if Internet Explorer, false otherwise
+isIE = ((window.navigator.userAgent.indexOf("MSIE ") > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) ? true : false);
+console.log(isIE);
+
+cookie_lang = getCookie("app_language");
+console.log(cookie_lang);
+if(cookie_lang!=""){
+  $("input[type=radio][name=language_switch][value='"+cookie_lang+"']").prop("checked",true);
+}else{
+  $("input[type=radio][name=language_switch][value='pt']").prop("checked",true);
+}
+
+// Open the first modal
+$('#modal_1_intro').modal('show');
+checkedValue = $('input[type=radio][name=language_switch]:checked').val();
+cbxLangChange(checkedValue);
+
+if (!isPortrait){
+  document.getElementById("message_mobile").style.display="none";
+}
+if (!isIE){
+  document.getElementById("message_ie").style.display="none";
+}
+
 
 function setCookie(cname, cvalue, exdays) {
   var d = new Date();
@@ -381,18 +438,19 @@ function loadBasemaps() {
   basemap_Gterrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
     subdomains:['mt0','mt1','mt2','mt3']
   });
-  basemap_Gimagery = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-    subdomains:['mt0','mt1','mt2','mt3']
-  });
+  // basemap_Gimagery = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+  //   subdomains:['mt0','mt1','mt2','mt3']
+  // });
   basemap_GimageHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
     subdomains:['mt0','mt1','mt2','mt3']
   });
-  basemap_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
-  });
-  Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
-    name: 'overlay',
-  });
+  // basemap_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  //   attribution: '&copy;<a href="https://www.esri.com/en-us/home">Esri</a>'
+  // });
+  // Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
+  //   name: 'overlay',
+  // });
+
 }
 function loadControls() {
   /* Add leaflet controls to the map */
@@ -408,18 +466,38 @@ function loadControls() {
   ctlAttribute.addAttribution('OSM');
   ctlAttribute.addAttribution('&copy;<a href="http://mastergeotech.info">Master GeoTech</a>');
   ctlAttribute.addAttribution('&copy;<a href="https://github.com/codeofsumit/leaflet.pm">LeafletPM</a>');
-
-  // ctlLayers = L.control.layers(
-  //   {
-  //     '<i class="fas fa-map-marked"></i>': basemap_mapbox,
-  //     '<i class="fas fa-mountain"></i>': basemap_Gterrain,
-  //     '<i class="fas fa-globe-americas"></i>': basemap_GimageHybrid,
-  //     // '<i class="fas fa-image"></i>': basemap_WorldImagery
-  //   }, null, {collapsed: false}
-  // ).addTo(mymap);
-
 }
 
+function deleteTabByID(id, close_sidebar){
+  /* DESCRIPTION: Deletes the tab based on the href that was passed
+  ### If no href was passed it means that  a 'Remove Area' button inside a 'liked' or 'disliked' tab was clicked.
+  ### Therefore this tab will be deleted tab was clicked. Therefore, this tab will be removed*/
+  var href = "#"+id
+
+  //Search for all the "li" elements of the "sidebarTab_div" and remove the one which has
+  var lis = document.querySelectorAll('#sidebarTab_div li');
+  for(var i=0; li=lis[i]; i++) {
+    //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
+    if( li.getElementsByTagName("a")[0].getAttribute("href") == href ){
+      li.parentNode.removeChild(li);
+    }
+  }
+  //Remove the "div" element whose id == href.
+  $( "div" ).remove( href );
+};//END deleteTabByHref()
+function existentFooTabs(){
+  /* DESCRIPTION: returns all existentTabs
+  ### Data entry example: href = "#temp_tab"  */
+  var array_tabs = [];
+  var lis = document.querySelectorAll('#sidebarTab_div li');
+  for(var i=0; li=lis[i]; i++) {
+    //console.log( li.getElementsByTagName("a")[0].getAttribute("href") );
+    var tab = li.getElementsByTagName("a")[0].getAttribute("href")
+    tab = tab.substring(1, tab.length); //returns ex: "temp_tab"
+    if (tab.substring(0, 3) == 'foo') array_tabs.push(tab);
+  }
+  return array_tabs
+};//END existentTabs()
 </script>
 
 </body>

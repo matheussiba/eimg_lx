@@ -32,11 +32,28 @@
     text-align: center;
     /* font-family: 'Roboto','sans-serif'; */
     line-height: 30px;
-    padding-left: 7px;
+    padding-left: 10px;
 
 		left: 50%;
 		transform: translate( -50%); /* Centrates the element in the middle of the screen */
   }
+
+	::-webkit-input-placeholder {
+	  font-size: 11px;
+	}
+	::-moz-placeholder {
+	  font-size: 11px;
+	}
+	:-ms-input-placeholder {
+	  font-size: 11px;
+	}
+	::placeholder {
+	  font-size: 11px;
+	}
+
+	.sidebar_paragraph{
+		font-size: 14px;
+	}
 
 	#modal_3_sus .modal-dialog {
 	  /* width: 100% !important;
@@ -96,8 +113,16 @@
 
 
 	/* Table SUS */
-	.sus {
-		font-size: 1.4vw;
+
+	@media screen and (min-width: 1200px) {
+		.sus {
+			font-size: 16px;
+		}
+	}
+	@media screen and (max-width: 1200px) {
+		.sus {
+			font-size: 1.4vw;
+		}
 	}
 
 	.sus input[type='radio']{
@@ -146,11 +171,22 @@
 	.sus_cbx {
 		width: 9%;
 		float: left;
+		/* color:blue; */
 		/* fallback */
 		vertical-align: middle;
 		text-align: center;
-		font-size: 1vw!important;
 	}
+	@media screen and (min-width: 1200px) {
+		.sus_cbx {
+		   font-size: 10px;
+		}
+	}
+	@media screen and (max-width: 1200px) {
+		.sus_cbx {
+		   font-size: 1vw;
+		}
+	}
+
 	.modal-footer{
 		padding: 0;
 		margin: 0;

@@ -68,7 +68,6 @@
   }
 
 
-  /* ****************** CSS for the sidebar ****************** */
   .leaflet-sidebar-content{
     background-color: rgba(256, 256, 256, 0.7);
   }
