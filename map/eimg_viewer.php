@@ -279,6 +279,9 @@ if (isset($_SESSION['user_id'])) {
   // # To Delete
   var cnt_test = 0;
 
+  //  ********* Increment the column in the DB *********
+  incrementColumn("cnt_access_viewer");
+
   //  ********* Mobile Device parameters and Function *********
   loadMobileFunction();
   //  ********* Create Map *********
@@ -876,6 +879,22 @@ if (isset($_SESSION['user_id'])) {
       }
     }
     return "";
+  }
+
+  //  # Analytics Functions
+  function incrementColumn(columnName) {
+    $.ajax({
+      url:'<?php  echo $root_directory?>general/increment_column_value.php',
+      data: {
+        column: columnName
+      },
+      type:'POST',
+      success:function(response){
+        var column_num_access = JSON.parse(response);
+        var num = column_num_access[columnName];
+      },
+      error: function(xhr, status, error){ alert("ERROR: "+error); }
+    }); // End ajax
   }
 
   //  ********* jQuery Functions *********

@@ -371,7 +371,7 @@ function cbxLangChange(value){
 //  # Analytics Functions
 function incrementColumn(columnName) {
   $.ajax({
-    url:'<?php  echo $root_directory?>analytics/increment.php',
+    url:'<?php  echo $root_directory?>general/increment_column_value.php',
     data: {
       column: columnName
     },
@@ -384,6 +384,7 @@ function incrementColumn(columnName) {
     error: function(xhr, status, error){ alert("ERROR: "+error); }
   }); // End ajax
 }
+
 
 $("#btn_close_modal_intro").on("click", function () {
   var statuscbx = $('input[type=checkbox][name=cbxAgreement]').prop('checked');

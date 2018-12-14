@@ -1983,7 +1983,7 @@
   //  # Analytics Functions
   function incrementColumn(columnName) {
     $.ajax({
-      url:'<?php  echo $root_directory?>analytics/increment.php',
+      url:'<?php  echo $root_directory?>general/increment_column_value.php',
       data: {
         column: columnName
       },
@@ -2019,10 +2019,12 @@
     var user_age = e.options[e.selectedIndex].value;
     var e = document.getElementById("user_school-"+siteLang);
     var user_school = e.options[e.selectedIndex].value;
-    var e = document.getElementById("user_job-"+siteLang);
-    var user_job = e.options[e.selectedIndex].value;
+    // var e = document.getElementById("user_job-"+siteLang);
+    // var user_job = e.options[e.selectedIndex].value;
     var e = document.getElementById("user_income-"+siteLang);
     var user_income = e.options[e.selectedIndex].value;
+
+    var type_user = $('input[type=radio][name=type_user]:checked').val();
 
     var field_blank = [];
     if(user_sex==""){
@@ -2033,13 +2035,21 @@
       if (siteLang=="en") field_blank.push("Age");
       if (siteLang=="pt") field_blank.push("Idade");
     }
-    if(user_job==""){
-      if (siteLang=="en") field_blank.push("Profession");
-      if (siteLang=="pt") field_blank.push("Profissão");
+    if(user_school==""){
+      if (siteLang=="en") field_blank.push("Education");
+      if (siteLang=="pt") field_blank.push("Escolaridade");
     }
+    // if(user_job==""){
+    //   if (siteLang=="en") field_blank.push("Profession");
+    //   if (siteLang=="pt") field_blank.push("Profissão");
+    // }
     if(user_income==""){
       if (siteLang=="en") field_blank.push("Income");
       if (siteLang=="pt") field_blank.push("Renda");
+    }
+    if(typeof type_user == "undefined"){
+      if (siteLang=="en") field_blank.push("Resident/Visitor");
+      if (siteLang=="pt") field_blank.push("Morador/Visitante");
     }
 
     // console.log(field_blank.length);
@@ -2050,7 +2060,7 @@
     }else{
       if (siteLang=="en") var str = "Please, answer the following fields:\n"
       if (siteLang=="pt") var str = "Por favor, responda os seguintes campos:\n"
-      alert(str+field_blank.toString())
+      alert(str+field_blank.toString());
     }
 
   });
