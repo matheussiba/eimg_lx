@@ -1,23 +1,4 @@
 <?php include "includes/init.php"?>
-<?php
-//checking if the index page was accessed
-if (isset($_SESSION['user_id'])) {
-  // NEEDTO: Change message if a person tries to access this page without passing index.php
-  // print_r($_SESSION);
-  // echo implode("\t|\t",$_SESSION);
-  $_SESSION['token_code'] = generate_token();
-  $header = "eIMG Lisbon ";
-
-  // session_unset();
-  session_destroy();
-
-}else{
-  // print_r($_SESSION);
-  $header = "eIMG Lisbon - (change: ONLY ACCESS WITH USER_ID SET)";
-  // redirect('index.php');
-  // set_msg("Please choose what you want to do");
-}
-?>
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- Adding the HEADER file -->
@@ -387,8 +368,8 @@ function incrementColumn(columnName) {
 $("#btn_close_modal_intro").on("click", function () {
   var statuscbx = $('input[type=checkbox][name=cbxAgreement]').prop('checked');
   if(statuscbx){
-    $('#modal_1_intro').modal('hide');
     setCookie("user_id", access_number, 7);
+    $('#modal_1_intro').modal('hide');
     window.location.href = 'map/eimg_draw.php';
   }else{
     if(siteLang=="en") var str = "You need to agree with the terms and conditions before proceed";

@@ -1,22 +1,4 @@
 <?php include "../includes/init.php"?>
-<?php
-//checking if the index page was accessed
-if (isset($_SESSION['user_id'])) {
-  // NEEDTO: Change message if a person tries to access this page without passing index.php
-  // print_r($_SESSION);
-  // echo implode("\t|\t",$_SESSION);
-  $header = "eIMG Lisbon ";
-
-  // session_unset();
-  session_destroy();
-
-}else{
-  // print_r($_SESSION);
-  $header = "eIMG Lisbon - (change: ONLY ACCESS WITH USER_ID SET)";
-  // redirect('index.php');
-  // set_msg("Please choose what you want to do");
-}
-?>
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- Adding the HEADER file -->

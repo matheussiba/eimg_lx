@@ -26,6 +26,17 @@
     if (isset($_POST['att_hist'])) {
       $att_hist = $_POST['att_hist'];
     }
+
+    if (isset($_POST['order_draw'])) {
+      $order_draw = $_POST['order_draw'];
+    }
+    if (isset($_POST['time'])) {
+      $time_draw = $_POST['time'];
+    }
+    if (isset($_POST['comment'])) {
+      $comment = $_POST['comment'];
+    }
+
     // Credentials
     include "../includes/db_credentials.php";
     $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
@@ -44,6 +55,8 @@
             ( geom_4326,
               eval_nr, eval_str,
               att_nat, att_open, att_order, att_upkeep, att_hist,
+              time_draw, order_draw, comment,
+
               centroid,
               area_sqm,
               geom_27493
@@ -52,12 +65,15 @@
             ( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326),
               :e_nr, :e_str,
               :nat, :open, :ord, :up, :hist,
+              :time_draw, :order_draw, :comment,
+
               ST_Centroid( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ),
               ST_Area(ST_SnapToGrid( ST_Transform( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ,27493), 0.00001)),
               ST_SnapToGrid( ST_Transform( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ,27493), 0.00001)
             )";
-    $params = ["gjsn"=>$geojson, "e_nr"=>$eval_nr, "e_str"=>$eval_str, "nat"=>$att_nat, "open"=>$att_open, "ord"=>$att_ord, "up"=>$att_up, "hist"=>$att_hist];
-
+    $params = ["gjsn"=>$geojson, "e_nr"=>$eval_nr, "e_str"=>$eval_str, "nat"=>$att_nat, "open"=>$att_open,
+    "ord"=>$att_ord, "up"=>$att_up, "hist"=>$att_hist,
+    "time_draw"=>$time_draw, "order_draw"=>$order_draw, "comment"=>$comment ];
 
     try{
       $sql = $pdo->prepare($str);

@@ -1,10 +1,12 @@
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="Easy way for creating an evaluative image of Lisbon">
+  <meta name="keywords" content="Lisboa, Lisbon, evaluative image, imagem evaluativa, evaluative map, GIS, SIG, web-gis">
+  <meta name="author" content="Matheus Siqueira Barros">
   <!-- Responsive meta tag, help with mobile devices -->
-  <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>eImage LX</title>
-  <link rel="icon" href="../resources/images/favicon.png">
+  <link rel="icon" href="<?php  echo $root_directory?>resources/images/favicon.png">
 
   <!-- Adding CSS files -->
   <link rel="stylesheet" href="<?php  echo $root_directory?>resources/plugins/leaflet-overview-nootherdev-fork.css">

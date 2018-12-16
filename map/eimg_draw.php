@@ -1,22 +1,4 @@
   <?php include "../includes/init.php"?>
-  <?php
-  //checking if the index page was accessed
-  if (isset($_SESSION['user_id'])) {
-    // NEEDTO: Change message if a person tries to access this page without passing index.php
-    // print_r($_SESSION);
-    // echo implode("\t|\t",$_SESSION);
-    $header = "eIMG Lisbon ";
-
-    // session_unset();
-    session_destroy();
-
-  }else{
-    // print_r($_SESSION);
-    $header = "eIMG Lisbon - (change: ONLY ACCESS WITH USER_ID SET)";
-    // redirect('index.php');
-    // set_msg("Please choose what you want to do");
-  }
-  ?>
   <!DOCTYPE html>
   <html lang="en-US">
   <!-- Adding the HEADER file -->
@@ -283,11 +265,11 @@
   var cnt_DislikedAreas = 0;
   var cnt_zoomInExceeded = 0;
   var cnt_zoomOutExceeded = 0, cnt_doNotPan = 0;
-  var cnt_numVertices = 0;
   var cnt_movechange = 0;
-  var cnt_CtrlZPressed = 0;
-  var cnt_enterKeyPressed = 0;
-  var cnt_escapeKeyPressed = 0;
+  var cnt_numVertices;
+  var cnt_CtrlZPressed;
+  var cnt_enterKeyPressed;
+  var cnt_escapeKeyPressed;
   var time_start_draw, time_end_draw;
 
   //  ********* Increment the column in the DB *********
@@ -336,6 +318,9 @@
 
     //Keep 'pm:drawstart' event here in order to 'this' == 'document'. Inside another function the "this" element change
     mymap.on('pm:drawstart', function(e) {
+      cnt_CtrlZPressed = 0;
+      cnt_enterKeyPressed = 0;
+      cnt_escapeKeyPressed = 0;
       // Remember when we started
       time_start_draw = new Date().getTime();
 
@@ -403,16 +388,25 @@
     ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
     document.onkeydown = KeyPress; // Capture the pressed key in the document
 
+    // Getting cookies
     cookie_userDefined = getCookie("user_id");
-    if(cookie_userDefined==""){
+    cookie_demogFinished = getCookie("demographics_finished");
+    cookie_appFinished = getCookie("app_finished");
+
+    if(cookie_userDefined=="") // Have the user already accepted the terms of consent of index.php? If NO cookie_userDefined==""
+    {
        window.location.href = '../index.php';
     }else{
-      cookie_appFinished = getCookie("app_finished");
-      if(cookie_appFinished!=""){
+      if(cookie_appFinished!="") // Have the area already been sent to the DB? If YES cookie_appFinished!=""
+      {
         $('#modal_3_sus').modal('show');
-      }else{
+      }else if(cookie_demogFinished=="")
+      //Have the demographics already been sent to DB?
+      {
+        // If NO cookie_demogFinished==""
         $('#modal_2_demographics').modal('show');
       }
+      // If YES... let the user draw in the app, without showing "modal_2_demographics"
     }
 
   }); //END $(document).ready()
@@ -1102,9 +1096,16 @@
       var feature = lyrDraw.feature = lyrDraw.feature || {};
       feature.type = feature.type || "Feature"; //Could be the name we want
       var props = feature.properties = feature.properties || {};
+      // layer id
       props.id = area_id;
       // Calculate time spent for this drawing
       props.time_draw_sec = (time_end_draw - time_start_draw)/1000;
+
+      // Counts of drawing
+      props.cnt_ctrlz = cnt_CtrlZPressed;
+      props.cnt_enter = cnt_enterKeyPressed;
+      props.cnt_escape = cnt_escapeKeyPressed;
+      props.cnt_vertices = cnt_numVertices;
 
       //General style
       lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
@@ -1150,6 +1151,8 @@
       // Enabling edit to the layer
       fgpDrawnItems.eachLayer(function(layer){
         var layer_id = layer.feature.properties.id;
+        var layer_time = layer.feature.properties.time_draw_sec;
+        console.log(layer_id, layer_time);
         if(layer_id == area_id){
           //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user clicks save
           editMode = true;
@@ -1789,16 +1792,22 @@
     });//END content
   }
   function finish_mapDraw(){
-
+    var cnt = 0;
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
       // if ( (cnt_LikedAreas >= 4) && (cnt_DislikedAreas >= 4) ){
-        var cnt = 0;
         var cnt_feat = fgpDrawnItems.getLayers().length;
         fgpDrawnItems.eachLayer(function(layer){
           var layer_id = layer.feature.properties.id;
-          console.log(layer_id);
+          var layer_time = layer.feature.properties.time_draw_sec;
+
+          var layer_cnt_ctrlz = layer.feature.properties.cnt_ctrlz;
+          var layer_cnt_enter = layer.feature.properties.cnt_enter;
+          var layer_cnt_escape = layer.feature.properties.cnt_escape;
+          var layer_cnt_vertices = layer.feature.properties.cnt_vertices;
+
+
           if ( layer_id.split("-")[0] == "liked" ){
             var eval_nr = 1
             var eval_str = "Liked"
@@ -1811,6 +1820,10 @@
           var att_ord = document.getElementById(layer_id+"_cbxAtt-order").checked;
           var att_up = document.getElementById(layer_id+"_cbxAtt-upkeep").checked;
           var att_hist = document.getElementById(layer_id+"_cbxAtt-hist").checked;
+
+          var reason_comment = document.getElementById(layer_id+"_reason_str").value;
+
+          console.log("sending DB: ", (cnt+1), layer_time, reason_comment);
 
           var cntChecks = 0;
           if( att_nat ){
@@ -1854,7 +1867,17 @@
               att_open: att_open,
               att_ord: att_ord,
               att_up: att_up,
-              att_hist: att_hist
+              att_hist: att_hist,
+
+              order_draw: (cnt+1),
+              time: layer_time,
+              comment: reason_comment,
+
+              cnt_ctrlz: layer_cnt_ctrlz,
+              cnt_enter: layer_cnt_enter,
+              cnt_escape: layer_cnt_escape,
+              cnt_vertices: layer_cnt_vertices
+
             },
             type:'POST',
             success:function(response){
@@ -2087,8 +2110,8 @@
 
       insertValuesTable(table_insert, columns_insert, values_insert)
 
-      setCookie("demographics_sent", "true", 7);
       $('#modal_2_demographics').modal('hide');
+      setCookie("demographics_finished", "true", 7);
       //$('#modal_3_sus').modal('show');
     }else{
       if (siteLang=="en") var str = "Please, answer the following fields:\n"
@@ -2132,6 +2155,11 @@
       console.log(columns_insert, values_insert);
 
       insertValuesTable(table_insert, columns_insert, values_insert)
+
+      // Removing cookies of the session
+      setCookie("user_id", "", -10);
+      setCookie("demographics_finished", "", -10);
+      setCookie("app_finished", "", -10);
 
       //$('#modal_3_sus').modal('hide');
       window.location.href = 'eimg_viewer.php';
