@@ -1876,7 +1876,8 @@
               cnt_ctrlz: layer_cnt_ctrlz,
               cnt_enter: layer_cnt_enter,
               cnt_escape: layer_cnt_escape,
-              cnt_vertices: layer_cnt_vertices
+              cnt_vertices: layer_cnt_vertices,
+              user_id: parseInt(getCookie("user_id"))
 
             },
             type:'POST',

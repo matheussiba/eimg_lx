@@ -37,6 +37,22 @@
       $comment = $_POST['comment'];
     }
 
+    if (isset($_POST['cnt_ctrlz'])) {
+      $cnt_ctrlz = $_POST['cnt_ctrlz'];
+    }
+    if (isset($_POST['cnt_enter'])) {
+      $cnt_enter = $_POST['cnt_enter'];
+    }
+    if (isset($_POST['cnt_escape'])) {
+      $cnt_escape = $_POST['cnt_escape'];
+    }
+    if (isset($_POST['cnt_vertices'])) {
+      $cnt_vertices = $_POST['cnt_vertices'];
+    }
+    if (isset($_POST['user_id'])) {
+      $user_id = $_POST['user_id'];
+    }
+
     // Credentials
     include "../includes/db_credentials.php";
     $dsn = "pgsql:host=".$host.";dbname=".$db_name.";port=".$port;
@@ -57,6 +73,8 @@
               att_nat, att_open, att_order, att_upkeep, att_hist,
               time_draw, order_draw, comment,
 
+              cnt_ctrlz, cnt_enter, cnt_esc, cnt_vertex, user_id,
+
               centroid,
               area_sqm,
               geom_27493
@@ -67,13 +85,16 @@
               :nat, :open, :ord, :up, :hist,
               :time_draw, :order_draw, :comment,
 
+              :cnt_ctrlz, :cnt_enter, :cnt_escape, :cnt_vertices, :user_id,
+
               ST_Centroid( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ),
               ST_Area(ST_SnapToGrid( ST_Transform( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ,27493), 0.00001)),
               ST_SnapToGrid( ST_Transform( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ,27493), 0.00001)
             )";
     $params = ["gjsn"=>$geojson, "e_nr"=>$eval_nr, "e_str"=>$eval_str, "nat"=>$att_nat, "open"=>$att_open,
     "ord"=>$att_ord, "up"=>$att_up, "hist"=>$att_hist,
-    "time_draw"=>$time_draw, "order_draw"=>$order_draw, "comment"=>$comment ];
+    "time_draw"=>$time_draw, "order_draw"=>$order_draw, "comment"=>$comment,
+    "cnt_ctrlz"=>$cnt_ctrlz, "cnt_enter"=>$cnt_enter, "cnt_escape"=>$cnt_escape, "cnt_vertices"=>$cnt_vertices, "user_id"=>$user_id];
 
     try{
       $sql = $pdo->prepare($str);
