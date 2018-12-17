@@ -190,11 +190,13 @@
 <div id="mapdiv" class="col-md-12"></div>
 
 <script>
-var IsMobileDevice, isPortrait, isIE, cookie_lang, checkedValue, map_original_center, minimumZoom, mymap, ctlSidebar, ctlAttribute;
-var LyrAOI, baselayers, access_number, basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery, basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
-
+var mymap, IsMobileDevice, isPortrait, isIE, cookie_lang, checkedValue, map_original_center;
+var LyrAOI, baselayers, basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery, basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
+var access_number, siteLang, minimumZoom, ctlSidebar, ctlAttribute;
 //  ********* Increment the column in the DB *********
-incrementColumn("cnt_access_app")
+incrementColumn("cnt_access_app");
+
+if(getCookie("user_id") != "") window.location.href = 'map/eimg_draw.php';
 
 $(document).ready(function(){
   //  ********* Map Initialization *********
@@ -220,16 +222,50 @@ $(document).ready(function(){
   setTimeout(changeMap, 2000)
   setInterval(changeMap, 10000);
 
+  if(getCookie("time_appinit") == "") setCookie("time_appinit",new Date().getTime(),7);
+
 }); //END $(document).ready()
 
-function changeMap() {
-  console.log("Hello");
+// Receive true if the application is being used in Mobile device, false otherwise
+IsMobileDevice = (((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) ? true : false);
+if(IsMobileDevice){
+  if("orientation" in screen) {
+    var orientation_str = screen.orientation.type;
+    var orientation_array = orientation_str.split("-");
+    // Receive true if the application is being used in portrait mode, false otherwise
+    isPortrait = ((orientation_array[0] == "portrait") ? true : false);
+  }
+}
+// Receive true if Internet Explorer, false otherwise
+isIE = ((window.navigator.userAgent.indexOf("MSIE ") > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) ? true : false);
+console.log(isIE);
 
+cookie_lang = getCookie("app_language");
+console.log(cookie_lang);
+if(cookie_lang!=""){
+  $("input[type=radio][name=language_switch][value='"+cookie_lang+"']").prop("checked",true);
+}else{
+  $("input[type=radio][name=language_switch][value='pt']").prop("checked",true);
+}
+// Needs to open before hiding the text
+$('#modal_1_intro').modal('show');
+checkedValue = $('input[type=radio][name=language_switch]:checked').val();
+// Set cookie
+setCookie("app_language", checkedValue, 7);
+hideText(checkedValue);
+
+if (!isPortrait){
+  document.getElementById("message_mobile").style.display="none";
+}
+if (!isIE){
+  document.getElementById("message_ie").style.display="none";
+}
+
+function changeMap() {
   var eft = existentFooTabs();
   for (var i = 0; i < eft.length; i++) {
     deleteTabByID(eft[i]);
   }
-
   foo0 = {
     id: 'foo0',
     tab: '<i class="fa fa-thumbs-down"></i>',
@@ -268,48 +304,10 @@ function changeMap() {
   }
 
   // console.log( map_original_center[0]+(Math.random() * 0.0001) );
-  console.log(Math.floor(Math.random() * 2)+14 );
-
-
+  // console.log(Math.floor(Math.random() * 2)+14 );
 
   mymap.setView(new L.LatLng(map_original_center[0]+(Math.random() * 0.03), map_original_center[1]+(Math.random() * 0.03)), Math.floor(Math.random() * 2)+14 );
 }
-
-
-// Receive true if the application is being used in Mobile device, false otherwise
-IsMobileDevice = (((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) ? true : false);
-if(IsMobileDevice){
-  if("orientation" in screen) {
-    var orientation_str = screen.orientation.type;
-    var orientation_array = orientation_str.split("-");
-    // Receive true if the application is being used in portrait mode, false otherwise
-    isPortrait = ((orientation_array[0] == "portrait") ? true : false);
-  }
-}
-// Receive true if Internet Explorer, false otherwise
-isIE = ((window.navigator.userAgent.indexOf("MSIE ") > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) ? true : false);
-console.log(isIE);
-
-cookie_lang = getCookie("app_language");
-console.log(cookie_lang);
-if(cookie_lang!=""){
-  $("input[type=radio][name=language_switch][value='"+cookie_lang+"']").prop("checked",true);
-}else{
-  $("input[type=radio][name=language_switch][value='pt']").prop("checked",true);
-}
-
-// Open the first modal
-$('#modal_1_intro').modal('show');
-checkedValue = $('input[type=radio][name=language_switch]:checked').val();
-cbxLangChange(checkedValue);
-
-if (!isPortrait){
-  document.getElementById("message_mobile").style.display="none";
-}
-if (!isIE){
-  document.getElementById("message_ie").style.display="none";
-}
-
 
 function setCookie(cname, cvalue, exdays) {
   var d = new Date();
@@ -332,11 +330,22 @@ function getCookie(cname) {
   }
   return "";
 }
+function resetCookies(cookieNames) {
+  // Cookies for the whole session:
+  var cookieNames = ["user_id", "demographics_finished", "app_finished", "user_id", "app_language", "time_appinit"];
+  for(var i=0; i<cookieNames.length;i++){
+    setCookie(cookieNames[i], "", -10);
+  }
+  setCookie("time_appinit", new Date().getTime() , 7);
+}
 
 function cbxLangChange(value){
+  resetCookies();
   setCookie("app_language", value, 7);
-  var cookie_lang = getCookie("app_language");
-  console.log('cook_cbxlangchange:',cookie_lang);
+  hideText(value);
+}
+
+function hideText(value){
   if (value == 'en') {
     siteLang='en';
     $('.language-pt').hide(); // hides
@@ -361,7 +370,7 @@ function incrementColumn(columnName) {
       var column_num_access = JSON.parse(response);
       access_number = column_num_access[columnName];
     },
-    error: function(xhr, status, error){ alert("ERROR: "+error); }
+    error: function(xhr, status, error){ console.log("ERROR: "+error); }
   }); // End ajax
 }
 
@@ -420,7 +429,7 @@ function loadStudyArea(){
       //Create a test polygon to see the area of the maxBounds
       // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
     },
-    error: function(xhr, status, error){ alert("ERROR: "+error); }
+    error: function(xhr, status, error){ console.log("ERROR: "+error); }
   }); // End ajax
 }
 function loadBasemaps() {

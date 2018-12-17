@@ -271,6 +271,8 @@
   var cnt_enterKeyPressed;
   var cnt_escapeKeyPressed;
   var time_start_draw, time_end_draw;
+  var cnt_removals, cnt_edits;
+  var time_mapdraw_start=0, time_modal2_close=0, time_draw_finish=0, time_modal3_close=0;
 
   //  ********* Increment the column in the DB *********
   incrementColumn("cnt_access_draw");
@@ -385,9 +387,6 @@
       });
     },this);
 
-    ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
-    document.onkeydown = KeyPress; // Capture the pressed key in the document
-
     // Getting cookies
     cookie_userDefined = getCookie("user_id");
     cookie_demogFinished = getCookie("demographics_finished");
@@ -408,6 +407,11 @@
       }
       // If YES... let the user draw in the app, without showing "modal_2_demographics"
     }
+
+    ctlSidebar.open('home'); // opening the sidebar to show the basic info to the user
+    document.onkeydown = KeyPress; // Capture the pressed key in the document
+    // Time this document was accessed
+    time_mapdraw_start = new Date().getTime();
 
   }); //END $(document).ready()
 
@@ -578,6 +582,7 @@
     //To use area_id inside an anonymous function (mymap.on('contextmenu', function(){}), it must be global
     area_id = ((button_clicked_properties.id).split("_"))[0];
     if (log_functions){console.log('editArea', area_id);}
+    cnt_edits++;
 
     var att_nat = document.getElementById(area_id+"_cbxAtt-nat");
     var att_open = document.getElementById(area_id+"_cbxAtt-open");
@@ -644,6 +649,7 @@
       var retVal = true;
     }else{
       //ask the user if is sure to delete the area
+      cnt_removals++;
       var retVal = warnDeleteArea();
     }
     if( retVal ){
@@ -1793,10 +1799,12 @@
   }
   function finish_mapDraw(){
     var cnt = 0;
+    var cnt_async = 0;
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
       // if ( (cnt_LikedAreas >= 4) && (cnt_DislikedAreas >= 4) ){
+        cnt++;
         var cnt_feat = fgpDrawnItems.getLayers().length;
         fgpDrawnItems.eachLayer(function(layer){
           var layer_id = layer.feature.properties.id;
@@ -1823,7 +1831,7 @@
 
           var reason_comment = document.getElementById(layer_id+"_reason_str").value;
 
-          console.log("sending DB: ", (cnt+1), layer_time, reason_comment);
+          console.log("sending DB: ", cnt, layer_time, reason_comment);
 
           var cntChecks = 0;
           if( att_nat ){
@@ -1869,7 +1877,7 @@
               att_up: att_up,
               att_hist: att_hist,
 
-              order_draw: (cnt+1),
+              order_draw: cnt,
               time: layer_time,
               comment: reason_comment,
 
@@ -1883,10 +1891,10 @@
             type:'POST',
             success:function(response){
               console.log(response);
-              cnt++;
+              cnt_async++;
               //Because AJAX is a asyncronous, the code to flatten the polygons should be done after the polygons are completely INSERTED to the DB
-              if(cnt == cnt_feat){
-                console.log(cnt);
+              if(cnt_async == cnt_feat){
+                console.log(cnt_async);
                 // After sending the polygons to the DB, flatten all the polygons
                 console.log("executing... eimg_viewer-flatten_polys.php");
                 $.ajax({
@@ -1905,13 +1913,22 @@
 
                   }//End error
                 });//End AJAX call
-              }//end if(cnt == cnt_feat)
+              }//end if(cnt_async == cnt_feat)
             },
             error:function(xhr, status, error){
               console.log("Something went wront... "+error);
             }
           });
         });// fgpDrawnItems.eachLayer(function(layer))
+
+        time_draw_finish = new Date().getTime();
+        console.log("TIMING: ");
+        console.log(time_draw_finish, time_modal2_close, time_mapdraw_start);
+        var time_dif = (time_draw_finish - time_modal2_close - time_mapdraw_start)/1000;
+        var tbl = "data_demographics";
+        var set = "time_draw = "+time_dif +", num_areas = "+cnt_feat;
+        var set += ",num_removals = "+cnt_removals +", num_edits = "+cnt_edits;
+        updateValuesTable(tbl, set, "user_id="+getCookie("user_id") );
 
         setCookie("app_finished", "true", 7);
 
@@ -2016,8 +2033,9 @@
     return "";
   }
 
-  //  # Analytics
+  //  # Database Functions
   function incrementColumn(columnName) {
+    //  # increment values on table
     $.ajax({
       url:'<?php  echo $root_directory?>general/increment_column_value.php',
       data: {
@@ -2031,9 +2049,30 @@
       error: function(xhr, status, error){ alert("ERROR: "+error); }
     }); // End ajax
   }
+  function updateValuesTable(table, set, where) {
+    //  # update values on table
+    $.ajax({
+      url:'<?php  echo $root_directory?>general/update_table.php',
+      data: {
+        tbl: table,
+        set: set,
+        where: where
+      },
+      type:'POST',
+      success:function(response){
+        console.log(response);
+        if ( response.substring(0, 5) == "ERROR") {
+          alert(response)
+        }else{
+          // alert(response)
+        }
 
-  //  # Analytics
+      },
+      error: function(xhr, status, error){ alert("ERROR: "+error); }
+    }); // End ajax
+  }
   function insertValuesTable(table, columns, values) {
+    //  # insert values on table
     $.ajax({
       url:'<?php  echo $root_directory?>general/insert_table.php',
       data: {
@@ -2054,7 +2093,6 @@
       error: function(xhr, status, error){ alert("ERROR: "+error); }
     }); // End ajax
   }
-
 
   //  # jQuery Functions
   //  # close modals from eimg_draw-modals.php
@@ -2104,9 +2142,20 @@
     // console.log(field_blank.length);
     if(field_blank.length==0){
     // if(field_blank!=[]){
+      var isMobile = (IsMobileDevice ? 1 : 0);
+      time_modal2_close = new Date().getTime();
+      var time_dif = (time_modal2_close - time_mapdraw_start)/1000;
+
       var table_insert = "data_demographics";
-      var columns_insert = "user_id, sex, age, education, job, income, type_user";
-      var values_insert = getCookie("user_id") + ",'"+ user_sex + "','"+ user_age + "','"+ user_school + "',"+ "''" + ",'"+ user_income + "','"+ type_user +"'";
+
+      var columns_insert = "user_id, sex, age,";
+      columns_insert += "education, job, income, type_user,";
+      columns_insert += "language, is_mobile, type_interview, time_demographics";
+
+      var values_insert = getCookie("user_id") + ",'"+ user_sex + "','"+ user_age + "','";
+      values_insert += user_school + "',"+ "''" + ",'"+ user_income + "','"+ type_user + "','";
+      values_insert += getCookie("app_language") + "',"+ isMobile + ",'"+ "type_interview" + "',"+ time_dif;
+
       console.log(columns_insert, values_insert);
 
       insertValuesTable(table_insert, columns_insert, values_insert)
@@ -2152,15 +2201,25 @@
       columns_insert += columns_question_name.join(",");
 
       var table_insert = "data_sus";
-
       console.log(columns_insert, values_insert);
-
       insertValuesTable(table_insert, columns_insert, values_insert)
+
+      time_modal3_close = new Date().getTime();
+      var time_sus = (time_modal3_close - time_draw_finish - time_modal2_close - time_mapdraw_start)/1000;
+
+      var time_session_ended = new Date().getTime();
+      var time_session_started = parseInt(getCookie("time_appinit"));
+      var time_session = (time_session_ended - time_session_started)/1000;
+      var tbl = "data_demographics";
+      var set = " time_sus      = "+ time_sus      +", ";
+      set     += "time_session  = "+ time_session;
+      updateValuesTable(tbl, set, "user_id="+getCookie("user_id") );
 
       // Removing cookies of the session
       setCookie("user_id", "", -10);
       setCookie("demographics_finished", "", -10);
       setCookie("app_finished", "", -10);
+      setCookie("time_appinit", "", -10);
 
       //$('#modal_3_sus').modal('hide');
       window.location.href = 'eimg_viewer.php';
