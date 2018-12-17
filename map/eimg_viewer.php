@@ -297,7 +297,8 @@
     //************************  DATA FOR VIEWER ******
     refreshPlaces();
     ctlSidebar.open('home');
-    //setInterval(refreshPlaces,10000);
+    // call the refresh place every 7 seconds
+    setInterval(refreshPlaces,7000);
     toggleInputActiveClass()
   }); //END $(document).ready()
   //  ********* eimg_VIEWER Functions *********

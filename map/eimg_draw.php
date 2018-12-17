@@ -338,9 +338,10 @@
       if (!IsMobileDevice){
         ctlZoom.remove();
       }
-      if ((cnt_DislikedAreas+cnt_LikedAreas)<=1){
-        showInfoBox();
-      }
+
+      // show infobox
+      showInfoBox();
+
       var layer = e.workingLayer;
       layer.on('pm:vertexadded', function(e) {
         // e includes the new vertex, it's marker the index in the coordinates array the working layer and shape
@@ -755,7 +756,7 @@
     $('.infobox_for_toolbar').css('visibility','visible');
     //hide after 15
     if (timeout_removeToolBox) clearTimeout(timeout_removeToolBox);
-    timeout_removeToolBox =  setTimeout(function() {$('.infobox_for_toolbar').css('visibility','hidden'); }, 15000);
+    timeout_removeToolBox =  setTimeout(function() {$('.infobox_for_toolbar').css('visibility','hidden'); }, 10000);
   }
   function restartDraw(lyrDraw){
     /* DESCRIPTION: Start a new draw again*/
@@ -1803,10 +1804,9 @@
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
       // if ( (cnt_LikedAreas >= 4) && (cnt_DislikedAreas >= 4) ){
-        order_draw++;
-        console.log("order_draw", order_draw);
         var cnt_feat = fgpDrawnItems.getLayers().length;
         fgpDrawnItems.eachLayer(function(layer){
+          order_draw++;
           var layer_id = layer.feature.properties.id;
           var layer_time = layer.feature.properties.time_draw_sec;
 
@@ -2204,7 +2204,6 @@
 
       var time_session_started = parseFloat(getCookie("time_appinit"));
       var time_session_ended = (new Date().getTime() - time_session_started)/1000;
-      alert((new Date().getTime()).toString()+ "\n" +time_session_started.toString());
       var tbl = "data_demographics";
       var set = " time_sus      = "+ time_modal3_close      +", ";
       set     += "time_session  = "+ time_session_ended;
