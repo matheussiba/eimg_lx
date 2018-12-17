@@ -1,4 +1,15 @@
 <?php include "includes/init.php"?>
+<?php
+if (isset($_GET['f2f'])) {
+  // $type_interview = $_GET['f2f'];
+  // echo $type_interview;
+  $type_interview = 1;
+}else{
+  // echo "nothing";
+  $type_interview = 0;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- Adding the HEADER file -->
@@ -196,7 +207,10 @@ var access_number, siteLang, minimumZoom, ctlSidebar, ctlAttribute;
 //  ********* Increment the column in the DB *********
 incrementColumn("cnt_access_app");
 
-if(getCookie("user_id") != "") window.location.href = 'map/eimg_draw.php';
+setTimeout(function() {
+  if(getCookie("user_id") != "") window.location.href = 'map/eimg_draw.php';
+}, 5000);
+
 
 $(document).ready(function(){
   //  ********* Map Initialization *********
@@ -219,7 +233,7 @@ $(document).ready(function(){
   loadControls(); //Load leaflet controls
 
   map_original_center = [mymap.getCenter().lat, mymap.getCenter().lng ]
-  setTimeout(changeMap, 2000)
+  setTimeout(changeMap, 2000);
   setInterval(changeMap, 10000);
 
   if(getCookie("time_appinit") == "") setCookie("time_appinit",new Date().getTime(),7);
@@ -332,7 +346,7 @@ function getCookie(cname) {
 }
 function resetCookies(cookieNames) {
   // Cookies for the whole session:
-  var cookieNames = ["user_id", "demographics_finished", "app_finished", "user_id", "app_language", "time_appinit"];
+  var cookieNames = ["user_id", "demographics_finished", "app_finished", "user_id", "type_interview", "app_language", "time_appinit"];
   for(var i=0; i<cookieNames.length;i++){
     setCookie(cookieNames[i], "", -10);
   }
@@ -378,6 +392,13 @@ $("#btn_close_modal_intro").on("click", function () {
   var statuscbx = $('input[type=checkbox][name=cbxAgreement]').prop('checked');
   if(statuscbx){
     setCookie("user_id", access_number, 7);
+
+    if(<?php echo $type_interview; ?>){
+      setCookie("type_interview", "face-to-face", 7);
+    }else{
+      setCookie("type_interview", "online", 7);
+    }
+
     $('#modal_1_intro').modal('hide');
     window.location.href = 'map/eimg_draw.php';
   }else{

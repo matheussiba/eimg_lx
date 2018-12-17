@@ -962,9 +962,9 @@
     ).addTo(mymap);
 
     // Adds a control using the easy button plugin
-    var ctlFinishArea = L.easyButton('fa-project-diagram', function(){finishCreation();}, 'Click to complete the drawing');
-    var ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){removeLastVertex();}, 'Click to remove the last vertex');
-    var ctlCancelArea = L.easyButton('fa-times-circle', function(){removeArea(area_id, true);}, 'Click to cancel the drawing');
+    var ctlFinishArea = L.easyButton('fa-project-diagram', function(){ctlFinishArea_clicked();}, 'Click to complete the drawing');
+    var ctlRemoveLastVertex = L.easyButton('fa-undo-alt', function(){ctlRemoveLastVertex_clicked();}, 'Click to remove the last vertex');
+    var ctlCancelArea = L.easyButton('fa-times-circle', function(){ctlCancelArea_clicked();}, 'Click to cancel the drawing');
     ctlCreationToolbar = L.easyBar([ ctlFinishArea, ctlRemoveLastVertex, ctlCancelArea],{position:'topright'});
 
     var container = L.DomUtil.create('div', 'infobox_for_toolbar leaflet-bar leaflet-control', ctlCreationToolbar.getContainer());
@@ -1967,6 +1967,24 @@
     ctlSidebar.close();
   }
 
+  //  # Toolbox Functions
+  function ctlFinishArea_clicked() {
+    cnt_enterKeyPressed++;
+    finishCreation();
+  }
+  function ctlRemoveLastVertex_clicked() {
+    cnt_CtrlZPressed++;
+    removeLastVertex();
+  }
+  function ctlCancelArea_clicked() {
+    cnt_escapeKeyPressed++;
+    if(siteLang=='en') var str_popup='<span><h7>The drawing was successfully canceled</h7></span>';
+    if(siteLang=='pt') var str_popup='<span><h7>O desenho foi cancelado com sucesso</h7></span>';
+    removeArea(area_id, true);
+    // Popup must be after the removeArea to be displayed
+    openAlertPopup(mymap.getCenter(), str_popup, 2000);
+  }
+
   //  # Document Functions
   function KeyPress(e) {
     /* DESCRIPTION: call functions based on the combination of keys the users is pressing */
@@ -1975,8 +1993,7 @@
     if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
       // if the user press Ctrl+z and a new layer is being created, remove the last vertex of the layer
       if(createMode){
-        cnt_CtrlZPressed++;
-        removeLastVertex();
+        ctlRemoveLastVertex_clicked();
       }
     }
     if (evtobj.keyCode == 13) {
@@ -1987,8 +2004,7 @@
       }
       // if the user press Enter and a new layer is being created, the area is finished
       if(createMode){
-        cnt_enterKeyPressed++;
-        finishCreation();
+        ctlFinishArea_clicked();
       }
 
       var address = document.getElementById('search_address').value;
@@ -2000,11 +2016,7 @@
     if (evtobj.keyCode == 27) {
       // if the user press Esc and a new layer is being created, the area is canceled
       if(createMode) {
-        cnt_escapeKeyPressed++;
-        if(siteLang=='en') var str_popup='<span><h7>The drawing was successfully canceled</h7></span>';
-        if(siteLang=='pt') var str_popup='<span><h7>O desenho foi cancelado com sucesso</h7></span>';
-        removeArea(area_id, true, 2000);
-        openAlertPopup(mymap.getCenter(), str_popup);
+        ctlCancelArea_clicked();
       }
     }
   }
@@ -2150,7 +2162,7 @@
 
       var values_insert = getCookie("user_id") + ",'"+ user_sex + "','"+ user_age + "','";
       values_insert += user_school + "',"+ "''" + ",'"+ user_income + "','"+ type_user + "','";
-      values_insert += getCookie("app_language") + "',"+ isMobile + ",'"+ "type_interview" + "',"+ time_modal2_close;
+      values_insert += getCookie("app_language") + "',"+ isMobile + ",'"+ getCookie("type_interview") + "',"+ time_modal2_close;
 
       console.log(columns_insert, values_insert);
 
@@ -2214,6 +2226,7 @@
       setCookie("demographics_finished", "", -10);
       setCookie("app_finished", "", -10);
       setCookie("time_appinit", "", -10);
+      setCookie("type_interview", "", -10);
 
       //$('#modal_3_sus').modal('hide');
       window.location.href = 'eimg_viewer.php';
