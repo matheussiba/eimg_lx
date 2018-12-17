@@ -3,6 +3,7 @@
 <html lang="en-US">
 <!-- Adding the HEADER file -->
 <?php include "../includes/header.php" ?>
+<!-- <?php include "../includes/css/style_eimg_viewer.php" ?> -->
 <?php include "../includes/css/style_eimg_draw.php" ?>
 <body>
 
@@ -194,7 +195,6 @@
                 5 classes
               </label>
             </div>
-
 
           </div>
 

@@ -2093,8 +2093,8 @@
           console.log(table, set, where);
           // alert(response)
         }else{
-          onsole.log(response);
-          console.log(table, set,
+          console.log(response);
+          console.log(table, set, where);
           // alert(response)
         }
 
@@ -2235,6 +2235,7 @@
 
       var table_insert = "data_sus";
       console.log(columns_insert, values_insert);
+
       insertValuesTable(table_insert, columns_insert, values_insert)
 
       time_modal3_close = ((new Date().getTime() - time_mapdraw_start)/1000) - (time_draw_finish + time_modal2_close);
@@ -2244,7 +2245,8 @@
       var tbl = "data_demographics";
       var set = " time_sus      = "+ time_modal3_close      +", ";
       set     += "time_session  = "+ time_session_ended;
-      updateValuesTable(tbl, set, "user_id="+getCookie("user_id") );
+      var where = "user_id="+getCookie("user_id");
+      updateValuesTable(tbl, set, where);
 
       // Removing cookies of the session
       setCookie("user_id", "", -10);

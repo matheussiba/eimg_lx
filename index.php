@@ -3,10 +3,15 @@
 if (isset($_GET['f2f'])) {
   // $type_interview = $_GET['f2f'];
   // echo $type_interview;
-  $type_interview = 1;
-}else{
+  $type_interview = "'face-to-face'";
+  //$type_interview = "1";
+}else if (isset($_GET['t'])) {
   // echo "nothing";
-  $type_interview = 0;
+  $type_interview = "'test'";
+  //$type_interview = "2";
+}else{
+  $type_interview = "'online'";
+  //$type_interview = "3";
 }
 ?>
 
@@ -211,7 +216,6 @@ setTimeout(function() {
   if(getCookie("user_id") != "") window.location.href = 'map/eimg_draw.php';
 }, 5000);
 
-
 $(document).ready(function(){
   //  ********* Map Initialization *********
   loadBasemaps();
@@ -393,11 +397,8 @@ $("#btn_close_modal_intro").on("click", function () {
   if(statuscbx){
     setCookie("user_id", access_number, 7);
 
-    if(<?php echo $type_interview; ?>){
-      setCookie("type_interview", "face-to-face", 7);
-    }else{
-      setCookie("type_interview", "online", 7);
-    }
+    setCookie("type_interview", <?php echo $type_interview; ?> , 7);
+
 
     $('#modal_1_intro').modal('hide');
     window.location.href = 'map/eimg_draw.php';
