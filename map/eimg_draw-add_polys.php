@@ -46,6 +46,11 @@
     if (isset($_POST['cnt_vertices'])) {
       $cnt_vertices = $_POST['cnt_vertices'];
     }
+
+    if (isset($_POST['current_basemap'])) {
+      $current_basemap = $_POST['current_basemap'];
+    }
+
     if (isset($_POST['user_id'])) {
       $user_id = $_POST['user_id'];
     }
@@ -70,7 +75,8 @@
               att_nat, att_open, att_order, att_upkeep, att_hist,
               time_draw, order_draw, comment,
 
-              cnt_ctrlz, cnt_enter, cnt_vertex, user_id,
+              cnt_ctrlz, cnt_enter, cnt_vertex,
+              user_id, current_basemap,
 
               centroid,
               area_sqm,
@@ -82,7 +88,8 @@
               :nat, :open, :ord, :up, :hist,
               :time_draw, :order_draw, :comment,
 
-              :cnt_ctrlz, :cnt_enter, :cnt_vertices, :user_id,
+              :cnt_ctrlz, :cnt_enter, :cnt_vertices,
+              :user_id, :current_basemap,
 
               ST_Centroid( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ),
               ST_Area(ST_SnapToGrid( ST_Transform( ST_SetSRID(ST_GeomFromGeoJSON(:gjsn),4326) ,27493), 0.00001)),
@@ -91,7 +98,8 @@
     $params = ["gjsn"=>$geojson, "e_nr"=>$eval_nr, "e_str"=>$eval_str, "nat"=>$att_nat, "open"=>$att_open,
     "ord"=>$att_ord, "up"=>$att_up, "hist"=>$att_hist,
     "time_draw"=>$time_draw, "order_draw"=>$order_draw, "comment"=>$comment,
-    "cnt_ctrlz"=>$cnt_ctrlz, "cnt_enter"=>$cnt_enter, "cnt_vertices"=>$cnt_vertices, "user_id"=>$user_id];
+    "cnt_ctrlz"=>$cnt_ctrlz, "cnt_enter"=>$cnt_enter, "cnt_vertices"=>$cnt_vertices,
+    "user_id"=>$user_id, "current_basemap"=>$current_basemap ];
 
     try{
       $sql = $pdo->prepare($str);

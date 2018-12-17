@@ -134,7 +134,7 @@
         <div class="row">
           <div class="col-5">
             <span class="language-en">
-              For Adjust the visualization go to:
+              To adjust the visualization go to:
             </span>
             <span class="language-pt">
               Para ajustar a visualização vá em:

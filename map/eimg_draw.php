@@ -271,9 +271,9 @@
   var cnt_enterKeyPressed=0;
   var cnt_escapeKeyPressed=0;
   var time_start_draw, time_end_draw;
-  var cnt_removals=0, cnt_edits=0;
+  var cnt_removals=0, cnt_edits=0, cnt_baselayerChange=0;
   var time_mapdraw_start=0, time_modal2_close=0, time_draw_finish=0, time_modal3_close=0;
-  var order_draw = 0, cnt_async = 0, cnt_geocoder = 0;
+  var order_draw = 0, cnt_async = 0, cnt_geocoder = 0, current_layer = "";
 
   //  ********* Increment the column in the DB *********
   incrementColumn("cnt_access_draw");
@@ -301,6 +301,9 @@
       // maxBounds: mybounds,
       maxBoundsViscosity: 1.0
     });
+
+    // base layer is the vector one, which is the "marked" font awesome icon
+    current_layer = "marked";
 
     loadStudyArea();
 
@@ -424,9 +427,9 @@
     if (createMode==false){
       //area_id = ((button_clicked_properties.id).split("_"))[0];
       area_id = button_clicked_properties;
-      if(siteLang=='en') var str_popup='<span><h6>Please, click on the map<br />to start the drawing...</h6></span>';
-      if(siteLang=='pt') var str_popup='<span><h6>Por favor, clique no mapa<br />para começar o desenho...</h6></span>';
-      if( (cnt_LikedAreas+cnt_DislikedAreas)<=2) openAlertPopup(mymap.getCenter(), str_popup);
+      if(siteLang=='en') var str_popup='<span><h7>Please, <b>click on the map</b><br />to start the drawing...</h7></span>';
+      if(siteLang=='pt') var str_popup='<span><h7>Por favor, <b>clique no mapa</b><br />para começar o desenho...</h7></span>';
+      if( (cnt_LikedAreas+cnt_DislikedAreas)<=2) openAlertPopup(mymap.getCenter(), str_popup, 2500);
 
       if (log_functions){console.log('drawArea', area_id);}
 
@@ -1027,13 +1030,20 @@
       //   openAlertPopup(mymap.getCenter(), "<h5>Maximum zoom limit!</h5>",1000 );
       // }
     });
+
     mymap.on('baselayerchange', function(e){
       // console.log(e);
-      if (e.name == '<i class="fas fa-image"></i>'){
-        ctlLayers.addOverlay(Hydda_RoadsAndLabels, 'streets');
-      }else{
-        mymap.removeLayer(Hydda_RoadsAndLabels);
-        ctlLayers.removeLayer(Hydda_RoadsAndLabels);
+      cnt_baselayerChange++;
+      //time_draw_finish = ((new Date().getTime() - time_mapdraw_start)/1000) - (time_modal2_close);
+      // if(current_layer == "marked"){
+      //   time_layer_vector += (new Date().getTime() - time_layer_vector);
+      // }
+      if (e.name == '<i class="fas fa-map-marked"></i>'){
+        current_layer = "marked";
+      }else if (e.name == '<i class="fas fa-mountain"></i>'){
+        current_layer = "mountain";
+      }else if (e.name == '<i class="fas fa-globe-americas"></i>'){
+        current_layer = "globe-americas";
       }
     })
     mymap.on('contextmenu', function(e){
@@ -1112,6 +1122,8 @@
       props.cnt_ctrlz = cnt_CtrlZPressed;
       props.cnt_enter = cnt_enterKeyPressed;
       props.cnt_vertices = cnt_numVertices;
+
+      props.current_layer = current_layer;
 
       console.log("props", props);
       //General style
@@ -1399,10 +1411,10 @@
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-upkeep" class="cbxsidebar" for="'+tab_id+'_cbxAtt-upkeep"> ';
     if(liked){
       if(siteLang=='en') str_newtab += 'Well maintained area';
-      if(siteLang=='pt') str_newtab += 'Boa manutenção';
+      if(siteLang=='pt') str_newtab += 'Área bem cuidada';
     }else{
       if(siteLang=='en') str_newtab += 'Dilapidated area';
-      if(siteLang=='pt') str_newtab += 'Má manutenção';
+      if(siteLang=='pt') str_newtab += 'Área dilapidada';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
@@ -1411,8 +1423,8 @@
       if(siteLang=='en') str_newtab += 'Good cultural/social scene';
       if(siteLang=='pt') str_newtab += 'Boa cena cultural/social';
     }else{
-      if(siteLang=='en') str_newtab += 'Bad cultural/social scene';
-      if(siteLang=='pt') str_newtab += 'Má cena cultural/social';
+      if(siteLang=='en') str_newtab += 'Scarcity of cultural/social stimuli';
+      if(siteLang=='pt') str_newtab += 'Escassez de estímulos culturais/sociais';
     }
     str_newtab +=     '</label><br /><hr />';
 
@@ -1814,6 +1826,8 @@
           var layer_cnt_enter = layer.feature.properties.cnt_enter;
           var layer_cnt_vertices = layer.feature.properties.cnt_vertices;
 
+          var layer_current_basemap = layer.feature.properties.current_layer;
+
 
           if ( layer_id.split("-")[0] == "liked" ){
             var eval_nr = 1
@@ -1883,6 +1897,9 @@
               cnt_ctrlz: layer_cnt_ctrlz,
               cnt_enter: layer_cnt_enter,
               cnt_vertices: layer_cnt_vertices,
+
+              current_basemap: layer_current_basemap,
+
               user_id: parseInt(getCookie("user_id"))
 
             },
@@ -1924,6 +1941,8 @@
         var set = "time_draw = "+time_draw_finish +", num_areas = "+cnt_feat;
         set += ",num_removals = "+cnt_removals +", num_edits = "+cnt_edits;
         set += ",cnt_escape = "+cnt_escapeKeyPressed +", cnt_geocoder = "+cnt_geocoder;
+        set += ",cnt_layerchange = "+cnt_baselayerChange;
+
         updateValuesTable(tbl, set, "user_id="+getCookie("user_id") );
 
         setCookie("app_finished", "true", 7);
