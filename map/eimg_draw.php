@@ -267,12 +267,13 @@
   var cnt_zoomOutExceeded = 0, cnt_doNotPan = 0;
   var cnt_movechange = 0;
   var cnt_numVertices;
-  var cnt_CtrlZPressed;
-  var cnt_enterKeyPressed;
-  var cnt_escapeKeyPressed;
+  var cnt_CtrlZPressed=0;
+  var cnt_enterKeyPressed=0;
+  var cnt_escapeKeyPressed=0;
   var time_start_draw, time_end_draw;
-  var cnt_removals, cnt_edits;
+  var cnt_removals=0, cnt_edits=0;
   var time_mapdraw_start=0, time_modal2_close=0, time_draw_finish=0, time_modal3_close=0;
+  var order_draw = 0, cnt_async = 0, cnt_geocoder = 0;
 
   //  ********* Increment the column in the DB *********
   incrementColumn("cnt_access_draw");
@@ -322,7 +323,6 @@
     mymap.on('pm:drawstart', function(e) {
       cnt_CtrlZPressed = 0;
       cnt_enterKeyPressed = 0;
-      cnt_escapeKeyPressed = 0;
       // Remember when we started
       time_start_draw = new Date().getTime();
 
@@ -1110,9 +1110,9 @@
       // Counts of drawing
       props.cnt_ctrlz = cnt_CtrlZPressed;
       props.cnt_enter = cnt_enterKeyPressed;
-      props.cnt_escape = cnt_escapeKeyPressed;
       props.cnt_vertices = cnt_numVertices;
 
+      console.log("props", props);
       //General style
       lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
 
@@ -1205,6 +1205,7 @@
       if(getActiveTabId() != null) ctlSidebar.close();
       geocoder.geocode({'address': address}, function(results, status) {
         if (status === 'OK') {
+          cnt_geocoder++;
           var lat = results[0].geometry.location.lat();
           var lng = results[0].geometry.location.lng();
           var marker_format = {lat: lat, lng: lng}
@@ -1798,13 +1799,12 @@
     });//END content
   }
   function finish_mapDraw(){
-    var cnt = 0;
-    var cnt_async = 0;
     if ( mymap.hasLayer(fgpDrawnItems) && (fgpDrawnItems.getLayers().length > 0) ){
       // NEED TO: come back to previous situation
       if ( (cnt_LikedAreas >= 1) && (cnt_DislikedAreas >= 1) ){
       // if ( (cnt_LikedAreas >= 4) && (cnt_DislikedAreas >= 4) ){
-        cnt++;
+        order_draw++;
+        console.log("order_draw", order_draw);
         var cnt_feat = fgpDrawnItems.getLayers().length;
         fgpDrawnItems.eachLayer(function(layer){
           var layer_id = layer.feature.properties.id;
@@ -1812,7 +1812,6 @@
 
           var layer_cnt_ctrlz = layer.feature.properties.cnt_ctrlz;
           var layer_cnt_enter = layer.feature.properties.cnt_enter;
-          var layer_cnt_escape = layer.feature.properties.cnt_escape;
           var layer_cnt_vertices = layer.feature.properties.cnt_vertices;
 
 
@@ -1831,7 +1830,7 @@
 
           var reason_comment = document.getElementById(layer_id+"_reason_str").value;
 
-          console.log("sending DB: ", cnt, layer_time, reason_comment);
+          console.log("sending DB: ", order_draw, layer_time, reason_comment);
 
           var cntChecks = 0;
           if( att_nat ){
@@ -1877,13 +1876,12 @@
               att_up: att_up,
               att_hist: att_hist,
 
-              order_draw: cnt,
+              order_draw: order_draw,
               time: layer_time,
               comment: reason_comment,
 
               cnt_ctrlz: layer_cnt_ctrlz,
               cnt_enter: layer_cnt_enter,
-              cnt_escape: layer_cnt_escape,
               cnt_vertices: layer_cnt_vertices,
               user_id: parseInt(getCookie("user_id"))
 
@@ -1921,13 +1919,11 @@
           });
         });// fgpDrawnItems.eachLayer(function(layer))
 
-        time_draw_finish = new Date().getTime();
-        console.log("TIMING: ");
-        console.log(time_draw_finish, time_modal2_close, time_mapdraw_start);
-        var time_dif = (time_draw_finish - time_modal2_close - time_mapdraw_start)/1000;
+        time_draw_finish = ((new Date().getTime() - time_mapdraw_start)/1000) - (time_modal2_close);
         var tbl = "data_demographics";
-        var set = "time_draw = "+time_dif +", num_areas = "+cnt_feat;
-        var set += ",num_removals = "+cnt_removals +", num_edits = "+cnt_edits;
+        var set = "time_draw = "+time_draw_finish +", num_areas = "+cnt_feat;
+        set += ",num_removals = "+cnt_removals +", num_edits = "+cnt_edits;
+        set += ",cnt_escape = "+cnt_escapeKeyPressed +", cnt_geocoder = "+cnt_geocoder;
         updateValuesTable(tbl, set, "user_id="+getCookie("user_id") );
 
         setCookie("app_finished", "true", 7);
@@ -1959,7 +1955,8 @@
   }
   function warnDeleteArea(){
     /* DESCRIPTION: Warn the user if tries to delete an area */
-    return confirm("Are you sure you want to delete this area permanently?")
+    if (siteLang=="en") return confirm("Are you sure you want to delete this area permanently?");
+    if (siteLang=="pt") return confirm("Tens certeza que deseja remover essa area permanentemente?");
   }
   function warnFinishCreation(){
     /* DESCRIPTION: Warn the user if tries open the sidebar in a creation mode */
@@ -2143,8 +2140,7 @@
     if(field_blank.length==0){
     // if(field_blank!=[]){
       var isMobile = (IsMobileDevice ? 1 : 0);
-      time_modal2_close = new Date().getTime();
-      var time_dif = (time_modal2_close - time_mapdraw_start)/1000;
+      time_modal2_close = (new Date().getTime() - time_mapdraw_start)/1000;
 
       var table_insert = "data_demographics";
 
@@ -2154,7 +2150,7 @@
 
       var values_insert = getCookie("user_id") + ",'"+ user_sex + "','"+ user_age + "','";
       values_insert += user_school + "',"+ "''" + ",'"+ user_income + "','"+ type_user + "','";
-      values_insert += getCookie("app_language") + "',"+ isMobile + ",'"+ "type_interview" + "',"+ time_dif;
+      values_insert += getCookie("app_language") + "',"+ isMobile + ",'"+ "type_interview" + "',"+ time_modal2_close;
 
       console.log(columns_insert, values_insert);
 
@@ -2204,15 +2200,14 @@
       console.log(columns_insert, values_insert);
       insertValuesTable(table_insert, columns_insert, values_insert)
 
-      time_modal3_close = new Date().getTime();
-      var time_sus = (time_modal3_close - time_draw_finish - time_modal2_close - time_mapdraw_start)/1000;
+      time_modal3_close = ((new Date().getTime() - time_mapdraw_start)/1000) - (time_draw_finish + time_modal2_close);
 
-      var time_session_ended = new Date().getTime();
-      var time_session_started = parseInt(getCookie("time_appinit"));
-      var time_session = (time_session_ended - time_session_started)/1000;
+      var time_session_started = parseFloat(getCookie("time_appinit"));
+      var time_session_ended = (new Date().getTime() - time_session_started)/1000;
+      alert((new Date().getTime()).toString()+ "\n" +time_session_started.toString());
       var tbl = "data_demographics";
-      var set = " time_sus      = "+ time_sus      +", ";
-      set     += "time_session  = "+ time_session;
+      var set = " time_sus      = "+ time_modal3_close      +", ";
+      set     += "time_session  = "+ time_session_ended;
       updateValuesTable(tbl, set, "user_id="+getCookie("user_id") );
 
       // Removing cookies of the session
