@@ -21,7 +21,7 @@ $strQry="UPDATE {$table} SET {$set} WHERE {$where}";
 try {
     $result = $pdo->query($strQry);
 } catch(PDOException $e) {
-    echo "ERROR: ".$e->getMessage();
+    echo "ERROR: UPDATETABLE!".$e->getMessage();
 }
 
 ?>

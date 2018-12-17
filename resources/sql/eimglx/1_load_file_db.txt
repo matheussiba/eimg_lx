@@ -12,6 +12,8 @@ access DB:
 List all existent tables:
 	SELECT * FROM pg_catalog.pg_tables WHERE tableowner = 'matheus';
 	DROP TABLE <tablename>;
+	drop table study_area_4326; drop table data_demographics ; drop table data_sus; drop table general_info; drop table eimg_raw_polys; drop table eimg_raw_polys_single ; drop table eimg_raw_polys_multi ; drop table eimg_result;
+
 
 Quit PostgreSQL
 	ctrl+z
@@ -22,7 +24,7 @@ List all existent files
 	ls
 	
 To run a sql file:
-	psql -d eimg_lx -f <file_name>
+	psql -d eimg_lx -f <file_name> --backup file of DB
 
 Change db_credentials.php
 

@@ -2088,10 +2088,13 @@
       },
       type:'POST',
       success:function(response){
-        console.log(response);
         if ( response.substring(0, 5) == "ERROR") {
-          alert(response)
+          console.log(response);
+          console.log(table, set, where);
+          // alert(response)
         }else{
+          onsole.log(response);
+          console.log(table, set,
           // alert(response)
         }
 
@@ -2110,10 +2113,13 @@
       },
       type:'POST',
       success:function(response){
-        console.log(response);
         if ( response.substring(0, 5) == "ERROR") {
-          alert(response)
+          console.log(response);
+          console.log(table, columns, values);
+          // alert(response)
         }else{
+          console.log(response);
+          console.log(table, columns, values);
           // alert(response)
         }
 

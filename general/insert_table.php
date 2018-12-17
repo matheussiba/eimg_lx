@@ -19,7 +19,7 @@ $strQry="INSERT INTO {$table} ({$columns}) VALUES ({$values})";
 try {
     $result = $pdo->query($strQry);
 } catch(PDOException $e) {
-    echo "ERROR: ".$e->getMessage();
+    echo "ERROR: INSERTTABLE!".$e->getMessage();
 }
 
 ?>
