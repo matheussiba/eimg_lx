@@ -1,0 +1,30 @@
+Enter Putty:
+	host: giv-project14.uni-muenster.de
+	port: 22
+	
+Log as:
+	matheus
+	b7jol9y
+
+-- in case of emergency hit ctrl+z
+access DB:
+	psql -d eimg_lx
+List all existent tables:
+	SELECT * FROM pg_catalog.pg_tables WHERE tableowner = 'matheus';
+	DROP TABLE <tablename>;
+
+Quit PostgreSQL
+	ctrl+z
+Change directory to the HTML folder where all the files are:
+	cd ../../var/www/html
+
+List all existent files
+	ls
+	
+To run a sql file:
+	psql -d eimg_lx -f <file_name>
+
+Change db_credentials.php
+
+
+
