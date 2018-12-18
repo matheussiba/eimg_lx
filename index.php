@@ -97,6 +97,15 @@ if (isset($_GET['f2f'])) {
           </span>
         </h4></b></p>
 
+        <div class="col text-center">
+          <span class="language-en">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/z8dtaum_Xu0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </span>
+          <span class="language-pt">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/WbmyZV07IRs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </span>
+        </div>
+
         <p style="font-size: 12px; margin-top: 30px">
           <span class="language-en">
             Notes:
