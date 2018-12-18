@@ -275,6 +275,7 @@
   var cnt_removals=0, cnt_edits=0, cnt_baselayerChange=0;
   var time_mapdraw_start=0, time_modal2_close=0, time_draw_finish=0, time_modal3_close=0;
   var order_draw = 0, cnt_async = 0, cnt_geocoder = 0, current_layer = "";
+  var outAOI=false;
 
   //  ********* Increment the column in the DB *********
   incrementColumn("cnt_access_draw");
@@ -374,6 +375,7 @@
 
           // Checking if the vertex is inside the stydy area. returns 'true' if it's, 'false' if it's not
           if ( !(isMarkerInsidePolygon(pntClicked, LyrAOI_coords)) ){
+            outAOI = true;
             if(siteLang=='en') var str_popup = '<p>Please, only draw<br />inside the <b>study area</b>';
             if(siteLang=='pt') var str_popup = '<p>Por favor, apenas clique<br />dentro da <b>área de estudo</b>';
             //If the first click the user gives is outside the study area, it will restart the draw and do not close the AlertPopup
@@ -430,7 +432,10 @@
       area_id = button_clicked_properties;
       if(siteLang=='en') var str_popup='<span><h7>Please, <b>click on the map</b><br />to start the drawing...</h7></span>';
       if(siteLang=='pt') var str_popup='<span><h7>Por favor, <b>clique no mapa</b><br />para começar o desenho...</h7></span>';
-      if( (cnt_LikedAreas+cnt_DislikedAreas)<=2) openAlertPopup(mymap.getCenter(), str_popup, 2500);
+
+      // alert(outAOI);
+      if( (cnt_LikedAreas+cnt_DislikedAreas)<=2 && !outAOI) openAlertPopup(mymap.getCenter(), str_popup, 2500);
+      if(outAOI) outAOI = false;
 
       if (log_functions){console.log('drawArea', area_id);}
 
@@ -1382,7 +1387,7 @@
     // alert(tab_id);
     var str_newtab = "";
     str_newtab += '<div class="col-xs-12">';
-    str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:2px;">';
+    str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:5px; padding-top:2px;">';
 
     if(siteLang =='en') str_newtab += '<h4><b>Choose the attributes that corresponding to the drawn area*:</b></h4><p>(*Check at least 1 attribute)</p>';
     if(siteLang =='pt') str_newtab += '<h4><b>Escolha os atributos que correspondem a área desenhada*:</b></h4><p>(*Escolha ao menos 1 atributo)</p>';
@@ -1436,11 +1441,11 @@
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Presence of cultural/social/historical stimuli';
-      if(siteLang=='pt') str_newtab += 'Alta atividade cultural/social/histórica';
+      if(siteLang=='en') str_newtab += 'Area with historical/cultural significance';
+      if(siteLang=='pt') str_newtab += 'Área com significado histórico/cultural';
     }else{
-      if(siteLang=='en') str_newtab += 'Lack of cultural/social/historical stimuli';
-      if(siteLang=='pt') str_newtab += 'Baixa atividade cultural/social/histórica';
+      if(siteLang=='en') str_newtab += 'Area with no historical/cultural significance';
+      if(siteLang=='pt') str_newtab += 'Área sem significado histórico/cultural';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=       '</div>';
@@ -1466,18 +1471,15 @@
     str_newtab +=       '</div>';
     str_newtab +=     '</div>';
     str_newtab += '<div style="padding-top:5px;font-size:14px;">';
-    if(liked){
-      if(siteLang =='en') str_newtab += 'Write below a reason why you <u>like</u> the area:';
-      if(siteLang =='pt') str_newtab += 'Escreva uma razão pela qual você <u>gosta</u> dessa área:';
-    }else{
-      if(siteLang =='en') str_newtab += 'Write below a reason why you <u>disliked</u> the area:';
-      if(siteLang =='pt') str_newtab += 'Escreva uma razão pela qual você <u>não gosta</u> dessa área:';
-    }
+
+    if(siteLang =='en') str_newtab += "<b>Another attribute</b> you'd like to add?";
+    if(siteLang =='pt') str_newtab += "<b>Algum outro atributo</b> que você gostaria de adicionar?";
+
     str_newtab += '</div>';
     str_newtab += '<input type="text" class="col" id="'+tab_id+'_reason_str" style="height:30px;" name="evaluative_reason" maxlength="400" placeholder="';
 
-    if(siteLang =='en') str_newtab += 'Type the reason here';
-    if(siteLang =='pt') str_newtab += 'Escreva sua razão aqui';
+    if(siteLang =='en') str_newtab += 'Type it here';
+    if(siteLang =='pt') str_newtab += 'Escreva aqui';
 
     str_newtab += '">';
     str_newtab +=   '</div>';
@@ -2179,8 +2181,8 @@
     var user_age = e.options[e.selectedIndex].value;
     var e = document.getElementById("user_school-"+siteLang);
     var user_school = e.options[e.selectedIndex].value;
-    // var e = document.getElementById("user_job-"+siteLang);
-    // var user_job = e.options[e.selectedIndex].value;
+    var e = document.getElementById("user_job-"+siteLang);
+    var user_job = e.options[e.selectedIndex].value;
     var e = document.getElementById("user_income-"+siteLang);
     var user_income = e.options[e.selectedIndex].value;
 
@@ -2199,10 +2201,10 @@
       if (siteLang=="en") field_blank.push("Education");
       if (siteLang=="pt") field_blank.push("Escolaridade");
     }
-    // if(user_job==""){
-    //   if (siteLang=="en") field_blank.push("Profession");
-    //   if (siteLang=="pt") field_blank.push("Profissão");
-    // }
+    if(user_job==""){
+      if (siteLang=="en") field_blank.push("Profession");
+      if (siteLang=="pt") field_blank.push("Profissão");
+    }
     if(user_income==""){
       if (siteLang=="en") field_blank.push("Income");
       if (siteLang=="pt") field_blank.push("Renda");
@@ -2227,7 +2229,7 @@
       columns_insert += "language, is_mobile, type_interview, time_demographics";
 
       var values_insert = getCookie("user_id") + ",'"+ user_sex + "','"+ user_age + "','";
-      values_insert += user_school + "',"+ "''" + ",'"+ user_income + "','"+ type_user + "','";
+      values_insert += user_school + "','"+ user_job + "','"+ user_income + "','"+ type_user + "','";
       values_insert += getCookie("app_language") + "',"+ isMobile + ",'"+ getCookie("type_interview") + "',"+ time_modal2_close;
 
       console.log(columns_insert, values_insert);

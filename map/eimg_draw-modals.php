@@ -81,15 +81,15 @@
                     <option value="">Select</option>
                     <option value="no_school">No schooling completed</option>
                     <option value="primary">Primary/High school</option>
-                    <option value="secondary_student">Secondary/High school student</option>
+                    <!-- <option value="secondary_student">Secondary/High school student</option> -->
                     <option value="secondary">Secondary/High school</option>
-                    <option value="technical_student">Technical student</option>
+                    <!-- <option value="technical_student">Technical student</option> -->
                     <option value="technical">Technical degree</option>
-                    <option value="bachelor_student">Bachelor student</option>
+                    <!-- <option value="bachelor_student">Bachelor student</option> -->
                     <option value="bachelor">Bachelor degree</option>
-                    <option value="master_student">Master student</option>
+                    <!-- <option value="master_student">Master student</option> -->
                     <option value="master">Master degree</option>
-                    <option value="doctorate_student">Doctorate student</option>
+                    <!-- <option value="doctorate_student">Doctorate student</option> -->
                     <option value="doctorate">Doctorate degree</option>
                     <option value="another">Another</option>
                   </select>
@@ -99,23 +99,23 @@
                     <option value="">Selecionar</option>
                     <option value="no_school">Nenhuma escolaridade completada</option>
                     <option value="primary">Ensino básico/fundamental</option>
-                    <option value="secondary_student">Estudante de ensino secundário/médio</option>
+                    <!-- <option value="secondary_student">Estudante de ensino secundário/médio</option> -->
                     <option value="secondary">Ensino secundário/médio</option>
-                    <option value="technical_student">Estudante de nível técnico</option>
-                    <option value="technical">Nível Técnico completo</option>
-                    <option value="bachelor_student">Estudante de licenciatura</option>
-                    <option value="bachelor">Licenciatura completa</option>
-                    <option value="master_student">Estudante de mestrado</option>
-                    <option value="master">Mestrado completo</option>
-                    <option value="doctorate_student">Estudante de doutoramento</option>
-                    <option value="doctorate">Doutoramento completo</option>
+                    <!-- <option value="technical_student">Estudante de nível técnico</option> -->
+                    <option value="technical">Nível Técnico</option>
+                    <!-- <option value="bachelor_student">Estudante de licenciatura</option> -->
+                    <option value="bachelor">Licenciatura</option>
+                    <!-- <option value="master_student">Estudante de mestrado</option> -->
+                    <option value="master">Mestrado</option>
+                    <!-- <option value="doctorate_student">Estudante de doutoramento</option> -->
+                    <option value="doctorate">Doutoramento</option>
                     <option value="another">Outro</option>
                   </select>
                 </span>
               </td>
             </tr>
             <!-- job -->
-            <!-- <tr>
+            <tr>
               <th scope="row">
                 <span class="language-en">Profession:</span>
                 <span class="language-pt">Profissão:</span>
@@ -146,7 +146,7 @@
                   </select>
                 </span>
               </td>
-            </tr> -->
+            </tr>
             <!-- income -->
             <tr>
               <th scope="row">

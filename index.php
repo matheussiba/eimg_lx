@@ -33,7 +33,7 @@ if (isset($_GET['f2f'])) {
           <span class="language-en">Welcome to eImage-LX</span>
           <span class="language-pt">Bem vindo ao eImage-LX</span>
         </h5>
-        <div class="pull-right">
+        <!-- <div class="pull-right">
           <label class="radio-inline" >
             <input type="radio" name="language_switch" value="pt">
             <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
@@ -42,7 +42,7 @@ if (isset($_GET['f2f'])) {
             <input type="radio" name="language_switch" value="en">
             <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
           </label>
-        </div>
+        </div> -->
       </div>
 
       <div class="modal-body">
@@ -50,6 +50,15 @@ if (isset($_GET['f2f'])) {
           <img src="<?php  echo $root_directory?>resources/images/eimg_logo_1.png" id="logo_munster" style="margin-left: 5px">
         </div>
         <!--  Project's explanation  -->
+        <label class="" >
+          <input type="radio" name="language_switch" value="pt">
+          <img src="<?php  echo $root_directory?>resources/images/flags/portugal.png" style="margin-left: 5px">
+        </label><br />
+        <label class="">
+          <input type="radio" name="language_switch" value="en">
+          <img src="<?php  echo $root_directory?>resources/images/flags/united_kingdom.png" style="margin-left: 5px">
+        </label>
+
         <p>
           <span class="language-en">
             eImage is part of a research project involving 3 European universities: <b>NOVA IMS</b> (Lisbon, Portugal), <b>UJI</b> (Castellón, Spain) and <b>WWU</b> (Münster, Germany).
