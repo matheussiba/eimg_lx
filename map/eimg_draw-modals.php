@@ -16,8 +16,8 @@
             <!-- sex -->
             <tr>
               <th scope="row">
-                <span class="language-en">Gender*:</span>
-                <span class="language-pt">Sexo*:</span>
+                <span class="language-en">Gender:</span>
+                <span class="language-pt">Sexo:</span>
               </th>
               <td>
                 <span class="language-en">
@@ -39,8 +39,8 @@
             <!-- age -->
             <tr>
               <th scope="row">
-                <span class="language-en">Age Group*:</span>
-                <span class="language-pt">Idade*:</span>
+                <span class="language-en">Age Group:</span>
+                <span class="language-pt">Idade:</span>
               </th>
               <td>
                 <span class="language-en">
@@ -72,8 +72,8 @@
             <!-- school -->
             <tr>
               <th scope="row">
-                <span class="language-en">Education*:</span>
-                <span class="language-pt">Escolaridade*:</span>
+                <span class="language-en">Education:</span>
+                <span class="language-pt">Escolaridade:</span>
               </th>
               <td>
                 <span class="language-en">
@@ -150,8 +150,8 @@
             <!-- income -->
             <tr>
               <th scope="row">
-                <span class="language-en">Household monthly income (euros)*:</span>
-                <span class="language-pt">Renda mensal domiciliar (euros)*:</span>
+                <span class="language-en">Household monthly income (euros):</span>
+                <span class="language-pt">Renda mensal domiciliar (euros):</span>
               </th>
               <td>
                 <span class="language-en">
@@ -184,14 +184,14 @@
               <td colspan="2" class="text-center">
                 <label style="margin-right: 15px">
                   <input type="radio" name="type_user" value="resident" class="survey_sus">
-                  <span class="language-en">I'm a <b>resident</b> of Lisbon</span>
-                  <span class="language-pt">Eu sou um <b>morador</b> de Lisboa</span>
+                  <span class="language-en"><b>Resident</b> of Lisbon (or surroundings)</span>
+                  <span class="language-pt"><b>Residente</b> em Lisboa (ou arredores)</span>
                 </label>
 
                 <label>
                   <input type="radio" name="type_user" value="visitor" class="survey_sus">
-                  <span class="language-en">I'm a <b>visitor</b> of Lisbon</span>
-                  <span class="language-pt">Eu sou um <b>visitante</b> de Lisboa</span>
+                  <span class="language-en"><b>Visitor</b></span>
+                  <span class="language-pt"><b>Visitante</b></span>
                 </label>
               </td>
             </tr>
@@ -199,8 +199,8 @@
           </tbody>
         </table>
         <div class="col" style="font-size:12px">
-          <span class="language-en">*Required fields</span>
-          <span class="language-pt">*Campos Obrigatórios</span>
+          <span class="language-en">All fields are required</span>
+          <span class="language-pt">Todos os campos são obrigatórios</span>
         </div>
       </div> <!-- modal body -->
       <div class="modal-footer" style="border:none;">
@@ -388,7 +388,7 @@
                 <td class="sus_index">11.</td>
                 <td class="sus_question">
                   <span class="language-en">This app helps me say what I like/dislike effectively.</span>
-                  <span class="language-pt">Esse aplicativo me ajuda a dizer o que eu gosto/não gosto efetivamente.</span>
+                  <span class="language-pt">Esse aplicativo me ajuda de forma efetiva a dizer o que eu gosto/não gosto.</span>
                 </td>
                 <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="strong_disagree"></td>
                 <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="disagree"></td>

@@ -61,8 +61,8 @@
             <span class="language-pt">Quando você estiver terminar, volte aqui de novo e clique no botão abaixo para finalizar e ver o resultado de todos os participantes que já participaram</span>
           </p>
           <button class='btn btn-info btn-block' onclick="finish_mapDraw()">
-            <span class="language-en">Finish and see result</span>
-            <span class="language-pt">Finalizar e ver resultado</span>
+            <span class="language-en">Save and see result</span>
+            <span class="language-pt">Salvar e ver resultado</span>
           </button>
         </div>
         <hr />
@@ -253,6 +253,7 @@
   var cntCheckedCbx;
   var firstVertex, pntClicked;
   var minimumZoom = 11;
+  var maximumZoom = 17;
   var closeAlertPopUpWhenDrawIsFinished;
   var GM_geocoder, new_vertex, previous_vertex;
 
@@ -858,8 +859,9 @@
       success:function(response){
         // console.log(response);
         var layer = JSON.parse(response);
-        // console.log(layer);
-        LyrAOI_coords = layer.features[0].geometry.coordinates;
+        console.log(layer);
+        // LyrAOI_coords = layer.features[0].geometry.coordinates;
+        LyrAOI_coords = layer.features[0].geometry.coordinates[0];
         LyrAOI=L.geoJSON(layer);
         var lyr_bounds = LyrAOI.getBounds();
         var value = 0.03;
@@ -881,7 +883,7 @@
         //Create a test polygon to see the area of the maxBounds
         // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
       },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
+      error: function(xhr, status, error){ console.log("ERROR: "+error); }
     }); // End ajax
   }
   function loadBasemaps() {
@@ -1016,14 +1018,23 @@
       var zoomNotAllowed = minimumZoom;
       if(mymap.getZoom()==zoomNotAllowed){
         cnt_zoomOutExceeded++;
-        if(siteLang=='en') var str_popup = "<h6>Minimum zoom exceeded!</h6>";
-        if(siteLang=='pt') var str_popup = "<h6>Zoom mínimo ultrapassado!</h6>";
+        if(siteLang=='en') var str_popup = "<h7>Minimum zoom exceeded!</h7>";
+        if(siteLang=='pt') var str_popup = "<h7>Zoom mínimo ultrapassado!</h7>";
 
-        if( cnt_zoomOutExceeded<5){
+        //if( cnt_zoomOutExceeded<5){
           if(timeout_zoomNotAllowed) clearTimeout(timeout_zoomNotAllowed);
           openAlertPopup(mymap.getCenter(), str_popup,1000 );
-        }
-        timeout_zoomNotAllowed = setTimeout(function(){ mymap.setZoom(zoomNotAllowed+1);}, 400);
+        //}
+        timeout_zoomNotAllowed = setTimeout(function(){ mymap.setZoom(zoomNotAllowed+1);}, 100);
+      }
+      if(mymap.getZoom()==maximumZoom+1){
+        if(siteLang=='en') var str_popup = "<h7>Maximum zoom exceeded!</h7>";
+        if(siteLang=='pt') var str_popup = "<h7>Zoom máximo ultrapassado!</h7>";
+
+        if(timeout_zoomNotAllowed) clearTimeout(timeout_zoomNotAllowed);
+        openAlertPopup(mymap.getCenter(), str_popup,1000 );
+
+        timeout_zoomNotAllowed = setTimeout(function(){ mymap.setZoom(maximumZoom);}, 100);
       }
       // if(mymap.getZoom()==18 && cnt_zoomInExceeded<1){
       //   cnt_zoomInExceeded++;
@@ -1373,38 +1384,43 @@
     str_newtab += '<div class="col-xs-12">';
     str_newtab +=   '<div id="'+tab_id+'_divChosenAttr" style="display:none; padding-left:10px; padding-top:2px;">';
 
-    if(siteLang =='en') str_newtab += '<h4>Choose the attributes that corresponding to the drawn area*:</h4><p>(*Check at least 1 attribute)</p>';
-    if(siteLang =='pt') str_newtab += '<h4>Escolha os atributos que correspondem a área desenhada*:</h4><p>(*Escolha ao menos 1 atributo)</p>';
+    if(siteLang =='en') str_newtab += '<h4><b>Choose the attributes that corresponding to the drawn area*:</b></h4><p>(*Check at least 1 attribute)</p>';
+    if(siteLang =='pt') str_newtab += '<h4><b>Escolha os atributos que correspondem a área desenhada*:</b></h4><p>(*Escolha ao menos 1 atributo)</p>';
 
     str_newtab +=     '<span id="'+tab_id+'_str_checkcbx" ></span>'; //NEEDTO: say to user to click save button
+
+
+    str_newtab +=     '<div class="row">';
+    str_newtab +=       '<div class="col">';
+
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-nat"" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_nat">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-nat" class="cbxsidebar" for="'+tab_id+'_cbxAtt-nat"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Presence of Nature';
+      if(siteLang=='en') str_newtab += 'Presence of nature';
       if(siteLang=='pt') str_newtab += 'Natureza presente';
     }else{
-      if(siteLang=='en') str_newtab += 'Man-made nuisances';
-      if(siteLang=='pt') str_newtab += 'Perturbações causadas pelo homem';
+      if(siteLang=='en') str_newtab += 'Lack of nature';
+      if(siteLang=='pt') str_newtab += 'Natureza pouco presente';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-open" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_open">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-open" class="cbxsidebar" for="'+tab_id+'_cbxAtt-open"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Open views';
-      if(siteLang=='pt') str_newtab += 'Vista ampla';
+      if(siteLang=='en') str_newtab += 'Open views/wide area';
+      if(siteLang=='pt') str_newtab += 'Vista ampla/área espaçosa';
     }else{
-      if(siteLang=='en') str_newtab += 'Restricted views';
-      if(siteLang=='pt') str_newtab += 'Vista restrita';
+      if(siteLang=='en') str_newtab += 'Restricted views/crowded area';
+      if(siteLang=='pt') str_newtab += 'Vista restrita/área tumultuada';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-order" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_order">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-order" class="cbxsidebar" for="'+tab_id+'_cbxAtt-order"> ';
     if(liked){
       if(siteLang=='en') str_newtab += 'Organized area';
-      if(siteLang=='pt') str_newtab += 'Organização';
+      if(siteLang=='pt') str_newtab += 'Área organizada';
     }else{
       if(siteLang=='en') str_newtab += 'Disorganized area';
-      if(siteLang=='pt') str_newtab += 'Desorganização';
+      if(siteLang=='pt') str_newtab += 'Área desorganizada';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-upkeep" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_upkeep">';
@@ -1413,28 +1429,51 @@
       if(siteLang=='en') str_newtab += 'Well maintained area';
       if(siteLang=='pt') str_newtab += 'Área bem cuidada';
     }else{
-      if(siteLang=='en') str_newtab += 'Dilapidated area';
-      if(siteLang=='pt') str_newtab += 'Área dilapidada';
+      if(siteLang=='en') str_newtab += 'Poorly maintained area';
+      if(siteLang=='pt') str_newtab += 'Área mal cuidada';
     }
     str_newtab +=     '</label><br />';
     str_newtab +=     '<input type="checkbox" id="'+tab_id+'_cbxAtt-hist" class="'+tab_id+'_cbxAttributes cbxsidebar" name="dlg_fltAttributes" value="att_hist">';
     str_newtab +=     '<label id="'+tab_id+'_lblAtt-hist" class="cbxsidebar" for="'+tab_id+'_cbxAtt-hist"> ';
     if(liked){
-      if(siteLang=='en') str_newtab += 'Good cultural/social scene';
-      if(siteLang=='pt') str_newtab += 'Boa cena cultural/social';
+      if(siteLang=='en') str_newtab += 'Presence of cultural/social/historical stimuli';
+      if(siteLang=='pt') str_newtab += 'Alta atividade cultural/social/histórica';
     }else{
-      if(siteLang=='en') str_newtab += 'Scarcity of cultural/social stimuli';
-      if(siteLang=='pt') str_newtab += 'Escassez de estímulos culturais/sociais';
+      if(siteLang=='en') str_newtab += 'Lack of cultural/social/historical stimuli';
+      if(siteLang=='pt') str_newtab += 'Baixa atividade cultural/social/histórica';
     }
-    str_newtab +=     '</label><br /><hr />';
+    str_newtab +=     '</label><br />';
+    str_newtab +=       '</div>';
+    str_newtab +=       '<div class="col-3">';
+      str_newtab +=       '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
+      str_newtab +=         '<i class="fa fa-save"></i> ';
+      str_newtab +=         'Ok';
+      str_newtab +=       '</button>';
 
+      str_newtab +=       '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
+      str_newtab +=         '<i class="fa fa-pen"></i> ';
+      // if(siteLang=='en') str_newtab += 'Edit';
+      // if(siteLang=='pt') str_newtab += 'Editar';
+      str_newtab +=       '</button>';
+
+      str_newtab +=       '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
+      str_newtab +=         '<i class="fa fa-trash-alt"></i> ';
+      // if(siteLang=='en') str_newtab += 'Remove area';
+      // if(siteLang=='pt') str_newtab += 'Remover área';
+      str_newtab +=       '</button>';
+
+
+    str_newtab +=       '</div>';
+    str_newtab +=     '</div>';
+    str_newtab += '<div style="padding-top:5px;font-size:14px;">';
     if(liked){
-      if(siteLang =='en') str_newtab += '<h6>Write below a reason why you <u>like</u> the area:</h6>';
-      if(siteLang =='pt') str_newtab += '<h6>Escreva uma razão pela qual você <u>curte</u> essa área:</h6>';
+      if(siteLang =='en') str_newtab += 'Write below a reason why you <u>like</u> the area:';
+      if(siteLang =='pt') str_newtab += 'Escreva uma razão pela qual você <u>gosta</u> dessa área:';
     }else{
-      if(siteLang =='en') str_newtab += '<h6>Write below a reason why you <u>disliked</u> the area:</h6>';
-      if(siteLang =='pt') str_newtab += '<h6>Escreva uma razão pela qual você <u>não curte</u> essa área:</h6>';
+      if(siteLang =='en') str_newtab += 'Write below a reason why you <u>disliked</u> the area:';
+      if(siteLang =='pt') str_newtab += 'Escreva uma razão pela qual você <u>não gosta</u> dessa área:';
     }
+    str_newtab += '</div>';
     str_newtab += '<input type="text" class="col" id="'+tab_id+'_reason_str" style="height:30px;" name="evaluative_reason" maxlength="400" placeholder="';
 
     if(siteLang =='en') str_newtab += 'Type the reason here';
@@ -1447,10 +1486,10 @@
     str_newtab +=     '<span class="contenChildSpan" id="'+tab_id+'_str_startdrawing" >';
     if(liked){
       if(siteLang=='en') str_newtab += '<h4>Click on the button below to start drawing the area you like';
-      if(siteLang=='pt') str_newtab += '<h4>Clique no botão abaixo para criar a área que você curte';
+      if(siteLang=='pt') str_newtab += '<h4>Clique no botão abaixo para criar a área que você gosta';
     }else{
       if(siteLang=='en') str_newtab += '<h4>Click on the button below to start drawing the area you dislike';
-      if(siteLang=='pt') str_newtab += '<h4>Clique no botão abaixo para criar a área que você não curte';
+      if(siteLang=='pt') str_newtab += '<h4>Clique no botão abaixo para criar a área que você não gosta';
     }
     str_newtab +=       '</h4>';
     str_newtab +=     '</span>';
@@ -1464,23 +1503,23 @@
     if(siteLang=='en') str_newtab += 'Draw area';
     if(siteLang=='pt') str_newtab += 'Criar área';
     str_newtab +=       '</button>';
-    str_newtab +=       '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
-    str_newtab +=         '<i class="fa fa-save"></i> ';
-    if(siteLang=='en') str_newtab += 'Save';
-    if(siteLang=='pt') str_newtab += 'Salvar';
-    str_newtab +=       '</button>';
-    str_newtab +=       '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
-    str_newtab +=         '<i class="fa fa-pen"></i> ';
-    if(siteLang=='en') str_newtab += 'Edit';
-    if(siteLang=='pt') str_newtab += 'Editar';
-    str_newtab +=       '</button>';
+    // str_newtab +=       '<button id="'+tab_id+'_saveArea" class="btn btn-success" style="display:none;" onclick="saveArea(this)">';
+    // str_newtab +=         '<i class="fa fa-save"></i> ';
+    // if(siteLang=='en') str_newtab += 'Save';
+    // if(siteLang=='pt') str_newtab += 'Salvar';
+    // str_newtab +=       '</button>';
+    // str_newtab +=       '<button id="'+tab_id+'_editArea" class="btn btn-warning" style="display:none;" onclick="editArea(this)">';
+    // str_newtab +=         '<i class="fa fa-pen"></i> ';
+    // // if(siteLang=='en') str_newtab += 'Edit';
+    // // if(siteLang=='pt') str_newtab += 'Editar';
+    // str_newtab +=       '</button>';
     str_newtab +=     '</span>';
     str_newtab +=     '<span class="contenChildSpan">';
-    str_newtab +=       '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
-    str_newtab +=         '<i class="fa fa-trash-alt"></i> ';
-    if(siteLang=='en') str_newtab += 'Remove area';
-    if(siteLang=='pt') str_newtab += 'Remover área';
-    str_newtab +=       '</button>';
+    // str_newtab +=       '<button id="'+tab_id+'_removeArea" class="btn btn-danger" style="display:none;" onclick="removeArea(this)">';
+    // str_newtab +=         '<i class="fa fa-trash-alt"></i> ';
+    // // if(siteLang=='en') str_newtab += 'Remove area';
+    // // if(siteLang=='pt') str_newtab += 'Remover área';
+    // str_newtab +=       '</button>';
     str_newtab +=     '</span>';
     str_newtab +=   '</div>';
 
@@ -1501,8 +1540,8 @@
     str_newtab += '</div>';
 
     str_newtab +=   '<div id="'+tab_id+'_btnFinish" class="FinishApp" style="display:none;">';
-    if (siteLang =='en') str_newtab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finish and see result</span></button>';
-    if (siteLang =='pt') str_newtab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finalizar e ver resultado</span></button>';
+    if (siteLang =='en') str_newtab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Save and see result</span></button>';
+    if (siteLang =='pt') str_newtab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Salvar e ver resultado</span></button>';
     str_newtab += '</div>';
 
     var newtab_content = {
@@ -1580,20 +1619,20 @@
     str_temptab +=     '<span class="contenChildSpan">';
     str_temptab +=        '<button class="btn btn-success" onclick="create_areaTab(\'liked\')" '+statusAddLikeButton+'>';
     if (siteLang =='en') str_temptab += '<i class="fa fa-thumbs-up"></i> Liked Area';
-    if (siteLang =='pt') str_temptab += '<i class="fa fa-thumbs-up"></i> Que curto';
+    if (siteLang =='pt') str_temptab += '<i class="fa fa-thumbs-up"></i> Que gosto';
     str_temptab +=        '</button>';
     str_temptab +=     '</span>';
     str_temptab +=    '<span class="contenChildSpan">';
     str_temptab +=        '<button class="btn btn-danger" onclick="create_areaTab(\'disliked\')" '+statusAddDislikeButton+'>';
     if (siteLang =='en') str_temptab += '<i class="fa fa-thumbs-down"></i> Disliked Area';
-    if (siteLang =='pt') str_temptab += '<i class="fa fa-thumbs-down"></i> Que não curto';
+    if (siteLang =='pt') str_temptab += '<i class="fa fa-thumbs-down"></i> Que não gosto';
     str_temptab +=       '</button>';
     str_temptab +=    '</span>';
     str_temptab +=   '</div>';
 
     if ( (cnt_LikedAreas>=1) && (cnt_DislikedAreas>=1) ){
-      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finish and see result</span></button>';
-      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Finalizar e ver resultado</span></button>';
+      if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Save and see result</span></button>';
+      if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Salvar e ver resultado</span></button>';
     }
 
     str_temptab +=  '</div>';
@@ -1877,7 +1916,8 @@
           }
           geojsn_layer = {type:'MultiPolygon',coordinates:[[array_coordinate_rounded]]};
 
-          $.ajax({
+          if(getCookie("type_interview")!="test"){
+            $.ajax({
             url:'eimg_draw-add_polys.php',
             data:{
               tbl:'eimg_raw_polys',
@@ -1934,6 +1974,7 @@
               console.log("Something went wront... "+error);
             }
           });
+          }
         });// fgpDrawnItems.eachLayer(function(layer))
 
         time_draw_finish = ((new Date().getTime() - time_mapdraw_start)/1000) - (time_modal2_close);
@@ -1945,7 +1986,7 @@
 
         updateValuesTable(tbl, set, "user_id="+getCookie("user_id") );
 
-        setCookie("app_finished", "true", 7);
+        setCookie("app_finished", "true", 1);
 
         //Shows the modal
         $('#modal_3_sus').modal('show');
@@ -2074,7 +2115,7 @@
         var column_num_access = JSON.parse(response);
         var num = column_num_access[columnName];
       },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
+      error: function(xhr, status, error){ console.log("ERROR: "+error); }
     }); // End ajax
   }
   function updateValuesTable(table, set, where) {
@@ -2099,7 +2140,7 @@
         }
 
       },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
+      error: function(xhr, status, error){ console.log("ERROR: "+error); }
     }); // End ajax
   }
   function insertValuesTable(table, columns, values) {
@@ -2124,7 +2165,7 @@
         }
 
       },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
+      error: function(xhr, status, error){ console.log("ERROR: "+error); }
     }); // End ajax
   }
 
@@ -2194,7 +2235,7 @@
       insertValuesTable(table_insert, columns_insert, values_insert)
 
       $('#modal_2_demographics').modal('hide');
-      setCookie("demographics_finished", "true", 7);
+      setCookie("demographics_finished", "true", 1);
       //$('#modal_3_sus').modal('show');
     }else{
       if (siteLang=="en") var str = "Please, answer the following fields:\n"

@@ -5,7 +5,7 @@ if (isset($_GET['f2f'])) {
   // echo $type_interview;
   $type_interview = "'face-to-face'";
   //$type_interview = "1";
-}else if (isset($_GET['t'])) {
+}else if (isset($_GET['test'])) {
   // echo "nothing";
   $type_interview = "'test'";
   //$type_interview = "2";
@@ -57,28 +57,19 @@ if (isset($_GET['f2f'])) {
             in order to produce an evaluative image of the Lisbon.
           </span>
           <span class="language-pt">
-            eImage é parte integrante de um projeto de investigação envolvendo 3 universidades européias: <b>NOVA IMS</b> (Lisboa, Portugal), <b>UJI</b> (Castellón, Espanha) and <b>WWU</b> (Münster, Alemanha).
-            The idéia principal é perguntar a moradores e visitantes de Lisboa, área que eles gostam e áreas que eles não gostam dentro da cidade,
-            para assim produzir uma imagem avaliativa dessa maravilhosa capital lusitana.
+            eImage é parte integrante de um projeto de investigação que envolve 3 universidades européias: <b>NOVA IMS</b> (Lisboa, Portugal), <b>UJI</b> (Castellón, Espanha) e <b>WWU</b> (Münster, Alemanha).
+            A ideia principal é perguntar aos residentes e visitantes de Lisboa, área que eles gostam e áreas que eles não gostam dentro da cidade,
+            para assim produzir uma imagem avaliativa da cidade.
           </span>
         </p>
         <p>
           <span class="language-en">
-            This mapping activity takes most people around 7 minutes, depending on how many areas you draw.
+            The activity takes an average of 7 minutes to complete, and your contribution will be important for future actions related to the topic.
           </span>
           <span class="language-pt">
-            Essa atividade de mapeamento leva a maioria das pessoas em torno de 7 minutos, dependendo de quantas áreas você deseja desenhar.
+            A atividade leva em média 7 minutos para ser concluída, e sua contribuição será importante pra ações futuras relacionadas ao tema.
           </span>
         </p>
-        <p>
-          <span class="language-en">
-            Your contribution supports the participative processes of the city of Lisbon.
-          </span>
-          <span class="language-pt">
-            A sua contribuição apoia os processos participativos da cidade de Lisboa.
-          </span>
-        </p>
-
         <p><b><h4 id="message_mobile">
           <span class="language-en">
             Please, change the orientation of your device to have a better experience with this application.
@@ -106,19 +97,18 @@ if (isset($_GET['f2f'])) {
           </span>
           <br>
           <span class="language-en">
-            1. All data collected is treated with confidentiality and anonymity, and will not be used for commercial purposes or distributed to third parties.
+            1. All data collected in this questionnaire will be treated anonymously and confidentially, not being used for commercial purposes or assigned to third parties.
           </span>
           <span class="language-pt">
-            1. Todos os dados recolhidos neste questionário serão tratados de forma anónima e confidencial e não serão utilizados para fins comerciais ou cedidos a terceiros.
+            1. Todos os dados recolhidos neste questionário serão tratados de forma anónima e confidencial, não sendo utilizados para fins comerciais ou cedidos a terceiros.
           </span>
           <br>
           <span class="language-en">
-            2. For more information or questions about this study, please contact us using the following email address: msbarros.gis@gmail.com (Matheus Siqueira Barros).
+            2. For more information or questions about this study, please contact us using the following email address: msbarros.gis@gmail.com (Matheus Barros).
           </span>
           <span class="language-pt">
-            2. Se pretender esclarecer alguma dúvida ou pedir alguma informação sobre este estudo, queira por favor contactar-nos através do seguinte endereço de email: msbarros.gis@gmail.com (Matheus Siqueira Barros).
+            2. Se pretender esclarecer alguma dúvida ou pedir informações extras sobre este estudo poderá contactar-nos através do email: msbarros.gis@gmail.com (Matheus Barros).
           </span>
-
             <br>
           </p>
 
@@ -240,7 +230,7 @@ $(document).ready(function(){
   setTimeout(changeMap, 2000);
   setInterval(changeMap, 10000);
 
-  if(getCookie("time_appinit") == "") setCookie("time_appinit",new Date().getTime(),7);
+  if(getCookie("time_appinit") == "") setCookie("time_appinit",new Date().getTime(),1);
 
 }); //END $(document).ready()
 
@@ -269,7 +259,7 @@ if(cookie_lang!=""){
 $('#modal_1_intro').modal('show');
 checkedValue = $('input[type=radio][name=language_switch]:checked').val();
 // Set cookie
-setCookie("app_language", checkedValue, 7);
+setCookie("app_language", checkedValue, 1);
 hideText(checkedValue);
 
 if (!isPortrait){
@@ -354,12 +344,12 @@ function resetCookies(cookieNames) {
   for(var i=0; i<cookieNames.length;i++){
     setCookie(cookieNames[i], "", -10);
   }
-  setCookie("time_appinit", new Date().getTime() , 7);
+  setCookie("time_appinit", new Date().getTime() , 1);
 }
 
 function cbxLangChange(value){
   resetCookies();
-  setCookie("app_language", value, 7);
+  setCookie("app_language", value, 1);
   hideText(value);
 }
 
@@ -395,9 +385,9 @@ function incrementColumn(columnName) {
 $("#btn_close_modal_intro").on("click", function () {
   var statuscbx = $('input[type=checkbox][name=cbxAgreement]').prop('checked');
   if(statuscbx){
-    setCookie("user_id", access_number, 7);
+    setCookie("user_id", access_number, 1);
 
-    setCookie("type_interview", <?php echo $type_interview; ?> , 7);
+    setCookie("type_interview", <?php echo $type_interview; ?> , 1);
 
 
     $('#modal_1_intro').modal('hide');
