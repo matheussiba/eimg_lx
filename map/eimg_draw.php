@@ -1632,12 +1632,98 @@
     str_temptab +=    '</span>';
     str_temptab +=   '</div>';
 
+
     if ( (cnt_LikedAreas>=1) && (cnt_DislikedAreas>=1) ){
       if (siteLang =='en') str_temptab += '<hr /><h4 style="text-align:center;">Or you can:</h4><button class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Save and see result</span></button>';
       if (siteLang =='pt') str_temptab += '<hr /><h4 style="text-align:center;">Ou você pode:</h4><button  class="btn btn-info btn-block" onclick="finish_mapDraw()"><span>Salvar e ver resultado</span></button>';
     }
 
     str_temptab +=  '</div>';
+
+    str_temptab += '<br /><div class="row">';
+    if(siteLang=='en') str_temptab += 'To draw a liked/disliked place take into consideration the following attributes:';
+    if(siteLang=='pt') str_temptab += 'Para desenhar uma área que gostas/não gostas leve em consideração os seguintes atributos:';
+    str_temptab +=  '</div>';
+
+    str_temptab += '<div style="font-size:12px">';
+    str_temptab += '<div class="row">';
+    str_temptab +=  '<div class="col-5">';
+    if(siteLang=='en') str_temptab += '<u>Liked Areas</u>';
+    if(siteLang=='pt') str_temptab += '<u>Áreas que gosta</u>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '<div class="col">';
+    if(siteLang=='en') str_temptab += '<u>Disliked Areas</u>';
+    if(siteLang=='pt') str_temptab += '<u>Áreas que não gosta</u>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '</div>';
+
+    str_temptab += '<div class="row">';
+    str_temptab +=  '<div class="col-5">';
+    if(siteLang=='en') str_temptab += '<b>*Presence of Nature</b>';
+    if(siteLang=='pt') str_temptab += '<b>*Natureza presente</b><br />';
+    str_temptab +=  '</div>';
+    str_temptab +=  '<div class="col">';
+    if(siteLang=='en') str_temptab += '<b>*Lack of nature</b>';
+    if(siteLang=='pt') str_temptab += '<b>*Natureza pouco presente</b><br />';
+    str_temptab +=  '</div>';
+    str_temptab +=  '</div>';
+
+    str_temptab += '<div class="row">';
+    str_temptab +=  '<div class="col-5">';
+    if(siteLang=='en') str_temptab += '<b>*Open views/wide areas</b>';
+    if(siteLang=='pt') str_temptab += '<b>*Vistas amplas/áreas espaçosas</b>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '<div class="col">';
+    if(siteLang=='en') str_temptab += '<b>*Restricted views/crowded area</b><br />';
+    if(siteLang=='pt') str_temptab += '<b>*Vistas restritas/áreas tumultuadas</b><br />';
+    str_temptab +=  '</div>';
+    str_temptab +=  '</div>';
+
+    str_temptab += '<div class="row">';
+    str_temptab +=  '<div class="col-5">';
+    if(siteLang=='en') str_temptab += '<b>*Organized areas</b>';
+    if(siteLang=='pt') str_temptab += '<b>*Áreas organizadas</b>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '<div class="col">';
+    if(siteLang=='en') str_temptab += '<b>*Disorganized areas</b><br />';
+    if(siteLang=='pt') str_temptab += '<b>*Áreas desorganizadas</b><br />';
+    str_temptab +=  '</div>';
+    str_temptab +=  '</div>';
+
+    str_temptab += '<div class="row">';
+    str_temptab +=  '<div class="col-5">';
+    if(siteLang=='en') str_temptab += '<b>*Well maintained areas</b>';
+    if(siteLang=='pt') str_temptab += '<b>*Áreas bem cuidadas</b>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '<div class="col">';
+    if(siteLang=='en') str_temptab += '<b>*Poorly maintained areas</b><br />';
+    if(siteLang=='pt') str_temptab += '<b>*Áreas mal cuidadas</b><br />';
+    str_temptab +=  '</div>';
+    str_temptab +=  '</div>';
+
+    str_temptab += '<div class="row">';
+    str_temptab +=  '<div class="col-5">';
+    if(siteLang=='en') str_temptab += '<b>*Areas with historical/</b>';
+    if(siteLang=='pt') str_temptab += '<b>*Áreas com significado</b>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '<div class="col">';
+    if(siteLang=='en') str_temptab += '<b>*Areas with no historical/</b>';
+    if(siteLang=='pt') str_temptab += '<b>*Áreas sem significado</b>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '</div>';
+
+    str_temptab += '<div class="row">';
+    str_temptab +=  '<div class="col-5">';
+    if(siteLang=='en') str_temptab += '<b>    cultural significance</b>';
+    if(siteLang=='pt') str_temptab += '<b>    histórico/cultural</b>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '<div class="col">';
+    if(siteLang=='en') str_temptab += '<b>    cultural significance</b>';
+    if(siteLang=='pt') str_temptab += '<b>    histórico/cultural</b>';
+    str_temptab +=  '</div>';
+    str_temptab +=  '</div>';
+    str_temptab += '</div>';
+
     str_temptab += '</div>';
 
     if(siteLang=='en') var title = 'Add new Area <span class="leaflet-sidebar-close" onclick="ctlSidebar.close()"><i class="fa fa-chevron-circle-left"></i></span>';
