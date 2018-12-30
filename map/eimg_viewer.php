@@ -337,7 +337,7 @@
       cntChecks++;
     });
 
-    console.log(whereClause);
+    // console.log(whereClause);
 
     // Calculating Stats for styling the opacity of each polygon based on the count of liked and disliked place
     //stats for the data
@@ -360,14 +360,14 @@
       var table_options = {
         type_op: "data",
         tbl: "eimg_result",
-        select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent",
+        select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent, ST_AsGeoJSON(geom, 5) AS geojson",
         order: "liked_percent"
       }
     }else{
       var table_options = {
         type_op: "data",
         tbl: "eimg_result",
-        select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent",
+        select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent, ST_AsGeoJSON(geom, 5) AS geojson",
         where: whereClause,
         order: "liked_percent"
       }
@@ -387,12 +387,13 @@
         feat_loaded = 0;
         quantile_class = 1;
         array_cnt_feat_class=[0,0,0,0,0];
+        console.log( JSON.parse(response) );
         lyrEIMG=L.geoJSON(JSON.parse(response),{
           style:stylePlaces,
           onEachFeature:aggAttributes
           // , filter:filterPlaces
         });
-        console.log("count features per class: ",array_cnt_feat_class);
+        // console.log("count features per class: ",array_cnt_feat_class);
 
         // Checkboxes Liked and Disliked places
         $('input[type=checkbox].cbx_fltPlaces:checked').each(function () {
@@ -523,7 +524,7 @@
       url:'eimg_get_dbtable.php',
       data: {
         type_op: "data",
-        tbl: "study_area_4326",
+        tbl: "study_area_4326, ST_AsGeoJSON(geom, 5) AS geojson",
         select:"*"
       },
       type:'POST',
@@ -923,14 +924,14 @@
       //data:{ },
       type:'POST',
       success:function(response){
-        console.log("flatten polygons worked fine");
-        console.log(response);
+        // console.log("flatten polygons worked fine");
+        // console.log(response);
         refreshPlaces();
-        console.log("areas refreshed...");
+        // console.log("areas refreshed...");
       },//End success
       error:function(xhr, status, error){
         // $("#divLog").text("Something went wront... "+error);
-        console.log("Something went wront... "+error);
+        // console.log("Something went wront... "+error);
       }//End error
     });//End AJAX call
 

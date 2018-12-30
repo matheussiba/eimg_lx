@@ -36,7 +36,7 @@ if($type_op == "info"){
 }elseif($type_op == "data"){
   $strQry=
     "SELECT
-      {$fields},ST_AsGeoJSON(geom, 5) AS geojson
+      {$fields}
       FROM {$table}
       {$where}{$order}";
 
@@ -45,8 +45,8 @@ if($type_op == "info"){
   try {
       $features=[];
       foreach($result AS $row) {
-          //Takes out the column geom of the returned row. It won't be needed to create the json format
-          unset($row['geom']);
+          // //Takes out the column geom of the returned row. It won't be needed to create the json format
+          // unset($row['geom']);
           //Get the 'geojson' column that is added to the row in the SQL query (it comes in a JSON format)
           //It comes already encoded. So it needs to be decoded to encode everything together in the end.
           $geometry=$row['geojson']=json_decode($row['geojson']);

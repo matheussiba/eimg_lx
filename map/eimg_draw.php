@@ -857,7 +857,7 @@
       url:'eimg_get_dbtable.php',
       data: {
         type_op: "data",
-        tbl: "study_area_4326",
+        tbl: "study_area_4326,ST_AsGeoJSON(geom, 5) AS geojson",
         select:"*"
       },
       type:'POST',
@@ -2067,6 +2067,7 @@
 
         time_draw_finish = ((new Date().getTime() - time_mapdraw_start)/1000) - (time_modal2_close);
         var tbl = "data_demographics";
+
         var set = "time_draw = "+time_draw_finish +", num_areas = "+cnt_feat;
         set += ",num_removals = "+cnt_removals +", num_edits = "+cnt_edits;
         set += ",cnt_escape = "+cnt_escapeKeyPressed +", cnt_geocoder = "+cnt_geocoder;
@@ -2194,7 +2195,7 @@
   function incrementColumn(columnName) {
     //  # increment values on table
     $.ajax({
-      url:'<?php  echo $root_directory?>general/increment_column_value.php',
+      url:'<?php  echo $root_directory; ?>general/increment_column_value.php',
       data: {
         column: columnName
       },

@@ -222,7 +222,7 @@ incrementColumn("cnt_access_app");
 
 setTimeout(function() {
   if(getCookie("user_id") != "") window.location.href = 'map/eimg_draw.php';
-}, 5000);
+}, 2000);
 
 $(document).ready(function(){
   //  ********* Map Initialization *********
@@ -358,7 +358,7 @@ function getCookie(cname) {
 }
 function resetCookies(cookieNames) {
   // Cookies for the whole session:
-  var cookieNames = ["user_id", "demographics_finished", "app_finished", "user_id", "type_interview", "app_language", "time_appinit"];
+  var cookieNames = ["user_id", "demographics_finished", "app_finished", "type_interview", "app_language", "time_appinit"];
   for(var i=0; i<cookieNames.length;i++){
     setCookie(cookieNames[i], "", -10);
   }
