@@ -263,7 +263,6 @@
 
   //  ********* Increment the column in the DB *********
   incrementColumn("cnt_access_viewer");
-
   //  ********* Mobile Device parameters and Function *********
   loadMobileFunction();
   //  ********* Create Map *********
@@ -299,7 +298,7 @@
     ctlSidebar.open('home');
     // call the refresh place every 7 seconds
     setInterval(refreshPlaces,7000);
-    toggleInputActiveClass()
+    toggleInputActiveClass();
   }); //END $(document).ready()
   //  ********* eimg_VIEWER Functions *********
   function toggleInputActiveClass() {
@@ -353,7 +352,7 @@
         //console.log(response);
         eimg_stats = JSON.parse(response);
       },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
+      error: function(xhr, status, error){ alert("Error eimg_get_dbtable.php call -type_op:'info'- on refreshPlaces(): "+error); }
     }); // End ajax
 
     if (whereClause==""){
@@ -402,14 +401,25 @@
 
         lyrEIMG.addTo(mymap);
 
-        lyrEIMG.getLayers().filter( filterPlaces ).forEach(function(layer) {mymap.removeLayer(layer);});
+        // lyrEIMG.getLayers().filter( filterPlaces ).forEach(function(layer) {mymap.removeLayer(layer);});
+        lyrEIMG.getLayers().forEach(function(layer) {
+          var type = layer.feature.geometry["type"];
+          console.log(type);
+          if(type!='Polygon'){
+            mymap.removeLayer(layer);
+          }
+
+        });
+
+        // map.eachLayer(function(layer) {
+        // console.log('_leaflet_id=' + layer._leaflet_id + ' is layer type= '+ getLayerTypeName(layer));
+
 
         //console.log("number of features loaded in lyrEIMG:", lyrEIMG.getLayers().length);
         //console.log("Areas updated successfully...");
       },//end success
-      error: function(xhr, status, error){
-        alert("ERROR: "+error);
-      }
+      error: function(xhr, status, error){ alert("Error eimg_get_dbtable.php call -type_op:'data'- on refreshPlaces(): "+error); }
+
     }); // End ajax
   }//End refreshPlaces
 
@@ -554,7 +564,7 @@
         //Create a test polygon to see the area of the maxBounds
         // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
       },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
+      error: function(xhr, status, error){ alert("ERROR eimg_get_dbtable.php call -type_op:'data'- on loadStudyArea(): "+error); }
     }); // End ajax
   }
   function loadBasemaps() {
@@ -877,7 +887,7 @@
         var column_num_access = JSON.parse(response);
         var num = column_num_access[columnName];
       },
-      error: function(xhr, status, error){ alert("ERROR: "+error); }
+      error: function(xhr, status, error){ alert("Error increment_column_value.php call on incrementColumn(): "+error); }
     }); // End ajax
   }
 

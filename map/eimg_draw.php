@@ -362,7 +362,7 @@
 
         var dif_lat = Math.abs(new_vertex[0]-previous_vertex[0]);
         var dif_lng = Math.abs(new_vertex[1]-previous_vertex[1]);
-        console.log(dif_lat, dif_lng);
+        // console.log(dif_lat, dif_lng);
         if( dif_lat>0.00008 || dif_lng>0.00008 ){
           if(cnt_numVertices==1){
             //Adding Instructions popup when the user is creating the first area on the map
@@ -574,7 +574,7 @@
         for (var i = 0; i < elementsOfClass.length; i++) {
           elementsOfClass[i].style.display = "block";
         }
-        console.log("total_CNT = ",cnt_LikedAreas+cnt_DislikedAreas);
+        // console.log("total_CNT = ",cnt_LikedAreas+cnt_DislikedAreas);
       }
 
 
@@ -705,7 +705,7 @@
         for (var i = 0; i < elementsOfClass.length; i++) {
           elementsOfClass[i].style.display = "block";
         }
-        console.log("total_CNT = ",cnt_LikedAreas+cnt_DislikedAreas);
+        // console.log("total_CNT = ",cnt_LikedAreas+cnt_DislikedAreas);
       }
 
 
@@ -862,33 +862,40 @@
       },
       type:'POST',
       success:function(response){
-        // console.log(response);
-        var layer = JSON.parse(response);
-        console.log(layer);
-        // LyrAOI_coords = layer.features[0].geometry.coordinates;
-        LyrAOI_coords = layer.features[0].geometry.coordinates[0];
-        LyrAOI=L.geoJSON(layer);
-        var lyr_bounds = LyrAOI.getBounds();
-        var value = 0.03;
-        LyrAOI.addTo(mymap);
-        //Creating a boundary for the map based on the bounds of the layer added
-        //Increasing lat and long in the same proportion
-        var slt = (lyr_bounds._southWest.lat)-value; //south latitude
-        var sln = (lyr_bounds._southWest.lng)-value*2; //south longitude
-        var nlt = (lyr_bounds._northEast.lat)+value; //north latitude
-        var nln = (lyr_bounds._northEast.lng)+value*2; //north longitude
-        // defining the max bounds for panning around the map
-        var southWest = L.latLng(slt,sln);
-        var northEast = L.latLng(nlt,nln);
-        var mybounds =  L.latLngBounds(southWest, northEast);
-        //Zoom the map to the bounds of the added layer
-        mymap.fitBounds(LyrAOI.getBounds());
-        //Set the maximum boundaries in which the map can be panned
-        mymap.setMaxBounds(mybounds);
-        //Create a test polygon to see the area of the maxBounds
-        // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
+        if ( response.substring(0, 5) == "ERROR") {
+          console.log(response);
+          console.log("---------------------\n\nlook at loadStudyArea()...\n\n---------------------");
+          alert(response);
+        }else{
+
+          // console.log(response);
+          var layer = JSON.parse(response);
+          // console.log(layer);
+          // LyrAOI_coords = layer.features[0].geometry.coordinates;
+          LyrAOI_coords = layer.features[0].geometry.coordinates[0];
+          LyrAOI=L.geoJSON(layer);
+          var lyr_bounds = LyrAOI.getBounds();
+          var value = 0.03;
+          LyrAOI.addTo(mymap);
+          //Creating a boundary for the map based on the bounds of the layer added
+          //Increasing lat and long in the same proportion
+          var slt = (lyr_bounds._southWest.lat)-value; //south latitude
+          var sln = (lyr_bounds._southWest.lng)-value*2; //south longitude
+          var nlt = (lyr_bounds._northEast.lat)+value; //north latitude
+          var nln = (lyr_bounds._northEast.lng)+value*2; //north longitude
+          // defining the max bounds for panning around the map
+          var southWest = L.latLng(slt,sln);
+          var northEast = L.latLng(nlt,nln);
+          var mybounds =  L.latLngBounds(southWest, northEast);
+          //Zoom the map to the bounds of the added layer
+          mymap.fitBounds(LyrAOI.getBounds());
+          //Set the maximum boundaries in which the map can be panned
+          mymap.setMaxBounds(mybounds);
+          //Create a test polygon to see the area of the maxBounds
+          // var polygon1 = L.polygon([[slt, sln],[slt, nln],[nlt, nln],[nlt, sln]]).addTo(mymap);
+        }
       },
-      error: function(xhr, status, error){ console.log("ERROR: "+error); }
+      error: function(xhr, status, error){ console.log("error: "+error); }
     }); // End ajax
   }
   function loadBasemaps() {
@@ -1141,7 +1148,7 @@
 
       props.current_layer = current_layer;
 
-      console.log("props", props);
+      // console.log("props", props);
       //General style
       lyrDraw.setStyle({"color": color_line_area, "opacity": 0.75, 'fillColor': color_fill_area });
 
@@ -1187,7 +1194,7 @@
       fgpDrawnItems.eachLayer(function(layer){
         var layer_id = layer.feature.properties.id;
         var layer_time = layer.feature.properties.time_draw_sec;
-        console.log(layer_id, layer_time);
+        // console.log(layer_id, layer_time);
         if(layer_id == area_id){
           //When the layer is created, the sidebar is opened and the layer continues in the edit mode until the user clicks save
           editMode = true;
@@ -1971,7 +1978,7 @@
 
           var reason_comment = document.getElementById(layer_id+"_reason_str").value;
 
-          console.log("sending DB: ", order_draw, layer_time, reason_comment);
+          // console.log("sending DB: ", order_draw, layer_time, reason_comment);
 
           var cntChecks = 0;
           if( att_nat ){
@@ -2033,33 +2040,45 @@
             },
             type:'POST',
             success:function(response){
-              console.log(response);
+              // console.log(response);
               cnt_async++;
               //Because AJAX is a asyncronous, the code to flatten the polygons should be done after the polygons are completely INSERTED to the DB
               if(cnt_async == cnt_feat){
-                console.log(cnt_async);
-                // After sending the polygons to the DB, flatten all the polygons
-                console.log("executing... eimg_viewer-flatten_polys.php");
-                $.ajax({
-                  url:'eimg_viewer-flatten_polys.php',
-                  //data:{ },
-                  type:'POST',
-                  success:function(response){
-                    console.log("flatten polygons worked fine");
-                    console.log(response);
-                  },//End success
-                  error:function(xhr, status, error){
-                    // $("#divLog").text("Something went wront... "+error);
-                    console.log("Something went wront... "+error);
-                    console.log(xhr);
-                    console.log(status);
+                if ( response.substring(0, 5) == "ERROR") {
+                  console.log(response);
+                  console.log("---------------------\n\nlook at eimg_draw-add_polys.php AJAX call ...\n\n---------------------");
+                  alert(response);
+                }else{
+                  // console.log(cnt_async);
+                  // After sending the polygons to the DB, flatten all the polygons
+                  // console.log("executing... eimg_viewer-flatten_polys.php");
+                  $.ajax({
+                    url:'eimg_viewer-flatten_polys.php',
+                    //data:{ },
+                    type:'POST',
+                    success:function(response){
+                      if ( response.substring(0, 5) == "ERROR") {
+                        console.log(response);
+                        console.log("---------------------\n\nlook at eimg_viewer-flatten_polys.php AJAX call ...\n\n---------------------");
+                        alert(response);
+                      }else{
+                        console.log("flatten polygons worked fine");
+                      }
+                      // console.log(response);
+                    },//End success
+                    error:function(xhr, status, error){
+                      // $("#divLog").text("Something went wront... "+error);
+                      // console.log("Something went wront... "+error);
+                      // console.log(xhr);
+                      // console.log(status);
 
-                  }//End error
-                });//End AJAX call
-              }//end if(cnt_async == cnt_feat)
-            },
+                    }//End error
+                  });//End AJAX call
+                }//end if(cnt_async == cnt_feat)
+              }
+            },// end success() first ajax call
             error:function(xhr, status, error){
-              console.log("Something went wront... "+error);
+              console.log("error: "+error);
             }
           });
           }
@@ -2201,13 +2220,19 @@
       },
       type:'POST',
       success:function(response){
-        var column_num_access = JSON.parse(response);
-        var num = column_num_access[columnName];
+        if ( response.substring(0, 5) == "ERROR") {
+          console.log(response);
+          console.log("---------------------\n\nlook at incrementColumn() call ...\n\n---------------------");
+          alert(response);
+        }else{
+          var column_num_access = JSON.parse(response);
+          var num = column_num_access[columnName];
+        }
       },
       error: function(xhr, status, error){ console.log("ERROR: "+error); }
     }); // End ajax
   }
-  function updateValuesTable(table, set, where) {
+  function updateValuesTable(table, set, where, redirectToViewer) {
     //  # update values on table
     $.ajax({
       url:'<?php  echo $root_directory?>general/update_table.php',
@@ -2220,16 +2245,21 @@
       success:function(response){
         if ( response.substring(0, 5) == "ERROR") {
           console.log(response);
+          console.log("---------------------\n\nlook at updateValuesTable() call ...\n\n---------------------");
           console.log(table, set, where);
-          // alert(response)
+          alert(response);
         }else{
           console.log(response);
-          console.log(table, set, where);
-          // alert(response)
+
+          if (redirectToViewer) {
+            setTimeout(function(){ window.location.href = 'eimg_viewer.php'; }, 500);
+          }
+
+          // console.log(table, set, where);
         }
 
       },
-      error: function(xhr, status, error){ console.log("ERROR: "+error); }
+      error: function(xhr, status, error){ console.log("Error: "+error); }
     }); // End ajax
   }
   function insertValuesTable(table, columns, values) {
@@ -2246,15 +2276,15 @@
         if ( response.substring(0, 5) == "ERROR") {
           console.log(response);
           console.log(table, columns, values);
-          // alert(response)
+          console.log("---------------------\n\nlook at insertValuesTable() call ...\n\n---------------------");
+          alert(response);
         }else{
           console.log(response);
-          console.log(table, columns, values);
-          // alert(response)
+          // console.log(table, columns, values);
         }
 
       },
-      error: function(xhr, status, error){ console.log("ERROR: "+error); }
+      error: function(xhr, status, error){ console.log("error: "+error); }
     }); // End ajax
   }
 
@@ -2319,7 +2349,7 @@
       values_insert += user_school + "','"+ user_job + "','"+ user_income + "','"+ type_user + "','";
       values_insert += getCookie("app_language") + "',"+ isMobile + ",'"+ getCookie("type_interview") + "',"+ time_modal2_close;
 
-      console.log(columns_insert, values_insert);
+      // console.log(columns_insert, values_insert);
 
       insertValuesTable(table_insert, columns_insert, values_insert)
 
@@ -2364,9 +2394,9 @@
       columns_insert += columns_question_name.join(",");
 
       var table_insert = "data_sus";
-      console.log(columns_insert, values_insert);
+      // console.log(columns_insert, values_insert);
 
-      insertValuesTable(table_insert, columns_insert, values_insert)
+      insertValuesTable(table_insert, columns_insert, values_insert);
 
       time_modal3_close = ((new Date().getTime() - time_mapdraw_start)/1000) - (time_draw_finish + time_modal2_close);
 
@@ -2376,7 +2406,9 @@
       var set = " time_sus      = "+ time_modal3_close      +", ";
       set     += "time_session  = "+ time_session_ended;
       var where = "user_id="+getCookie("user_id");
-      updateValuesTable(tbl, set, where);
+
+      var redirectToViewer = true;
+      updateValuesTable(tbl, set, where, redirectToViewer);
 
       // Removing cookies of the session
       setCookie("user_id", "", -10);
@@ -2385,8 +2417,7 @@
       setCookie("time_appinit", "", -10);
       setCookie("type_interview", "", -10);
 
-      //$('#modal_3_sus').modal('hide');
-      window.location.href = 'eimg_viewer.php';
+
     }
 
   });
