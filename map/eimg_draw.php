@@ -2416,15 +2416,13 @@
       setCookie("app_finished", "", -10);
       setCookie("time_appinit", "", -10);
       setCookie("type_interview", "", -10);
-
-
     }
 
   });
 
   </script>
   <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvbEjSjXLc2_ft48iGBt_Eavw0Q9u3afk&libraries=places&callback=createGeocoder">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9OqcsgPwmC86ZAWzvHiMqWvgbrKUypBw&libraries=places&callback=createGeocoder">
   </script>
   </body>
   </html>
