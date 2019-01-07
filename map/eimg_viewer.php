@@ -241,6 +241,7 @@
   var firstVertex, pntClicked;
   var minimumZoom = 11;
   var closeAlertPopUpWhenDrawIsFinished;
+  var statsDict;
 
   // # Logging variables
   var log_functions = false;
@@ -360,6 +361,7 @@
         type_op: "data",
         tbl: "eimg_result",
         select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent, ST_AsGeoJSON(geom, 5) AS geojson",
+        where: "ST_Area(geom::geography) > 1",
         order: "liked_percent"
       }
     }else{
@@ -367,7 +369,7 @@
         type_op: "data",
         tbl: "eimg_result",
         select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent, ST_AsGeoJSON(geom, 5) AS geojson",
-        where: whereClause,
+        where: "(" + whereClause + ") AND ST_Area(geom::geography) > 1",
         order: "liked_percent"
       }
     }
@@ -386,20 +388,28 @@
         feat_loaded = 0;
         quantile_class = 1;
         array_cnt_feat_class=[0,0,0,0,0];
-        console.log( JSON.parse(response) );
+        statsDict = {
+          "md-Max":-9999,  "md-Min": -9999,
+          "d-Max": -9999,   "d-Min": -9999,
+          "ld-Max": -9999,  "ld-Min": -9999,
+          "l-Max": -9999,   "l-Min": -9999,
+          "ml-Max": -9999,  "ml-Min": -9999
+        };
+
+        // console.log( JSON.parse(response) );
         lyrEIMG=L.geoJSON(JSON.parse(response),{
           style:stylePlaces,
-          onEachFeature:aggAttributes
+          onEachFeature:onEachElement
           // , filter:filterPlaces
         });
         // console.log("count features per class: ",array_cnt_feat_class);
+
+        // console.log(lyrEIMG);
 
         // Checkboxes Liked and Disliked places
         $('input[type=checkbox].cbx_fltPlaces:checked').each(function () {
             console.log( ($(this).attr("value")).toString() );
         });
-
-        lyrEIMG.addTo(mymap);
 
         // lyrEIMG.getLayers().filter( filterPlaces ).forEach(function(layer) {mymap.removeLayer(layer);});
         lyrEIMG.getLayers().forEach(function(layer) {
@@ -408,8 +418,39 @@
           if(type!='Polygon'){
             mymap.removeLayer(layer);
           }
-
         });
+
+
+        console.log(statsDict["md-Max"]);
+        console.log(statsDict["md-Min"]);
+        console.log(statsDict["d-Max"]);
+        console.log(statsDict["d-Min"]);
+        console.log(statsDict["ld-Max"]);
+        console.log(statsDict["ld-Min"]);
+        console.log(statsDict["l-Max"]);
+        console.log(statsDict["l-Min"]);
+        console.log(statsDict["ml-Max"]);
+        console.log(statsDict["ml-Min"]);
+
+        // Fixing the opacity for each Polygon
+        lyrEIMG.getLayers().forEach(function(layer) {
+          var type = layer.feature.geometry["type"];
+          // console.log(type);
+          if(type!='Polygon'){
+            mymap.removeLayer(layer);
+          }else{
+            var att = layer.feature.properties;
+            var s = att["symbology"];
+            //Setting the max of opacity for each layer
+            var max_opacity = 1.00;
+            var min_opacity = 0.05;
+            var opacity_calc = min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(statsDict[s+"-Min"]))*(max_opacity-min_opacity))/(parseInt(statsDict[s+"-Max"])-parseInt(statsDict[s+"-Min"])));
+            var fillOpacity = Math.round(opacity_calc * 100) / 100;
+            layer.setStyle({fillOpacity: fillOpacity});
+          }
+        });
+
+        lyrEIMG.addTo(mymap);
 
         // map.eachLayer(function(layer) {
         // console.log('_leaflet_id=' + layer._leaflet_id + ' is layer type= '+ getLayerTypeName(layer));
@@ -431,7 +472,7 @@
     return !(array.indexOf( feature.feature.properties.symbology ) > -1);
   }
 
-  function aggAttributes(feature, lyr) {
+  function onEachElement(feature, lyr) {
     var att = feature.properties;
     strToolTip = "<i class='fa fa-thumbs-up' ></i> "+att.ct_liked;
     strToolTip += "   ";
@@ -475,9 +516,6 @@
   function stylePlaces(feature) {
     feat_loaded++;
 
-    //Setting the max of opacity for each layer
-    var max_opacity = 0.95;
-    var min_opacity = 0.15;
     var array_colors =
     [
       ['red', 'green'],
@@ -494,30 +532,50 @@
 
     var att = feature.properties;
 
-    var opacity_calc = min_opacity+((((parseInt(att.ct_liked)+parseInt(att.ct_disliked))-parseInt(eimg_stats.min))*(max_opacity-min_opacity))/(parseInt(eimg_stats.max)-parseInt(eimg_stats.min)));
-
     //the values were ordered in the AJAX call
     if (feat_loaded > eimg_stats.count/number_classes*quantile_class){quantile_class++;}
     if (symbology_type == "quantile"){
       array_cnt_feat_class[quantile_class-1] = (array_cnt_feat_class[quantile_class-1])+1;
       //Classes meaning=>5CLASSES {1:ml, 2:d, 3:ld, 4:l, 5:ml}
       //Classes meaning=>3CLASSES {1:ml, 2:ld, 3:ml}
-      att.symbology = class_values[number_classes-2][quantile_class-1];
-      return {color: array_colors[number_classes-2][quantile_class-1], weight:0, fillColor: array_colors[number_classes-2][quantile_class-1], fillOpacity: opacity_calc };
-    }
-    if (symbology_type == "eq_interval"){
+      var symbology = class_values[number_classes-2][quantile_class-1];
+      att.symbology = symbology;
+      var color = array_colors[number_classes-2][quantile_class-1];
+      var fillColor = array_colors[number_classes-2][quantile_class-1];
+    }else if (symbology_type == "eq_interval"){
       var eq_interval_class=1;
       while (eq_interval_class<=number_classes){
-        if( att.liked_percent <= 100/number_classes*eq_interval_class){
+        var calc = 100/number_classes*eq_interval_class;
+        // var calc_rounded = Math.round(calc * 100)/100; // 2 decimal places
+        if( att.liked_percent <= calc ){
           array_cnt_feat_class[eq_interval_class-1] = (array_cnt_feat_class[eq_interval_class-1])+1;
           //Classes meaning=>5CLASSES {1:mostDisliked, 2:Disliked, 3:Liked/Disliked, 4:Liked, 5:mostLiked}
           //Classes meaning=>3CLASSES {1:mostDisliked, 2:Liked/Disliked, 3:mostLiked}
-          att.symbology = class_values[number_classes-2][eq_interval_class-1];
-          return {color: array_colors[number_classes-2][eq_interval_class-1], weight:0, fillColor: array_colors[number_classes-2][eq_interval_class-1], fillOpacity: opacity_calc };
+          var symbology = class_values[number_classes-2][eq_interval_class-1];
+          att.symbology = symbology;
+          var color = array_colors[number_classes-2][eq_interval_class-1];
+          var fillColor = array_colors[number_classes-2][eq_interval_class-1];
+          break;
         }
         eq_interval_class++;
       }
     }
+
+    var num_rates = parseInt(att.ct_liked)+parseInt(att.ct_disliked);
+    if(statsDict[symbology+"-Min"] < 0){
+      statsDict[symbology+'-Min'] = num_rates;
+      statsDict[symbology+'-Max'] = num_rates;
+    }else{
+      if( (num_rates) < statsDict[symbology+"-Min"] ){
+        statsDict[symbology+"-Min"] = num_rates;
+      }
+      else if( (num_rates) > statsDict[symbology+"-Max"] ){
+        statsDict[symbology+"-Max"] = num_rates;
+      }
+    }
+
+    return {color: color, weight:0, fillColor: fillColor};
+
   }//End stylePlaces(json)
   //  ********* eimg_DRAW Functions *********
   function loadMobileFunction() {
