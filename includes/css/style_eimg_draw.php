@@ -12,10 +12,10 @@
 		padding: 0px
 	}
 
-	input.range_numberOfClasses, input.radio_typeSymbology, input.cbx_fltAttributes, input.cbx_fltPlaces{
+	input.range_numberOfClasses, input.radio_typeSymbology, input.cbx_fltAttributes, input.cbx_fltPlaces, input.radio_dataset{
 	 display: none;
 	}
-	
+
 	#header {
 	  /* height: 75px; */
 	  height:1vh;

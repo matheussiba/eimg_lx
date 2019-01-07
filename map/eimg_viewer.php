@@ -196,6 +196,24 @@
               </label>
             </div>
 
+            <hr />
+
+            <p> Choose the dataset:</p>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-info">
+                <input type="radio" id="ds_all" class='radio_dataset groupinput' name='chooseDataset' value="eimg_result" autocomplete="off" checked>
+                All
+              </label>
+              <label class="btn btn-info">
+                <input type="radio" id="ds_f2f" class='radio_dataset groupinput' name='chooseDataset' value="eimg_result_f2f" autocomplete="off">
+                face-to-face
+              </label>
+              <label class="btn btn-info">
+                <input type="radio" id="ds_onl" class='radio_dataset groupinput' name='chooseDataset' value="eimg_result_online" autocomplete="off">
+                online
+              </label>
+            </div>
+
           </div>
 
         </div>
@@ -356,22 +374,18 @@
       error: function(xhr, status, error){ alert("Error eimg_get_dbtable.php call -type_op:'info'- on refreshPlaces(): "+error); }
     }); // End ajax
 
+
+    var table_options = {
+      type_op: "data",
+      tbl: $("input[name='chooseDataset']:checked").val(),
+      select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent, ST_AsGeoJSON(geom, 5) AS geojson",
+      order: "liked_percent"
+    }
+
     if (whereClause==""){
-      var table_options = {
-        type_op: "data",
-        tbl: "eimg_result",
-        select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent, ST_AsGeoJSON(geom, 5) AS geojson",
-        where: "ST_Area(geom::geography) > 1",
-        order: "liked_percent"
-      }
+      table_options.where = "ST_Area(geom::geography) > 1";
     }else{
-      var table_options = {
-        type_op: "data",
-        tbl: "eimg_result",
-        select: "*,((ct_liked::float/(ct_liked::float+ct_disliked::float))*100)::numeric(5,2) liked_percent, ST_AsGeoJSON(geom, 5) AS geojson",
-        where: "(" + whereClause + ") AND ST_Area(geom::geography) > 1",
-        order: "liked_percent"
-      }
+      table_options.where = "(" + whereClause + ") AND ST_Area(geom::geography) > 1";
     }
 
     $.ajax({
