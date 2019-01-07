@@ -225,7 +225,7 @@
   <div id="mapdiv" class="col-md-12"></div>
 
   <div id="waitToLoad_panel" style="display:none; font-size:14px; background-color: rgba(0,0,0,0.7); color:white; border-radius: 5px;">
-    Data is being loaded... <span id="wait_time">3</span>
+    Data is being loaded... <span id="wait_time"></span>
   </div>
 
   <script>
@@ -1071,12 +1071,15 @@
     clearInterval(wait_time);
     $('#waitToLoad_panel').show();
     wait_time_sec = 3;
-    $( '#wait_time' ).text( i );
+    $( '#wait_time' ).text( wait_time_sec );
     wait_time = setInterval(function(){
-      i--;
-      $( '#wait_time' ).text( i );
-    }, 900);
-
+      wait_time_sec--;
+      $( '#wait_time' ).text( wait_time_sec );
+      if (wait_time_sec==0) {
+        $( '#wait_time' ).text( " " );
+        clearInterval(wait_time);
+      }
+    }, 200);
     refreshPlaces();
   });
 
