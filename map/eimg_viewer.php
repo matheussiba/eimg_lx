@@ -224,6 +224,10 @@
   <!-- ###############  Div that contains the map application ############### -->
   <div id="mapdiv" class="col-md-12"></div>
 
+  <div id="waitToLoad_panel" style="display:none; font-size:14px; background-color: rgba(0,0,0,0.7); color:white; border-radius: 5px;">
+    Data is being loaded... <span id="wait_time">3</span>
+  </div>
+
   <script>
   //  ********* Global Variables Viewer *********
   var lyrEIMG;
@@ -260,6 +264,7 @@
   var minimumZoom = 11;
   var closeAlertPopUpWhenDrawIsFinished;
   var statsDict;
+  var wait_time_sec, wait_time;
 
   // # Logging variables
   var log_functions = false;
@@ -332,6 +337,7 @@
     });
   }
   function refreshPlaces(){
+
     var cntChecks = 0;
     var whereClause = "";
 
@@ -464,6 +470,7 @@
           }
         });
 
+        $('#waitToLoad_panel').hide();
         lyrEIMG.addTo(mymap);
 
         // map.eachLayer(function(layer) {
@@ -1059,6 +1066,18 @@
 
     refreshPlaces();
 
+  });
+  $( "#divSymbology" ).on( "change", ".radio_dataset", function() {
+    clearInterval(wait_time);
+    $('#waitToLoad_panel').show();
+    wait_time_sec = 3;
+    $( '#wait_time' ).text( i );
+    wait_time = setInterval(function(){
+      i--;
+      $( '#wait_time' ).text( i );
+    }, 900);
+
+    refreshPlaces();
   });
 
 

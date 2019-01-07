@@ -26,7 +26,7 @@
 	  /* height: 650px; */
 	  height:100vh;
 	}
-	#geocode_panel {
+	#geocode_panel, #waitToLoad_panel{
     position: absolute;
     top: 10px;
     z-index: 999; /* After the map, before the sidebar*/
