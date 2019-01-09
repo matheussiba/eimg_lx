@@ -270,11 +270,11 @@
                   <span class="language-en">I think that I would like to use this system frequently. </span>
                   <span class="language-pt">Acho que gostaria de utilizar este sistema com frequência. </span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest1" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">2.</td>
@@ -282,11 +282,11 @@
                   <span class="language-en">I found the system unnecessarily complex. </span>
                   <span class="language-pt">Considerei o sistema mais complexo do que necessário. </span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest2" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">3.</td>
@@ -294,11 +294,11 @@
                   <span class="language-en">I thought the system was easy to use</span>
                   <span class="language-pt">Achei o sistema fácil de utilizar. </span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest3" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">4.</td>
@@ -306,11 +306,11 @@
                   <span class="language-en">I think that I would need the support of a technical person to be able to use this system.</span>
                   <span class="language-pt">Acho que necessitaria de ajuda de um técnico para conseguir utilizar este sistema.</span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest4" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">5.</td>
@@ -318,11 +318,11 @@
                   <span class="language-en">I found the various functions in this system were well integrated</span>
                   <span class="language-pt">Considerei que as várias funcionalidades deste sistema estavam bem integradas.</span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest5" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">6.</td>
@@ -330,11 +330,11 @@
                   <span class="language-en">I thought there was too much inconsistency in this system. </span>
                   <span class="language-pt">Achei que este sistema tinha muitas inconsistências. </span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest6" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">7.</td>
@@ -342,11 +342,11 @@
                   <span class="language-en">I would imagine that most people would learn to use this system very quickly</span>
                   <span class="language-pt">Suponho que a maioria das pessoas aprenderia a utilizar rapidamente este sistema.</span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest7" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">8.</td>
@@ -354,11 +354,11 @@
                   <span class="language-en">I found the system very cumbersome to use.</span>
                   <span class="language-pt">Considerei o sistema muito complicado de utilizar. </span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest8" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">9.</td>
@@ -366,11 +366,11 @@
                   <span class="language-en">I felt very confident using the system. </span>
                   <span class="language-pt">Senti-me muito confiante a utilizar este sistema. </span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest9" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">10.</td>
@@ -378,11 +378,11 @@
                   <span class="language-en">I needed to learn a lot of things before I could get going with this system.</span>
                   <span class="language-pt">Tive que aprender muito antes de conseguir lidar com este sistema.</span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest10" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">11.</td>
@@ -390,11 +390,11 @@
                   <span class="language-en">This app helps me say what I like/dislike effectively.</span>
                   <span class="language-pt">Esse aplicativo me ajuda de forma efetiva a dizer o que eu gosto/não gosto.</span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest11" class="survey_sus" value="5"></td>
               </tr>
               <tr>
                 <td class="sus_index">12.</td>
@@ -402,11 +402,11 @@
                   <span class="language-en">This app could be an effective way to give feedback to my city council.</span>
                   <span class="language-pt">Esse aplicativo pode ser uma maneira eficaz de fornecer feedback ao meu conselho municipal.</span>
                 </td>
-                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="strong_disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="disagree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="neutral"></td>
-                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="agree"></td>
-                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="strong_agree"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="1"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="2"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="3"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="4"></td>
+                <td class="sus_cbx"><input type="radio" name="quest12" class="survey_sus" value="5"></td>
               </tr>
           </tbody>
           </table>

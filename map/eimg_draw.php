@@ -43,8 +43,8 @@
 
         <div id="text_sidebar_home_1" style="text-align: justify;text-justify: inter-word; padding-top: 15px;">
           <p style="padding-bottom: 0px;margin-top:0px;" class="sidebar_paragraph">
-            <span class="language-en">Please, draw in the map at least 2 areas:</span>
-            <span class="language-pt">Por favor, desenho no mapa no mínimo 2 áreas:</span>
+            <span class="language-en">Please, draw in the study area (inside blue polygon on the map) at least 2 areas:</span>
+            <span class="language-pt">Por favor, desenhe dentro da área de estudo (dentro do polígono azul no mapa) no mínimo 2 áreas:</span>
           </p>
           <ul>
             <li class="sidebar_paragraph">
@@ -118,8 +118,7 @@
                     <p> It's so simple to draw an area with eImage: </p>
                     <p>
                       <b>First</b>, you click in the <i class="fa fa-plus"></i> sign of the sidebar.
-                      <b>Second</b>, you click in <span style="color:green">green</span> button to draw an area you like
-                      or in the <span style="color:red">red</span> button to draw an area you dislike.
+                      <b>Second</b>, you click in <span style="color:green">green</span> button to draw an area you like or in the <span style="color:red">red</span> button to draw an area you dislike.
                       <b>Finally</b>, you click on the map to start the drawing.
                     </p>
                   </span>
@@ -127,14 +126,23 @@
                     <p> Desenhar uma área com a eImage é muito simples: </p>
                      <p>
                        <b> Primeiro </b>, clique no símbolo <i class="fa fa-plus"></i> da barra lateral.
-                       <b> Segundo </b>, você clica no botão <span style = "color: green"> verde </span> para desenhar uma área que você gosta
-                       ou no botão <span style = "color: red"> vermelho </span> para desenhar uma área que você não gosta.
-                       <b> Finalmente, </b>, você clica no mapa para iniciar o desenho.
+                       <b> Segundo </b>, clique no botão <span style = "color: green"> verde </span> para desenhar uma área que você gosta ou no botão <span style = "color: red"> vermelho </span> para desenhar uma área que você não gosta.
+                       <b> Por final</b>, clique no mapa para iniciar o desenho.
                      </p>
                   </span>
               </div>
             </div>
           </div>
+
+          <span class="language-pt" style="text-align:center; padding:0;margin:0">
+            <iframe width="350" height="200" src="https://www.youtube.com/embed/WbmyZV07IRs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </span>
+          <span class="language-en" style="text-align:center; padding:0;margin:0">
+            <iframe width="350" height="200" src="https://www.youtube.com/embed/z8dtaum_Xu0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </span>
+
+
+
 
           <span class="language-en" style="text-align:center; padding:0;margin:0"><h5><b><i>Controls</i></b></h5></span>
           <span class="language-pt" style="text-align:center; padding:0;margin:0"><h5><b><i>Controles</i></b></h5></span>
@@ -228,7 +236,8 @@
   <div id="mapdiv" class="col-md-12"></div>
 
   <script>
-  //  ********* Global Variables Definition *********
+
+       //  ********* Global Variables Definition *********
   var mymap;
   var basemap_osm, basemap_mapbox, basemap_Gterrain, basemap_Gimagery,
       basemap_GimageHybrid, basemap_WorldImagery, Hydda_RoadsAndLabels;
@@ -2386,12 +2395,35 @@
       values_insert += array_quest_sus.join("','");
       values_insert += "'";
 
+      //sus score
+      var sus_score = (
+        (parseInt(array_quest_sus[0]) - 1) +
+        (5 - parseInt(array_quest_sus[1])) +
+        (parseInt(array_quest_sus[2]) - 1) +
+        (5 - parseInt(array_quest_sus[3])) +
+        (parseInt(array_quest_sus[4]) - 1) +
+        (5 - parseInt(array_quest_sus[5])) +
+        (parseInt(array_quest_sus[6]) - 1) +
+        (5 - parseInt(array_quest_sus[7])) +
+        (parseInt(array_quest_sus[8]) - 1) +
+        (5 - parseInt(array_quest_sus[9]))
+      )*2.5;
+      values_insert += ","+ sus_score.toString();
+
+      //usefulness score
+      var usefulness_score = (
+        (parseInt(array_quest_sus[10]) - 1) +
+        (parseInt(array_quest_sus[11]) - 1)
+      )*2.5;
+      values_insert += ","+ usefulness_score.toString();
+
       var columns_question_name = [];
       for (i = 1; i <= 12; i++) columns_question_name.push( "question"+i.toString() );
-
       var columns_insert = "";
       columns_insert += "user_id" + ',';
       columns_insert += columns_question_name.join(",");
+      columns_insert += ','+ "sus_score" + ','+ "usefulness_score";
+
 
       var table_insert = "data_sus";
       // console.log(columns_insert, values_insert);
