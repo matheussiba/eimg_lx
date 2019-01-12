@@ -175,10 +175,10 @@
                 <input type="radio" id="radio_eqInterval" class='radio_typeSymbology groupinput' name='chooseTypeSymbology' value="eq_interval" autocomplete="off" checked>
                 Equal Interval
               </label>
-              <label class="btn btn-info">
+              <!-- <label class="btn btn-info">
                 <input type="radio" id="radio_quantile" class='radio_typeSymbology groupinput' name='chooseTypeSymbology' value="quantile" autocomplete="off">
                 Quantile
-              </label>
+              </label> -->
             </div>
 
             <hr />
@@ -208,10 +208,10 @@
                 <input type="radio" id="ds_f2f" class='radio_dataset groupinput' name='chooseDataset' value="eimg_result_f2f" autocomplete="off">
                 face-to-face
               </label>
-              <label class="btn btn-info">
+              <!-- <label class="btn btn-info">
                 <input type="radio" id="ds_onl" class='radio_dataset groupinput' name='chooseDataset' value="eimg_result_online" autocomplete="off">
                 online
-              </label>
+              </label> -->
             </div>
 
           </div>
