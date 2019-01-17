@@ -1,5 +1,8 @@
 # eImage-LX
 
+![eImage-LX](https://raw.githubusercontent.com/matheussiba/eimg_lx/master/resources/images/eimg_logo_1.png)
+
+
 eImage-LX is a web platform that allow residents and visitors of a city to depict its image via the stimuli aggregated by the cityscape.
 
 It is part of a research project involving 3 European universities: NOVA IMS (Lisbon, Portugal), UJI (Castellón, Spain) and WWU (Münster, Germany). The core idea is to ask citizens and visitors of Lisbon about places they like and places they dislike within the city in order to produce an evaluative image of the Lisbon.
