@@ -1,9 +1,6 @@
 # eImage-LX
 
-<img src="https://raw.githubusercontent.com/matheussiba/eimg_lx/master/resources/images/eimg_logo_1.png" width="100" height="auto" />
-
-![eImage-LX]( | width=30)
-
+<img src="https://raw.githubusercontent.com/matheussiba/eimg_lx/master/resources/images/eimg_logo_1.png" width="200" height="auto" />
 
 eImage-LX is a web platform that allow residents and visitors of a city to depict its image via the stimuli aggregated by the cityscape.
 
