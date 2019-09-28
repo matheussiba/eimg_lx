@@ -1234,6 +1234,8 @@
         if (intersect) inside = !inside;
     }
     // console.log(inside);
+    // MATHEUS EDIT
+    inside = true;
     return inside;
   };
 
@@ -2106,7 +2108,11 @@
         setCookie("app_finished", "true", 1);
 
         //Shows the modal
-        $('#modal_3_sus').modal('show');
+        //MATHEUS EDIT
+        // uncomented $('#modal_3_sus').modal('show');
+        // and comment setTimeout(function(){ window.location.href = 'eimg_viewer.php'; }, 500);
+        setTimeout(function(){ window.location.href = 'eimg_viewer.php'; }, 500);
+        //$('#modal_3_sus').modal('show');
       // }else if ((cnt_LikedAreas + cnt_DislikedAreas) >= 3) {
       //   alert("PARABÉNS!! Muito Obrigado por me ajudar a testar o site! Você é maravilhos@!!! :) Mas mexa mais um pouco nele. Tente encontrar algum 'bug' ou qualquer DEFEITO ou qualquer coisa que vc não gostou. Anote para depois me dizer! :)");
       }else if ((cnt_LikedAreas >= 1) && (cnt_DislikedAreas == 0)){
@@ -2454,7 +2460,7 @@
 
   </script>
   <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9OqcsgPwmC86ZAWzvHiMqWvgbrKUypBw&libraries=places&callback=createGeocoder">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCduZyGodTcv6wnlae2lTGDEBcR9GHFXSU&libraries=places&callback=createGeocoder">
   </script>
   </body>
   </html>

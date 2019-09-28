@@ -2821,7 +2821,9 @@ CREATE TABLE public.data_sus (
     question9 character varying(100),
     question10 character varying(100),
     question11 character varying(100),
-    question12 character varying(100)
+    question12 character varying(100),
+	sus_score numeric,
+	usefulness_score numeric
 );
 
 
